@@ -1,20 +1,20 @@
 ﻿Public Class 进入维护模式
     Private Sub 确定_Click(sender As Object, e As EventArgs) Handles 确定.Click
-        On Error Resume Next
+        ''On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Microsoft.Office.Interop.Excel.Application '定义Excel对象
         ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
         '——————————————————————————————————————————————————————————————————————————————————————————
         Dim 内燃机分布式能源负荷分析计算程序 As New Com内燃机分布式能源负荷分析计算程序
         Dim mima As String '输入的密码
-        mima = CType(Com内燃机分布式能源负荷分析计算程序.Form2.TextBox1.Text, String)
+        mima = CType(Me.TextBox1.Text, String)
         If mima = "cjc19920105" Then
             '解锁工作表
             Call 内燃机分布式能源负荷分析计算程序.解锁工作表()
             '取消彻底隐藏工作表
             Call 内燃机分布式能源负荷分析计算程序.取消工作表彻底隐藏()
             ExcelApp.Worksheets("说明&常量设置&数据汇总").Cells(1, 19).Value = 0 '密码输入正确后，将计数器重置为0
-            Com内燃机分布式能源负荷分析计算程序.Form2.Close()
+            Me.Close()
             MsgBox("已成功进入维护模式，程序可以被编辑！")
         Else
             ExcelApp.Worksheets("说明&常量设置&数据汇总").Cells(1, 19).Value = ExcelApp.Worksheets("说明&常量设置&数据汇总").Cells(1, 19).Value + 1
@@ -24,7 +24,7 @@
             ExcelApp.Application.DisplayAlerts = True
             '提醒
             MsgBox("密码错误，请重新输入！")
-            Com内燃机分布式能源负荷分析计算程序.Form2.Close()
+            Me.Close()
             Call 内燃机分布式能源负荷分析计算程序.工作表设置为彻底隐藏()
             Call 内燃机分布式能源负荷分析计算程序.锁定工作表()
             '保存表格的改动
@@ -33,7 +33,7 @@
             ExcelApp.Application.DisplayAlerts = True
         End If
         '清空文本框中的输入内容
-        Com内燃机分布式能源负荷分析计算程序.Form2.TextBox1.Clear()
+        Me.TextBox1.Clear()
         Me.Close()
     End Sub
     Protected Overrides Sub OnKeyPress(ByVal e As System.Windows.Forms.KeyPressEventArgs)
