@@ -60,6 +60,8 @@
         End If
         '实例化与一个主计算程序
         Dim mainprogram As New Com内燃机分布式能源负荷分析计算程序
+        '隐藏窗体
+        Me.Hide()
         '进入计算
         Call mainprogram.蓄能分配计算主程序(XLGL_PJ, XLGL_MAX, XLJS_MS, XRGL_PJ, XRGL_MAX, XRJS_MS)
         '—————————————————————————————————————————————————————————————————————————————————————————

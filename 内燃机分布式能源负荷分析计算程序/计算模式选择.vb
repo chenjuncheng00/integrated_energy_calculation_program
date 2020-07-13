@@ -7,6 +7,8 @@
         Dim precision As Double = CType(Me.FHTJJD_shuru.Text, Double)
         '计算模式设置为1
         Dim calculation_mode As Integer = 1
+        '隐藏窗体
+        Me.Hide()
         '调用主程序进行计算
         mainprogram.计算主程序(precision, 0, 0, calculation_mode)
         '关闭窗口
@@ -37,6 +39,8 @@
         End If
         '计算模式设置为2
         Dim calculation_mode As Integer = 2
+        '隐藏窗体
+        Me.Hide()
         '调用主程序进行计算
         mainprogram.计算主程序(precision, D_price, TRQ_price, calculation_mode)
         '关闭窗口

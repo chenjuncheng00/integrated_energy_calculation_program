@@ -131,12 +131,11 @@ Public Class 指定工况计算
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b)
-                    '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
+                    '只有全局寻优计算模式才修正
+                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
+                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
                 End If
             Next
-
             '计算循环体
             Call mainprogram.计算循环体(n)
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -310,9 +309,9 @@ Public Class 指定工况计算
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b)
-                    '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
+                    '只有全局寻优计算模式才修正
+                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
+                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
                 End If
             Next
             '计算循环体

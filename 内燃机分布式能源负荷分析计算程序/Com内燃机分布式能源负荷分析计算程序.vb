@@ -160,8 +160,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 Call 制冷和蓄冷空调设备负荷率修正(b)
                 Call 制热和蓄热空调设备负荷率修正(b)
                 '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
-                Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
+                Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
+                Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
             Next
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -187,8 +187,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         Call 制冷和蓄冷空调设备负荷率修正(a)
                         Call 制热和蓄热空调设备负荷率修正(a)
                         '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                        Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(a)
-                        Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(a)
+                        Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
+                        Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
                     End If
                 Next
             End If
@@ -283,7 +283,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     If (XNXLGL(b) = 0 And LFHZXQL(b) > 0) Then
                         '调用子程序进行计算——制冷，不同设备负荷率计算
                         '第一步，判断内燃机负荷率是否需要被修正
-                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b, FHTJJD, JSBC)
+                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b, FHTJJD, JSBC, calculation_mode)
                         '第二步，进行制冷设备计算
                         Call 内燃机可以向外供电时制冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                         '第三步，进行蓄冷设备计算
@@ -292,7 +292,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '如果蓄热量为0，热负荷需求量大于0，则溴化锂的制热量只用于供热
                     If (XNXRGL(b) = 0 And RFHZXQL(b) > 0) Then
                         '第一步，判断内燃机负荷率是否需要被修正
-                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b, FHTJJD, JSBC)
+                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b, FHTJJD, JSBC, calculation_mode)
                         '第二步，进行制热设备计算
                         Call 内燃机可以向外供电时制热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                         '第三步，进行蓄热设备计算
@@ -301,14 +301,14 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '如果蓄冷量大于0，冷负荷需求量大于等于0，则溴化锂制冷量不仅用于供冷，也可以用于蓄冷
                     If (XNXLGL(b) > 0 And LFHZXQL(b) >= 0) Then
                         '判断内燃机负荷率是否需要被修正
-                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b, FHTJJD, JSBC)
+                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b, FHTJJD, JSBC, calculation_mode)
                         '进行计算
                         Call 内燃机可以向外供电时制冷和蓄冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                     End If
                     '如果蓄热量大于0，热负荷需求量大于等于0，则溴化锂制热量不仅用于供热，也可以用于蓄热
                     If (XNXRGL(b) > 0 And RFHZXQL(b) >= 0) Then
                         '判断内燃机负荷率是否需要被修正
-                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b, FHTJJD, JSBC)
+                        Call 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b, FHTJJD, JSBC, calculation_mode)
                         '进行计算
                         Call 内燃机可以向外供电时制热和蓄热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                     End If
@@ -1761,6 +1761,10 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 Dim ans_FHFX = 负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode)
                 '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
                 Call 将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode)
+                '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
+                Call 制热和蓄热空调设备负荷率修正(b)
+                '计算制热季天然气耗量和耗电量综合修正系数
+                Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
             Next
             '计算循环体
             Call 计算循环体(n)
@@ -1817,7 +1821,6 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ - FHTJJD * j / 100
                         Else
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
-
                         End If
                         HSSBFHL(i) = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value
                         '进行一次负荷计算
@@ -1848,6 +1851,11 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         HSSBSJGL = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value * HSSBGL
                         '此时混水设备的实际功率比例
                         HSSBSJBL(i) = HSSBSJGL / (TRQGLSJGL + ZRXHLSJGL + DCNGLSJGL + HSSBSJGL)
+                        '修正供热和蓄热时的耗电量和天然气耗量修正系数
+                        '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
+                        Call 制热和蓄热空调设备负荷率修正(b)
+                        '计算制热季天然气耗量和耗电量综合修正系数
+                        Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
                         '比较此时混水设备比例是否合格，设置跳出循环的条件
                         If Math.Abs(HSSBSJBL(i) - HSGRGLBL) / HSGRGLBL < 0.05 Then
                             Exit For
@@ -1894,7 +1902,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '制冷计算,常规模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -2316,7 +2324,7 @@ zzzzz：
                                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                         '离心式冷水机计算
                                         If a_1 >= FH_min_LXSLSJ And ZJJC_LXSLSJ = 1 And ZJZGL_LXSLSJ > 0 Then
-                                            Dim ans_LXSLSJ = 离心式冷水机供冷和蓄冷分配寻优计算(b, FHTJJD, a_1, FHFPCS)
+                                            Dim ans_LXSLSJ = 离心式冷水机供冷和蓄冷分配寻优计算(b, FHTJJD, a_1, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_LXSLSJ.AddRange(ans_LXSLSJ(0))
                                             GL_ALL_LXSLSJ.AddRange(ans_LXSLSJ(1))
                                             XL_ALL_LXSLSJ.AddRange(ans_LXSLSJ(2))
@@ -2327,7 +2335,7 @@ zzzzz：
                                         End If
                                         '水冷螺杆机计算
                                         If a_2 >= FH_min_SLLGJ And ZJJC_SLLGJ = 1 And ZJZGL_SLLGJ > 0 Then
-                                            Dim ans_SLLGJ = 水冷螺杆机供冷和蓄冷分配寻优计算(b, FHTJJD, a_2, FHFPCS)
+                                            Dim ans_SLLGJ = 水冷螺杆机供冷和蓄冷分配寻优计算(b, FHTJJD, a_2, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_SLLGJ.AddRange(ans_SLLGJ(0))
                                             GL_ALL_SLLGJ.AddRange(ans_SLLGJ(1))
                                             XL_ALL_SLLGJ.AddRange(ans_SLLGJ(2))
@@ -2338,7 +2346,7 @@ zzzzz：
                                         End If
                                         '水（地）源热泵计算
                                         If a_3 >= FH_min_SDYRB And ZJJC_SDYRB = 1 And ZJZGL_SDYRB > 0 Then
-                                            Dim ans_SDYRB = 水_地源热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_3, FHFPCS)
+                                            Dim ans_SDYRB = 水_地源热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_3, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_SDYRB.AddRange(ans_SDYRB(0))
                                             GL_ALL_SDYRB.AddRange(ans_SDYRB(1))
                                             XL_ALL_SDYRB.AddRange(ans_SDYRB(2))
@@ -2349,7 +2357,7 @@ zzzzz：
                                         End If
                                         '离心式热泵计算
                                         If a_4 >= FH_min_LXSRB And ZJJC_LXSRB = 1 And ZJZGL_LXSRB > 0 Then
-                                            Dim ans_LXSRB = 离心式热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_4, FHFPCS)
+                                            Dim ans_LXSRB = 离心式热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_4, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_LXSRB.AddRange(ans_LXSRB(0))
                                             GL_ALL_LXSRB.AddRange(ans_LXSRB(1))
                                             XL_ALL_LXSRB.AddRange(ans_LXSRB(2))
@@ -2360,7 +2368,7 @@ zzzzz：
                                         End If
                                         '风冷螺杆机计算
                                         If a_5 >= FH_min_FLLGJ And ZJJC_FLLGJ = 1 And ZJZGL_FLLGJ > 0 Then
-                                            Dim ans_FLLGJ = 风冷螺杆机供冷和蓄冷分配寻优计算(b, FHTJJD, a_5, FHFPCS)
+                                            Dim ans_FLLGJ = 风冷螺杆机供冷和蓄冷分配寻优计算(b, FHTJJD, a_5, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_FLLGJ.AddRange(ans_FLLGJ(0))
                                             GL_ALL_FLLGJ.AddRange(ans_FLLGJ(1))
                                             XL_ALL_FLLGJ.AddRange(ans_FLLGJ(2))
@@ -2371,7 +2379,7 @@ zzzzz：
                                         End If
                                         '空气源热泵计算
                                         If a_6 >= FH_min_KQYRB And ZJJC_KQYRB = 1 And ZJZGL_KQYRB > 0 Then
-                                            Dim ans_KQYRB = 空气源热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_6, FHFPCS)
+                                            Dim ans_KQYRB = 空气源热泵供冷和蓄冷分配寻优计算(b, FHTJJD, a_6, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_min_KQYRB.AddRange(ans_KQYRB(0))
                                             GL_ALL_KQYRB.AddRange(ans_KQYRB(1))
                                             XL_ALL_KQYRB.AddRange(ans_KQYRB(2))
@@ -2382,7 +2390,7 @@ zzzzz：
                                         End If
                                         '直燃型溴化锂计算
                                         If a_7 >= FH_min_ZRXXHL And ZJJC_ZRXXHL = 1 And ZJZGL_ZRXXHL > 0 Then
-                                            Dim ans_ZRXXHL = 直燃型溴化锂供冷寻优计算(b, FHTJJD, a_7, FHFPCS)
+                                            Dim ans_ZRXXHL = 直燃型溴化锂供冷寻优计算(b, FHTJJD, a_7, FHFPCS, LFH_GL_now, LFH_XL_now)
                                             HD_ALL_ZRXXHL.AddRange(ans_ZRXXHL(0))
                                             GL_ALL_ZRXXHL.AddRange(ans_ZRXXHL(1))
                                             XL_ALL_ZRXXHL.AddRange(ans_ZRXXHL(2))
@@ -2867,10 +2875,10 @@ aaa:
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
             '计算制冷季天然气耗量和耗电量综合修正系数
-            Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
+            Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b， calculation_mode)
         End If
     End Sub
-    Function 离心式冷水机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 离心式冷水机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -2901,7 +2909,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -2919,7 +2927,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式冷水机供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -2932,7 +2940,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式冷水机供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -2969,7 +2977,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 水冷螺杆机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 水冷螺杆机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3000,7 +3008,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3018,7 +3026,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水冷螺杆机供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -3031,7 +3039,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水冷螺杆机供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -3068,7 +3076,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 水_地源热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 水_地源热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3099,7 +3107,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3117,7 +3125,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水_地源热泵供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -3130,7 +3138,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水_地源热泵供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -3167,7 +3175,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 离心式热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 离心式热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3198,7 +3206,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3216,7 +3224,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式热泵供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -3229,7 +3237,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式热泵供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -3266,7 +3274,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 风冷螺杆机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 风冷螺杆机供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3297,7 +3305,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3315,7 +3323,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 风冷螺杆机供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -3328,7 +3336,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 风冷螺杆机供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -3365,7 +3373,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 空气源热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 空气源热泵供冷和蓄冷分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3396,7 +3404,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3414,7 +3422,7 @@ aaa:
                 XL_out.Add(c_1)
                 ZGL_out.Add(LFH_max)
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 空气源热泵供冷和蓄冷计算(FHTJJD, LFH_max, 0)
@@ -3427,7 +3435,7 @@ aaa:
             GL_out.Add(LFH_max)
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 空气源热泵供冷和蓄冷计算(FHTJJD, 0, LFH_max)
@@ -3464,7 +3472,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 直燃型溴化锂供冷寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 直燃型溴化锂供冷寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -3497,7 +3505,7 @@ aaa:
         '设备可以供冷的上限（冷负荷需求量和设备装机量中较小的值）
         Dim LFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄冷负荷，再将负荷分成供冷负荷和蓄冷负荷
-        If LFHZXQL(b) > 0 And XNXLGL(b) > 0 Then
+        If LFH_GL_now > 0 And LFH_XL_now > 0 Then
             '如果供冷和蓄冷均大于0
             'b_1表示当前分配给供冷的负荷
             For b_1 = 0 To LFH_max Step LFH_max / FHFPCS
@@ -3517,7 +3525,7 @@ aaa:
                 ZGL_out.Add(LFH_max)
                 HQ_ALL.Add(ans_temp(0))
             Next
-        ElseIf LFHZXQL(b) > 0 And XNXLGL(b) = 0 Then
+        ElseIf LFH_GL_now > 0 And LFH_XL_now = 0 Then
             '如果没有蓄冷负荷，则直接计算
             '求计算结果
             Dim ans_temp = 直燃型溴化锂供冷计算_方法二(FHTJJD, LFH_max)
@@ -3531,7 +3539,7 @@ aaa:
             XL_out.Add(0)
             ZGL_out.Add(LFH_max)
             HQ_ALL.Add(ans_temp(0))
-        ElseIf LFHZXQL(b) = 0 And XNXLGL(b) > 0 Then
+        ElseIf LFH_GL_now = 0 And LFH_XL_now > 0 Then
             '如果没有供冷负荷，则直接计算
             '计算结果加入列表，直燃型溴化锂不能蓄冷，结果全部是0
             HD_ALL.Add(0)
@@ -5444,7 +5452,7 @@ aaa:
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -5866,7 +5874,7 @@ zzzzz：
                                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                         '天然气锅炉计算
                                         If a_1 >= FH_min_TRQGL And ZJJC_TRQGL = 1 And ZJZGR_TRQGL > 0 Then
-                                            Dim ans_TRQGL = 天然气锅炉供热寻优计算(b, FHTJJD, a_1, FHFPCS)
+                                            Dim ans_TRQGL = 天然气锅炉供热寻优计算(b, FHTJJD, a_1, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_TRQGL.AddRange(ans_TRQGL(0))
                                             GR_ALL_TRQGL.AddRange(ans_TRQGL(1))
                                             XR_ALL_TRQGL.AddRange(ans_TRQGL(2))
@@ -5878,7 +5886,7 @@ zzzzz：
                                         End If
                                         '电锅炉计算
                                         If a_2 >= FH_min_DGL And ZJJC_DGL = 1 And ZJZGR_DGL > 0 Then
-                                            Dim ans_DGL = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, a_2, FHFPCS)
+                                            Dim ans_DGL = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, a_2, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_DGL.AddRange(ans_DGL(0))
                                             GR_ALL_DGL.AddRange(ans_DGL(1))
                                             XR_ALL_DGL.AddRange(ans_DGL(2))
@@ -5889,7 +5897,7 @@ zzzzz：
                                         End If
                                         '水（地）源热泵计算
                                         If a_3 >= FH_min_SDYRB And ZJJC_SDYRB = 1 And ZJZGR_SDYRB > 0 Then
-                                            Dim ans_SDYRB = 水_地源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_3, FHFPCS)
+                                            Dim ans_SDYRB = 水_地源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_3, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_SDYRB.AddRange(ans_SDYRB(0))
                                             GR_ALL_SDYRB.AddRange(ans_SDYRB(1))
                                             XR_ALL_SDYRB.AddRange(ans_SDYRB(2))
@@ -5900,7 +5908,7 @@ zzzzz：
                                         End If
                                         '离心式热泵计算
                                         If a_4 >= FH_min_LXSRB And ZJJC_LXSRB = 1 And ZJZGR_LXSRB > 0 Then
-                                            Dim ans_LXSRB = 离心式热泵供热和蓄热分配寻优计算(b, FHTJJD, a_4, FHFPCS)
+                                            Dim ans_LXSRB = 离心式热泵供热和蓄热分配寻优计算(b, FHTJJD, a_4, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_LXSRB.AddRange(ans_LXSRB(0))
                                             GR_ALL_LXSRB.AddRange(ans_LXSRB(1))
                                             XR_ALL_LXSRB.AddRange(ans_LXSRB(2))
@@ -5911,7 +5919,7 @@ zzzzz：
                                         End If
                                         '风冷螺杆机计算
                                         If a_5 >= FH_min_FLLGJ And ZJJC_FLLGJ = 1 And ZJZGR_FLLGJ > 0 Then
-                                            Dim ans_FLLGJ = 风冷螺杆机供热和蓄热分配寻优计算(b, FHTJJD, a_5, FHFPCS)
+                                            Dim ans_FLLGJ = 风冷螺杆机供热和蓄热分配寻优计算(b, FHTJJD, a_5, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_FLLGJ.AddRange(ans_FLLGJ(0))
                                             GR_ALL_FLLGJ.AddRange(ans_FLLGJ(1))
                                             XR_ALL_FLLGJ.AddRange(ans_FLLGJ(2))
@@ -5922,7 +5930,7 @@ zzzzz：
                                         End If
                                         '空气源热泵计算
                                         If a_6 >= FH_min_KQYRB And ZJJC_KQYRB = 1 And ZJZGR_KQYRB > 0 Then
-                                            Dim ans_KQYRB = 空气源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_6, FHFPCS)
+                                            Dim ans_KQYRB = 空气源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_6, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_KQYRB.AddRange(ans_KQYRB(0))
                                             GR_ALL_KQYRB.AddRange(ans_KQYRB(1))
                                             XR_ALL_KQYRB.AddRange(ans_KQYRB(2))
@@ -5933,7 +5941,7 @@ zzzzz：
                                         End If
                                         '直燃型溴化锂计算
                                         If a_7 >= FH_min_ZRXXHL And ZJJC_ZRXXHL = 1 And ZJZGR_ZRXXHL > 0 Then
-                                            Dim ans_ZRXXHL = 直燃型溴化锂供热寻优计算(b, FHTJJD, a_7, FHFPCS)
+                                            Dim ans_ZRXXHL = 直燃型溴化锂供热寻优计算(b, FHTJJD, a_7, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_ZRXXHL.AddRange(ans_ZRXXHL(0))
                                             GR_ALL_ZRXXHL.AddRange(ans_ZRXXHL(1))
                                             XR_ALL_ZRXXHL.AddRange(ans_ZRXXHL(2))
@@ -6415,10 +6423,10 @@ aaa:
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
             '计算制热季天然气耗量和耗电量综合修正系数
-            Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b)
+            Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
         End If
     End Sub
-    Function 水_地源热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 水_地源热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6449,7 +6457,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -6467,7 +6475,7 @@ aaa:
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水_地源热泵供热和蓄热计算(FHTJJD, RFH_max, 0)
@@ -6480,7 +6488,7 @@ aaa:
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 水_地源热泵供热和蓄热计算(FHTJJD, 0, RFH_max)
@@ -6517,7 +6525,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 离心式热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 离心式热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6548,7 +6556,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -6566,7 +6574,7 @@ aaa:
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式热泵供热和蓄热计算(FHTJJD, RFH_max, 0)
@@ -6579,7 +6587,7 @@ aaa:
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 离心式热泵供热和蓄热计算(FHTJJD, 0, RFH_max)
@@ -6616,7 +6624,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 风冷螺杆机供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 风冷螺杆机供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6647,7 +6655,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -6665,7 +6673,7 @@ aaa:
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 风冷螺杆机供热和蓄热计算(FHTJJD, RFH_max, 0)
@@ -6678,7 +6686,7 @@ aaa:
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 风冷螺杆机供热和蓄热计算(FHTJJD, 0, RFH_max)
@@ -6715,7 +6723,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 空气源热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 空气源热泵供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6746,7 +6754,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -6764,7 +6772,7 @@ aaa:
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 空气源热泵供热和蓄热计算(FHTJJD, RFH_max, 0)
@@ -6777,7 +6785,7 @@ aaa:
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 空气源热泵供热和蓄热计算(FHTJJD, 0, RFH_max)
@@ -6814,7 +6822,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 电锅炉供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 电锅炉供热和蓄热分配寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6846,14 +6854,14 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
                 'c_1表示当前分配蓄热的负荷
                 Dim c_1 As Double = RFH_max - b_1
                 '求计算结果
-                Dim ans_temp = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, b_1, c_1)
+                Dim ans_temp = 电锅炉供热和蓄热计算(FHTJJD, b_1, c_1)
                 '计算结果加入列表
                 HD_ALL.Add(ans_temp(0))
                 FHL1_GR.Add(ans_temp(1))
@@ -6864,10 +6872,10 @@ aaa:
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
-            Dim ans_temp = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, RFH_max, 0)
+            Dim ans_temp = 电锅炉供热和蓄热计算(FHTJJD, RFH_max, 0)
             '计算结果加入列表
             HD_ALL.Add(ans_temp(0))
             FHL1_GR.Add(ans_temp(1))
@@ -6877,10 +6885,10 @@ aaa:
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
-            Dim ans_temp = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, 0, RFH_max)
+            Dim ans_temp = 电锅炉供热和蓄热计算(FHTJJD, 0, RFH_max)
             '计算结果加入列表
             HD_ALL.Add(ans_temp(0))
             FHL1_GR.Add(ans_temp(1))
@@ -6914,7 +6922,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 天然气锅炉供热寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 天然气锅炉供热寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -6947,7 +6955,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -6967,7 +6975,7 @@ aaa:
                 ZGR_out.Add(RFH_max)
                 HQ_ALL.Add(ans_temp(0))
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 天然气锅炉供热计算_方法二(FHTJJD, RFH_max)
@@ -6981,7 +6989,7 @@ aaa:
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
             HQ_ALL.Add(ans_temp(0))
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '计算结果加入列表，直燃型溴化锂不能蓄热，结果全部是0
             HD_ALL.Add(0)
@@ -7019,7 +7027,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 直燃型溴化锂供热寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer)
+    Function 直燃型溴化锂供热寻优计算(b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -7052,7 +7060,7 @@ aaa:
         '设备可以供热的上限（冷负荷需求量和设备装机量中较小的值）
         Dim RFH_max As Double = Math.Min(ZJZGL, ZFH)
         '如果此时存在蓄热负荷，再将负荷分成供热负荷和蓄热负荷
-        If RFHZXQL(b) > 0 And XNXRGL(b) > 0 Then
+        If RFH_GR_now > 0 And RFH_XR_now > 0 Then
             '如果供热和蓄热均大于0
             'b_1表示当前分配给供热的负荷
             For b_1 = 0 To RFH_max Step RFH_max / FHFPCS
@@ -7072,7 +7080,7 @@ aaa:
                 ZGR_out.Add(RFH_max)
                 HQ_ALL.Add(ans_temp(0))
             Next
-        ElseIf RFHZXQL(b) > 0 And XNXRGL(b) = 0 Then
+        ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
             Dim ans_temp = 直燃型溴化锂供热计算_方法二(FHTJJD, RFH_max)
@@ -7086,7 +7094,7 @@ aaa:
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
             HQ_ALL.Add(ans_temp(0))
-        ElseIf RFHZXQL(b) = 0 And XNXRGL(b) > 0 Then
+        ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '计算结果加入列表，直燃型溴化锂不能蓄热，结果全部是0
             HD_ALL.Add(0)
@@ -9829,6 +9837,9 @@ aaa:
                 Call 内燃机可以向外供电时制冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                 '进行蓄冷设备计算
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Dim XHLZL As Double = 0 '此时没有溴化锂制冷
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 'MsgBox("制冷时间段内燃机(1)负荷率低于30%，被设置为0" & Chr(10) & "工况序号为：" & b)
             End If
         End If
@@ -9841,6 +9852,9 @@ aaa:
                 Call 内燃机可以向外供电时制冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                 '进行蓄冷设备计算
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Dim XHLZL As Double = 0 '此时没有溴化锂制冷
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 'MsgBox("制冷时间段内燃机(2)负荷率低于30%，被设置为0" & Chr(10) & "工况序号为：" & b)
             End If
         End If
@@ -9853,6 +9867,9 @@ aaa:
                 Call 内燃机可以向外供电时制热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                 '进行蓄热设备计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Dim XHLZR As Double = 0 '此时没有溴化锂制热
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 'MsgBox("制热时间段内燃机(1)负荷率低于30%，被设置为0" & Chr(10) & "工况序号为：" & b)
             End If
         End If
@@ -9865,6 +9882,9 @@ aaa:
                 Call 内燃机可以向外供电时制热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                 '进行蓄热设备计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Dim XHLZR As Double = 0 '此时没有溴化锂制热
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 'MsgBox("制热时间段内燃机(2)负荷率低于30%，被设置为0" & Chr(10) & "工况序号为：" & b)
             End If
         End If
@@ -10364,7 +10384,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
-                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                         '设备制冷计算 ,常规计算模式
@@ -10409,7 +10429,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
-                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                         '设备制冷计算 ,常规计算模式
@@ -10450,7 +10470,7 @@ qqq:
                             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                             '记录下溴化锂(1)+(2)的总制冷量
-                            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                             '设备制冷计算 ,常规计算模式
@@ -10515,7 +10535,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
         '重新进行制冷计算
@@ -10561,7 +10581,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
-                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                         '制热计算，常规计算模式
@@ -10605,7 +10625,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
-                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                         '制热计算，常规计算模式
@@ -10646,7 +10666,7 @@ qqq:
                             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                             '记录下溴化锂(1)+(2)的总制热量
-                            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                             '制热计算，常规计算模式
@@ -10711,7 +10731,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
         '重新进行制热计算
@@ -10766,7 +10786,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
-                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                         '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
                         If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -10778,12 +10798,12 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                             '设备制冷计算 ,常规计算模式
                             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                            '制冷和蓄冷计算，全局寻优计算模式
-                            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                             '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                             '进行蓄冷设备计算
                             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                            '制冷和蓄冷计算，全局寻优计算模式
+                            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                             '设置跳出循环的条件
                             '当向外供电量小于等于0，同时满足制冷负荷和蓄冷需求时，跳出循环
                             '如果启动了蓄冷装置，跳出循环的条件为
@@ -10800,7 +10820,7 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '修正计算,代码在模块6
+                                '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -10810,7 +10830,7 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '修正计算,代码在模块6
+                                '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -10834,6 +10854,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                            '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                             '设置跳出循环的条件
                             '如果启动了蓄冷装置，跳出循环的条件为
                             If (ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value >= LFHZXQL(b) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
@@ -10851,11 +10873,13 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                                 '重新进行一次蓄冷计算
                                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                 '当向外供电量不满足条件，同时不满足蓄冷需求时
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 1) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '修正计算,代码在模块6
+                                '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -10898,7 +10922,7 @@ qqq:
                                 Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                                 Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                                 '记录下溴化锂(1)+(2)的总制冷量
-                                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                                 '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
                                 If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -10910,12 +10934,12 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                                     '设备制冷计算 ,常规计算模式
                                     Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                                    '制冷和蓄冷计算，全局寻优计算模式
-                                    Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                     '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    '进行蓄冷设备计算，代码在模块3
+                                    '进行蓄冷设备计算
                                     Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                                    '制冷和蓄冷计算，全局寻优计算模式
+                                    Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                     '设置跳出循环的条件
                                     '当向外供电量小于等于0，同时满足制冷负荷和蓄冷需求时，跳出循环
                                     '如果启动了蓄冷装置，跳出循环的条件为
@@ -10932,7 +10956,7 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '修正计算,代码在模块6
+                                        '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -10967,6 +10991,8 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                                     '进行蓄冷计算
                                     Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                                    '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                                    Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                     '设置跳出循环的条件
                                     '当向外供电量小于等于0，同时满足制冷负荷和蓄冷需求时，跳出循环
                                     '如果启动了蓄冷装置，跳出循环的条件为
@@ -10983,7 +11009,7 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '修正计算,代码在模块6
+                                        '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -10993,7 +11019,7 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '修正计算,代码在模块6
+                                        '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
@@ -11018,7 +11044,7 @@ qqq:
                             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                             '记录下溴化锂(1)+(2)的总制冷量
-                            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                             '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                             '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
                             If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -11030,12 +11056,12 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                                 '设备制冷计算 ,常规计算模式
                                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                                '制冷和蓄冷计算，全局寻优计算模式
-                                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                '进行蓄冷设备计算，代码在模块3
+                                '进行蓄冷设备计算
                                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                                '制冷和蓄冷计算，全局寻优计算模式
+                                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                 '设置跳出循环的条件
                                 '当向外供电量小于等于0，同时满足制冷负荷和蓄冷需求时，跳出循环
                                 '如果启动了蓄冷装置，跳出循环的条件为
@@ -11087,6 +11113,8 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                                 '进行蓄冷计算
                                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                                 '设置跳出循环的条件
                                 '当向外供电量小于等于0，同时满足制冷负荷和蓄冷需求时，跳出循环
                                 '如果启动了蓄冷装置，跳出循环的条件为
@@ -11192,7 +11220,7 @@ qqq:
                         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
-                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                         '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
                         If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -11203,12 +11231,12 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                             '制热计算，常规计算模式
                             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                            '制热和蓄热计算，全局寻优计算模式
-                            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                             '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                             '进行蓄热设备计算，代码在模块4
                             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                            '制热和蓄热计算，全局寻优计算模式
+                            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                             '设置循环跳出条件
                             '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                             '如果有蓄热装置，则跳出循环条件为
@@ -11259,6 +11287,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                             '进行蓄热计算
                             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                            '制热和蓄热计算，全局寻优计算模式
+                            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                             '设置循环跳出条件
                             '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                             '如果有蓄热装置，则跳出循环条件为
@@ -11326,7 +11356,7 @@ qqq:
                                 Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                                 Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                                 '记录下溴化锂(1)+(2)的总制热量
-                                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                                 '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                                 '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
                                 If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -11338,12 +11368,12 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                                     '制热计算，常规计算模式
                                     Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                                    '制热和蓄热计算，全局寻优计算模式
-                                    Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '清空已有的蓄热设备运行计算结果，每次重新计算时都必须清空一次
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                                     '进行蓄热设备计算，代码在模块4
                                     Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                                    '制热和蓄热计算，全局寻优计算模式
+                                    Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '设置跳出循环的条件
                                     '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                                     '如果有蓄热装置，则跳出循环条件为
@@ -11395,6 +11425,8 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                                     '进行蓄热计算
                                     Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                                    '制热和蓄热计算，全局寻优计算模式
+                                    Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '设置跳出循环的条件
                                     '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                                     '如果有蓄热装置，则跳出循环条件为
@@ -11446,7 +11478,7 @@ qqq:
                             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                             '记录下溴化锂(1)+(2)的总制热量
-                            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                             '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
                             '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
                             If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -11458,12 +11490,12 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                                 '制热计算，常规计算模式
                                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                                '制热和蓄热计算，全局寻优计算模式
-                                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '清空已有的蓄热设备运行计算结果，每次重新计算时都必须清空一次
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                                 '进行蓄热设备计算，代码在模块4
                                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                                '制热和蓄热计算，全局寻优计算模式
+                                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '设置跳出循环的条件
                                 '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                                 '如果有蓄热装置，则跳出循环条件为
@@ -11515,6 +11547,8 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                                 '进行蓄热计算
                                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                                '制热和蓄热计算，全局寻优计算模式
+                                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '设置跳出循环的条件
                                 '当向外供电量小于等于0，同时满足制热负荷和蓄热需求时，跳出循环
                                 '如果有蓄热装置，则跳出循环条件为
@@ -11595,7 +11629,7 @@ qqq:
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '比较溴化锂制冷量和蓄能装置供冷量之和与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
             '如果溴化锂的制冷量和蓄能装置供冷量之和小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
             If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -11607,12 +11641,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算，代码在模块3
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '如果溴化锂制冷量和蓄能装置供冷量之和大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
             ElseIf (XHLZL + XNGLGL(b)) > LFHZXQL(b) Then
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
@@ -11629,6 +11663,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             End If
         ElseIf LFHZXQL(b) < 0 Then
             Dim XZ1
@@ -11658,7 +11694,7 @@ qqq:
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '比较溴化锂制热量和蓄能装置供热量之和与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
             '如果溴化锂的制热量和蓄能装置供热量之和小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
             If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -11669,12 +11705,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '如果溴化锂制热量和蓄能装置供热量之和大于热负荷总需求量，则溴化锂不仅用于供热，还用于蓄热,此时所有的供热负荷均由溴化锂设备提供
             ElseIf (XHLZR + XNGRGL(b)) > RFHZXQL(b) Then
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
@@ -11691,6 +11727,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             End If
         ElseIf RFHZXQL(b) < 0 Then
             Dim XZ1
@@ -11717,7 +11755,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
         '设备制冷计算 ,常规计算模式
@@ -11730,7 +11768,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11748,7 +11786,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11782,7 +11820,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
         '制热计算，常规计算模式
@@ -11795,7 +11833,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -11813,7 +11851,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -11848,7 +11886,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
         '设备制冷计算 ,常规计算模式
@@ -11862,7 +11900,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11881,7 +11919,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11918,7 +11956,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
         '设备制冷计算 ,常规计算模式
@@ -11932,7 +11970,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11951,7 +11989,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
@@ -11986,7 +12024,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
         '制热计算，常规计算模式
@@ -12000,7 +12038,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -12019,7 +12057,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -12056,7 +12094,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
         '制热计算，常规计算模式
@@ -12070,7 +12108,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -12089,7 +12127,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '将已有的制热设备运行负荷率重置为0，每一次重新计算必需重置一次0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
@@ -12125,7 +12163,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
         If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -12137,12 +12175,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-            '制冷和蓄冷计算，全局寻优计算模式
-            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
             '进行蓄冷设备计算，代码在模块3
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '制冷和蓄冷计算，全局寻优计算模式
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3)).Value = 0.25           '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = 0.25   '内燃机负荷率为0.25
@@ -12150,7 +12188,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12159,12 +12197,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算，代码在模块3
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12177,7 +12215,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12186,12 +12224,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算，代码在模块3
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12214,6 +12252,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3)).Value = 0.25           '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = 0.25   '内燃机负荷率为0.25
@@ -12221,7 +12261,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12236,6 +12276,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12248,7 +12290,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12263,6 +12305,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12293,7 +12337,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
         If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -12304,12 +12348,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-            '制热和蓄热计算，全局寻优计算模式
-            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
             '进行蓄热设备计算，代码在模块4
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5)).Value = 0.25           '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = 0.25   '内燃机负荷率为0.25
@@ -12317,7 +12361,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -12326,12 +12370,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX = 0.25 '内燃机制热负荷率上限
                 Else
@@ -12344,7 +12388,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -12353,12 +12397,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZRFHLSX = 0.75 '内燃机制热负荷率上限
                 Else
@@ -12381,6 +12425,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5)).Value = 0.25           '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = 0.25   '内燃机负荷率为0.25
@@ -12388,7 +12434,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -12403,6 +12449,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX = 0.25 '内燃机制热负荷率上限
                 Else
@@ -12415,7 +12463,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -12430,6 +12478,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZRFHLSX = 0.75 '内燃机制热负荷率上限
                 Else
@@ -12461,7 +12511,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
         If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -12473,12 +12523,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-            '制冷和蓄冷计算，全局寻优计算模式
-            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
             '进行蓄冷设备计算，代码在模块3
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '制冷和蓄冷计算，全局寻优计算模式
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value = 0.25            '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = 0.25        '内燃机负荷率为0.25
@@ -12486,7 +12536,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12495,12 +12545,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX2 = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12513,7 +12563,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12522,12 +12572,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX2 = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12550,6 +12600,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value = 0.25            '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = 0.25        '内燃机负荷率为0.25
@@ -12557,7 +12609,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12572,6 +12624,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX2 = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12584,7 +12638,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12599,6 +12653,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX2 = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12630,7 +12686,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
         If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -12641,12 +12697,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-            '制热和蓄热计算，全局寻优计算模式
-            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
             '进行蓄热设备计算，代码在模块4
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value = 0.25             '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = 0.25         '内燃机负荷率为0.25
@@ -12654,7 +12710,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -12663,12 +12719,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX2 = 0.25 '内燃机制热负荷率上限
                 Else
@@ -12681,7 +12737,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -12690,12 +12746,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZRFHLSX2 = 0.75 '内燃机制热负荷率上限
                 Else
@@ -12718,6 +12774,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value = 0.25             '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = 0.25         '内燃机负荷率为0.25
@@ -12725,7 +12783,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -12740,6 +12798,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX2 = 0.25 '内燃机制热负荷率上限
                 Else
@@ -12752,7 +12812,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -12767,6 +12827,8 @@ qqq:
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                         '进行蓄热计算
                         Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                        '制热和蓄热计算，全局寻优计算模式
+                        Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                             NRJZRFHLSX2 = 0.75 '内燃机制热负荷率上限
                         Else
@@ -12800,7 +12862,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制冷量与冷负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷，进行下列计算
         If (XHLZL + XNGLGL(b)) <= LFHZXQL(b) Then
@@ -12812,12 +12874,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-            '制冷和蓄冷计算，全局寻优计算模式
-            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
             '进行蓄冷设备计算，代码在模块3
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '制冷和蓄冷计算，全局寻优计算模式
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = 0.25            '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = 0.25        '内燃机负荷率为0.25
@@ -12825,7 +12887,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12834,12 +12896,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算，代码在模块3
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX1 = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12852,7 +12914,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将溴化锂蓄冷的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
@@ -12861,12 +12923,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
-                '制冷和蓄冷计算，全局寻优计算模式
-                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
                 '进行蓄冷设备计算，代码在模块3
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '制冷和蓄冷计算，全局寻优计算模式
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX1 = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12889,6 +12951,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+            '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+            Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = 0.25            '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = 0.25        '内燃机负荷率为0.25
@@ -12896,7 +12960,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12911,6 +12975,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZLFHLSX1 = 0.25 '内燃机制冷负荷率上限
                 Else
@@ -12923,7 +12989,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂制冷量大于冷负荷总需求量，则溴化锂不仅用于供冷，还用于蓄冷,此时所有的供冷负荷均由溴化锂设备提供
                 '溴化锂供冷量等于本工况冷负荷总需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -12938,6 +13004,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
+                '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
+                Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZLFHLSX1 = 0.75 '内燃机制冷负荷率上限
                 Else
@@ -12969,7 +13037,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '比较溴化锂制热量与热负荷需求量的大小，根据比较结果，按照不同的方式进行计算
         '如果溴化锂的制热量小于等于热负荷总需求量，则溴化锂不参与蓄热只进行供热，进行下列计算
         If (XHLZR + XNGRGL(b)) <= RFHZXQL(b) Then
@@ -12980,12 +13048,12 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-            '制热和蓄热计算，全局寻优计算模式
-            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
             '进行蓄热设备计算，代码在模块4
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value = 0.25             '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = 0.25         '内燃机负荷率为0.25
@@ -12993,7 +13061,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -13002,12 +13070,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX1 = 0.25 '内燃机制热负荷率上限
                 Else
@@ -13020,7 +13088,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '如果溴化锂的制热量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
@@ -13029,12 +13097,12 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
-                '制热和蓄热计算，全局寻优计算模式
-                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 '清空已有的蓄热设备运行计算结果，每一次重新计算都必须清空一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 '进行蓄热设备计算，代码在模块4
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZRFHLSX1 = 0.75 '内燃机制热负荷率上限
                 Else
@@ -13057,6 +13125,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+            '制热和蓄热计算，全局寻优计算模式
+            Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
             If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value = 0.25             '内燃机负荷率为0.25
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = 0.25         '内燃机负荷率为0.25
@@ -13064,7 +13134,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -13079,6 +13149,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率大了，或者向外供电量正好等于0
                     NRJZRFHLSX1 = 0.25 '内燃机制热负荷率上限
                 Else
@@ -13091,7 +13163,7 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                 '溴化锂供热量等于本工况热负荷需求量
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -13106,6 +13178,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61)).Value = 0
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
+                '制热和蓄热计算，全局寻优计算模式
+                Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
                 If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value >= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value Then '向外供电量大于0，说明内燃机负荷率小了，或者向外供电量正好等于0
                     NRJZRFHLSX1 = 0.75 '内燃机制热负荷率上限
                 Else
@@ -13116,7 +13190,7 @@ qqq:
         '返回计算结果
         Return NRJZRFHLSX1
     End Function
-    Sub 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b As Integer, FHTJJD As Double, JSBC As Integer)
+    Sub 内燃机可以向外供电且内燃机余热不可以浪费时供冷蓄冷内燃机负荷率调节(b As Integer, FHTJJD As Double, JSBC As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13139,14 +13213,14 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
         '如果大于，则自动调整内燃机负荷率
         If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
             '如果只启用了一种内燃机，则可以使用下列代码进行计算
             If (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(3, 2).Value = "J000GS" Or ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(22, 2).Value = "J000GS") Then
                 '采用二分法提高计算速度
-                Dim ZLNRJFHLXX = 只有一种内燃机时二分法提高供冷蓄冷内燃机负荷率调节计算速度(b)
+                Dim ZLNRJFHLXX = 只有一种内燃机时二分法提高供冷蓄冷内燃机负荷率调节计算速度(b, calculation_mode)
                 For g = 0 To JSBC
                     '两种内燃机的负荷率同时降低，因为有一种内燃机没有开启，所以修改这种内燃机的负荷率对计算并不产生影响，在计算结束后将没有启动的那个内燃机负荷率设置为0即可，从而简化代码
                     ZLNRJFHL = ZLNRJFHLXX + (FHTJJD / 100) * g '制冷内燃机负荷率
@@ -13156,7 +13230,7 @@ qqq:
                     NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                     NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                     '记录下溴化锂(1)+(2)的总制冷量
-                    XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                    XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                     '溴化锂供冷量等于本工况冷负荷总需求量减去蓄冷装置供冷量
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -13199,10 +13273,10 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                 '记录下溴化锂(1)+(2)的总制冷量
-                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '判断，负荷率大了，则内燃机（2）保持0，调整内燃机（1）负荷率
                 If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
-                    Dim ZLNRJFHLXX1 = 启动两种内燃机时二分法提高供冷蓄冷内燃机1负荷率调节计算速度(b)
+                    Dim ZLNRJFHLXX1 = 启动两种内燃机时二分法提高供冷蓄冷内燃机1负荷率调节计算速度(b, calculation_mode)
                     For g1 = 0 To JSBC
                         ZLNRJFHL1 = ZLNRJFHLXX1 + (FHTJJD / 100) * g1 '制冷内燃机1负荷率
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = ZLNRJFHL1
@@ -13211,7 +13285,7 @@ qqq:
                         NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                         NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
-                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '溴化锂供冷量等于本工况冷负荷总需求量减去蓄冷装置供冷量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -13242,7 +13316,7 @@ qqq:
                         End If
                     Next
                 Else '负荷率小了，则内燃机（1）负荷率保持1，调整内燃机（2）负荷率
-                    Dim ZLNRJFHLXX2 = 启动两种内燃机时二分法提高供冷蓄冷内燃机2负荷率调节计算速度(b)
+                    Dim ZLNRJFHLXX2 = 启动两种内燃机时二分法提高供冷蓄冷内燃机2负荷率调节计算速度(b, calculation_mode)
                     For g2 = 0 To JSBC
                         ZLNRJFHL2 = ZLNRJFHLXX2 + (FHTJJD / 100) * g2 '制冷内燃机2负荷率
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value = ZLNRJFHL2
@@ -13251,7 +13325,7 @@ qqq:
                         NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
                         NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
-                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '溴化锂供冷量等于本工况冷负荷总需求量减去蓄冷装置供冷量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 71).Value = LFHZXQL(b) - XNGLGL(b)
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 71).Value = LFHZXQL(b) - XNGLGL(b)
@@ -13294,7 +13368,7 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = 0
         End If
     End Sub
-    Function 只有一种内燃机时二分法提高供冷蓄冷内燃机负荷率调节计算速度(b As Integer)
+    Function 只有一种内燃机时二分法提高供冷蓄冷内燃机负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13310,7 +13384,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
         '大于，说明负荷率大了
         If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13321,7 +13395,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13337,7 +13411,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13349,7 +13423,7 @@ qqq:
         '返回计算结果
         Return ZLNRJFHLXX
     End Function
-    Function 启动两种内燃机时二分法提高供冷蓄冷内燃机1负荷率调节计算速度(b As Integer)
+    Function 启动两种内燃机时二分法提高供冷蓄冷内燃机1负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13368,7 +13442,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
         '大于，说明负荷率大了
         If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13379,7 +13453,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13395,7 +13469,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13407,7 +13481,7 @@ qqq:
         '返回计算结果
         Return ZLNRJFHLXX1
     End Function
-    Function 启动两种内燃机时二分法提高供冷蓄冷内燃机2负荷率调节计算速度(b As Integer)
+    Function 启动两种内燃机时二分法提高供冷蓄冷内燃机2负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13426,7 +13500,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
-        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
         '大于，说明负荷率大了
         If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13437,7 +13511,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13453,7 +13527,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供冷量和溴化锂总供冷量是否大于冷负荷总需求量和蓄冷总量之和
             '大于，说明负荷率大了
             If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
@@ -13465,7 +13539,7 @@ qqq:
         '返回计算结果
         Return ZLNRJFHLXX2
     End Function
-    Sub 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b As Integer, FHTJJD As Double, JSBC As Integer)
+    Sub 内燃机可以向外供电且内燃机余热不可以浪费时供热蓄热内燃机负荷率调节(b As Integer, FHTJJD As Double, JSBC As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13488,14 +13562,14 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
         '如果大于，则自动调整内燃机负荷率
         If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
             '如果只启用了一种内燃机，则可以使用下列代码进行计算
             If (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 2).Value = "J000GS" Or ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 2).Value = "J000GS") Then
                 '采用二分法提高计算速度
-                Dim ZRNRJFHLXX = 只有一种内燃机时二分法提高供热蓄热内燃机负荷率调节计算速度(b)
+                Dim ZRNRJFHLXX = 只有一种内燃机时二分法提高供热蓄热内燃机负荷率调节计算速度(b, calculation_mode)
                 For g = 0 To JSBC
                     '两种内燃机的负荷率同时降低，因为有一种内燃机没有开启，所以修改这种内燃机的负荷率对计算并不产生影响，在计算结束后将没有启动的那个内燃机负荷率设置为0即可，从而简化代码
                     ZRNRJFHL = ZRNRJFHLXX + (FHTJJD / 100) * g '制热内燃机负荷率
@@ -13505,7 +13579,7 @@ qqq:
                     NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                     NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                     '记录下溴化锂(1)+(2)的总制热量
-                    XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                    XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                     '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                     '溴化锂供热量等于本工况热负荷需求量减去蓄热装置供热量
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -13549,10 +13623,10 @@ qqq:
                 NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                 NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                 '记录下溴化锂(1)+(2)的总制热量
-                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                 '判断，负荷率大了，则内燃机（2）保持0，调整内燃机（1）负荷率
                 If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
-                    Dim ZRNRJFHLXX1 = 启动两种内燃机时二分法提高供热蓄热内燃机1负荷率调节计算速度(b)
+                    Dim ZRNRJFHLXX1 = 启动两种内燃机时二分法提高供热蓄热内燃机1负荷率调节计算速度(b, calculation_mode)
                     For g1 = 0 To JSBC
                         ZRNRJFHL1 = ZRNRJFHLXX1 + (FHTJJD / 100) * g1 '制热内燃机1负荷率
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value = ZRNRJFHL1
@@ -13561,7 +13635,7 @@ qqq:
                         NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                         NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
-                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                         '溴化锂供热量等于本工况热负荷需求量减去蓄热装置供热量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -13593,7 +13667,7 @@ qqq:
                         End If
                     Next
                 Else '负荷率小了，则内燃机（1）负荷率保持（1），调整内燃机（2）负荷率
-                    Dim ZRNRJFHLXX2 = 启动两种内燃机时二分法提高供热蓄热内燃机2负荷率调节计算速度(b)
+                    Dim ZRNRJFHLXX2 = 启动两种内燃机时二分法提高供热蓄热内燃机2负荷率调节计算速度(b, calculation_mode)
                     For g2 = 0 To JSBC
                         ZRNRJFHL2 = ZRNRJFHLXX2 + (FHTJJD / 100) * g2 '制热内燃机2负荷率
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value = ZRNRJFHL2
@@ -13602,7 +13676,7 @@ qqq:
                         NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
                         NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
-                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+                        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
                         '将此时的溴化锂制热量分成两部分，一部分用于向外供热，一部分用于蓄热
                         '溴化锂供热量等于本工况热负荷需求量减去蓄热装置供热量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 72).Value = RFHZXQL(b) - XNGRGL(b)
@@ -13646,7 +13720,7 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = 0
         End If
     End Sub
-    Function 只有一种内燃机时二分法提高供热蓄热内燃机负荷率调节计算速度(b As Integer)
+    Function 只有一种内燃机时二分法提高供热蓄热内燃机负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13662,7 +13736,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
         '大于，说明负荷率大了
         If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13673,7 +13747,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13689,7 +13763,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13701,7 +13775,7 @@ qqq:
         '返回计算结果
         Return ZRNRJFHLXX
     End Function
-    Function 启动两种内燃机时二分法提高供热蓄热内燃机1负荷率调节计算速度(b As Integer)
+    Function 启动两种内燃机时二分法提高供热蓄热内燃机1负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13720,7 +13794,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
         '大于，说明负荷率大了
         If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13731,7 +13805,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13747,7 +13821,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13759,7 +13833,7 @@ qqq:
         '返回计算结果
         Return ZRNRJFHLXX1
     End Function
-    Function 启动两种内燃机时二分法提高供热蓄热内燃机2负荷率调节计算速度(b As Integer)
+    Function 启动两种内燃机时二分法提高供热蓄热内燃机2负荷率调节计算速度(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13778,7 +13852,7 @@ qqq:
         Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
-        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+        XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
         '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
         '大于，说明负荷率大了
         If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13789,7 +13863,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13805,7 +13879,7 @@ qqq:
             NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '判断此时蓄能装置供热量和溴化锂总供热量是否大于热负荷总需求量和蓄热总量之和
             '大于，说明负荷率大了
             If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
@@ -13844,7 +13918,7 @@ qqq:
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
-            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '如果此时溴化锂制冷量与蓄能装置供冷功率之和小于冷负荷总需求量和蓄能装置蓄冷量之和，则内燃机余热不会被浪费，全部用于供冷和蓄冷
             If (XHLZL + XNGLGL(b)) <= (LFHZXQL(b) + XNXLGL(b)) Then
                 '如果蓄冷量为0，冷负荷需求量大于0，则溴化锂的制冷量只用于供冷
@@ -13912,7 +13986,7 @@ qqq:
             Dim NRJFHL1 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
-            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2)(0)
+            XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
             '如果此时溴化锂制热量与蓄能装置供热功率之和小于热负荷总需求量和蓄能装置蓄热量之和，则内燃机余热不会被浪费，全部用于供热和蓄热
             If (XHLZR + XNGRGL(b)) <= (RFHZXQL(b) + XNXRGL(b)) Then
                 '如果蓄热量为0，热负荷需求量大于0，则溴化锂的制热量只用于供热
@@ -13954,7 +14028,7 @@ qqq:
         End If
     End Sub
 
-    Function 制冷季内燃机及其余热利用系统计算(b As Integer, ZLNRJFHL1 As Double, ZLNRJFHL2 As Double)
+    Function 制冷季内燃机及其余热利用系统计算(b As Integer, ZLNRJFHL1 As Double, ZLNRJFHL2 As Double, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -13969,23 +14043,61 @@ qqq:
         Dim FHL2_min = FHL2_min_NRJ
         '函数返回的结果
         Dim ans(2) As Double
-        '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
+        '根据内燃机1和内燃机2的负荷率， 计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
         '发电效率修正系数
-        Dim FDXLXZ1 As Double = 内燃机发电效率曲线(ZLNRJFHL1)
-        Dim FDXLXZ2 As Double = 内燃机发电效率曲线(ZLNRJFHL2)
+        Dim FDXLXZ1 As Double
+        Dim FDXLXZ2 As Double
         '余热效率修正系数
-        Dim YRXLXZ1 As Double = 内燃机余热效率曲线(ZLNRJFHL1)
-        Dim YRXLXZ2 As Double = 内燃机余热效率曲线(ZLNRJFHL2)
+        Dim YRXLXZ1 As Double
+        Dim YRXLXZ2 As Double
         '计算烟气热水型溴化锂制冷COP修正系数
-        Dim XHLZLCOPXZ1 As Double = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL1)
-        Dim XHLZLCOPXZ2 As Double = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL2)
+        Dim XHLZLCOPXZ1 As Double
+        Dim XHLZLCOPXZ2 As Double
         '内燃机余热锅炉效率修正系数
-        '生活热水余热锅炉
-        Dim SHRSYRGLXLXZ1 As Double = 生活热水余热锅炉效率曲线(ZLNRJFHL1)
-        Dim SHRSYRGLXLXZ2 As Double = 生活热水余热锅炉效率曲线(ZLNRJFHL2)
+        '生活热水余热锅炉 
+        Dim SHRSYRGLXLXZ1 As Double
+        Dim SHRSYRGLXLXZ2 As Double
         '工业蒸汽余热锅炉
-        Dim GYZQYRGLXLXZ1 As Double = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL1)
-        Dim GYZQYRGLXLXZ2 As Double = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL2)
+        Dim GYZQYRGLXLXZ1 As Double
+        Dim GYZQYRGLXLXZ2 As Double
+        '只有全局寻优计算模式才进行计算
+        If calculation_mode = 2 Then
+            '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
+            '发电效率修正系数
+            FDXLXZ1 = 内燃机发电效率曲线(ZLNRJFHL1)
+            FDXLXZ2 = 内燃机发电效率曲线(ZLNRJFHL2)
+            '余热效率修正系数
+            YRXLXZ1 = 内燃机余热效率曲线(ZLNRJFHL1)
+            YRXLXZ2 = 内燃机余热效率曲线(ZLNRJFHL2)
+            '计算烟气热水型溴化锂制冷COP修正系数
+            XHLZLCOPXZ1 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL1)
+            XHLZLCOPXZ2 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL2)
+            '内燃机余热锅炉效率修正系数
+            '生活热水余热锅炉
+            SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZLNRJFHL1)
+            SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZLNRJFHL2)
+            '工业蒸汽余热锅炉
+            GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL1)
+            GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL2)
+        Else
+            '结果全部为1
+            '发电效率修正系数
+            FDXLXZ1 = 1
+            FDXLXZ2 = 1
+            '余热效率修正系数
+            YRXLXZ1 = 1
+            YRXLXZ2 = 1
+            '计算烟气热水型溴化锂制冷COP修正系数
+            XHLZLCOPXZ1 = 1
+            XHLZLCOPXZ2 = 1
+            '内燃机余热锅炉效率修正系数
+            '生活热水余热锅炉
+            SHRSYRGLXLXZ1 = 1
+            SHRSYRGLXLXZ2 = 1
+            '工业蒸汽余热锅炉
+            GYZQYRGLXLXZ1 = 1
+            GYZQYRGLXLXZ2 = 1
+        End If
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
         '根据计算出的内燃机余热效率修正系数、溴化锂COP修正系数、生活热水余热锅炉效率修正系数、工业蒸汽余热锅炉修正系数，计算实际的溴化锂制冷出力、生活热水出力和工业蒸汽出力修正系数
@@ -14089,7 +14201,7 @@ qqq:
         Return ans
     End Function
 
-    Function 制热季内燃机及其余热利用系统计算(b As Integer, ZRNRJFHL1 As Double, ZRNRJFHL2 As Double)
+    Function 制热季内燃机及其余热利用系统计算(b As Integer, ZRNRJFHL1 As Double, ZRNRJFHL2 As Double, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -14104,23 +14216,63 @@ qqq:
         Dim FHL2_min = FHL2_min_NRJ
         '函数返回的结果
         Dim ans(2) As Double
-        '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
+        '根据内燃机1和内燃机2的负荷率， 计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
         '发电效率修正系数
-        Dim FDXLXZ1 As Double = 内燃机发电效率曲线(ZRNRJFHL1)
-        Dim FDXLXZ2 As Double = 内燃机发电效率曲线(ZRNRJFHL2)
+        Dim FDXLXZ1 As Double
+        Dim FDXLXZ2 As Double
         '余热效率修正系数
-        Dim YRXLXZ1 As Double = 内燃机余热效率曲线(ZRNRJFHL1)
-        Dim YRXLXZ2 As Double = 内燃机余热效率曲线(ZRNRJFHL2)
+        Dim YRXLXZ1 As Double
+        Dim YRXLXZ2 As Double
         '计算烟气热水型溴化锂制冷COP修正系数
-        Dim XHLZRCOPXZ1 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL1)
-        Dim XHLZRCOPXZ2 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL2)
+        Dim XHLZRCOPXZ1 As Double
+        Dim XHLZRCOPXZ2 As Double
         '内燃机余热锅炉效率修正系数
-        '生活热水余热锅炉
-        Dim SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZRNRJFHL1)
-        Dim SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZRNRJFHL2)
+        '生活热水余热锅炉 
+        Dim SHRSYRGLXLXZ1 As Double
+        Dim SHRSYRGLXLXZ2 As Double
         '工业蒸汽余热锅炉
-        Dim GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL1)
-        Dim GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL2)
+        Dim GYZQYRGLXLXZ1 As Double
+        Dim GYZQYRGLXLXZ2 As Double
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————  
+        '只有全局寻优计算模式才进行计算
+        If calculation_mode = 2 Then
+            '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
+            '发电效率修正系数
+            FDXLXZ1 = 内燃机发电效率曲线(ZRNRJFHL1)
+            FDXLXZ2 = 内燃机发电效率曲线(ZRNRJFHL2)
+            '余热效率修正系数
+            YRXLXZ1 = 内燃机余热效率曲线(ZRNRJFHL1)
+            YRXLXZ2 = 内燃机余热效率曲线(ZRNRJFHL2)
+            '计算烟气热水型溴化锂制冷COP修正系数
+            XHLZRCOPXZ1 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL1)
+            XHLZRCOPXZ2 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL2)
+            '内燃机余热锅炉效率修正系数
+            '生活热水余热锅炉
+            SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZRNRJFHL1)
+            SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZRNRJFHL2)
+            '工业蒸汽余热锅炉
+            GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL1)
+            GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL2)
+        Else
+            '全部等于1
+            '发电效率修正系数
+            FDXLXZ1 = 1
+            FDXLXZ2 = 1
+            '余热效率修正系数
+            YRXLXZ1 = 1
+            YRXLXZ2 = 1
+            '计算烟气热水型溴化锂制冷COP修正系数
+            XHLZRCOPXZ1 = 1
+            XHLZRCOPXZ2 = 1
+            '内燃机余热锅炉效率修正系数
+            '生活热水余热锅炉
+            SHRSYRGLXLXZ1 = 1
+            SHRSYRGLXLXZ2 = 1
+            '工业蒸汽余热锅炉
+            GYZQYRGLXLXZ1 = 1
+            GYZQYRGLXLXZ2 = 1
+        End If
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
         '根据计算出的内燃机余热效率修正系数、溴化锂COP修正系数、生活热水余热锅炉效率修正系数、工业蒸汽余热锅炉修正系数，计算实际的溴化锂制冷出力、生活热水出力和工业蒸汽出力修正系数
@@ -14224,1030 +14376,1118 @@ qqq:
         Return ans
     End Function
 
-    Sub 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b As Integer)
+    Sub 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
         ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
-        '各个设备可以允许运行的最低负荷率
-        '内燃机
-        Dim NRJFHL1_min As Double = FHL1_min_NRJ
-        Dim NRJFHL2_min As Double = FHL2_min_NRJ
-        '离心式冷水机
-        Dim LXSLSJFHL1_min As Double = FHL1_min_LXSLSJ
-        Dim LXSLSJFHL2_min As Double = FHL2_min_LXSLSJ
-        '水冷螺杆机
-        Dim SLLGJFHL1_min As Double = FHL1_min_SLLGJ
-        Dim SLLGJFHL2_min As Double = FHL2_min_SLLGJ
-        '风冷螺杆机
-        Dim FLLGJFHL1_min As Double = FHL1_min_FLLGJ
-        Dim FLLGJFHL2_min As Double = FHL2_min_FLLGJ
-        '水（地）源热泵
-        Dim SDYRBFHL1_min As Double = FHL1_min_SDYRB
-        Dim SDYRBFHL2_min As Double = FHL2_min_SDYRB
-        '离心式热泵
-        Dim LXSRBFHL1_min As Double = FHL1_min_LXSRB
-        Dim LXSRBFHL2_min As Double = FHL2_min_LXSRB
-        '空气源热泵
-        Dim KQYRBFHL1_min As Double = FHL1_min_KQYRB
-        Dim KQYRBFHL2_min As Double = FHL2_min_KQYRB
-        '直燃型溴化锂
-        Dim ZRXXHLFHL1_min As Double = FHL1_min_ZRXXHL
-        Dim ZRXXHLFHL2_min As Double = FHL2_min_ZRXXHL
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '根据已经计算出来，写入Excel的各个空调设备的负荷率，修正设备本体的耗电量和天然气耗量
-        '与水换热的设备供冷时本体耗电修正系数
-        Dim BTHDXS_GL_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(5, 7).Value
-        '与水换热的设备蓄冷时本体耗电修正系数
-        Dim BTHDXS_XL_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(9, 7).Value
-        '与空气换热的设备供冷时本体耗电修正系数
-        Dim BTHDXS_GL_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(6, 7).Value
-        '与空气换热的设备蓄冷时本体耗电修正系数
-        Dim BTHDXS_XL_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(10, 7).Value
-        '除内燃机以外的其它设备内燃机耗量修正系数
-        Dim TRQHLXZXS_QT As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(16, 9).Value + 1
-        '内燃机天然气耗量修正系数
-        Dim TRQHLXZXS_NRJ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(15, 9).Value + 1
-        '直燃型溴化锂制冷耗气量修正系数
-        Dim ZRXXHLZLHQXZ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(13, 7).Value
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '各空调设备本体耗电功率在考虑修正系数前的耗电功率和考虑修正系数后的耗电系数
-        '离心式冷水机
-        Dim LXSLSJBTHD1_ALL_a As Double
-        Dim LXSLSJBTHD1_ALL_b As Double
-        Dim LXSLSJBTHD2_ALL_a As Double
-        Dim LXSLSJBTHD2_ALL_b As Double
-        '水冷螺杆机
-        Dim SLLGJBTHD1_ALL_a As Double
-        Dim SLLGJBTHD1_ALL_b As Double
-        Dim SLLGJBTHD2_ALL_a As Double
-        Dim SLLGJBTHD2_ALL_b As Double
-        '风冷螺杆机
-        Dim FLLGJBTHD1_ALL_a As Double
-        Dim FLLGJBTHD1_ALL_b As Double
-        Dim FLLGJBTHD2_ALL_a As Double
-        Dim FLLGJBTHD2_ALL_b As Double
-        '水（地）源热泵
-        Dim SDYRBBTHD1_ALL_a As Double
-        Dim SDYRBBTHD1_ALL_b As Double
-        Dim SDYRBBTHD2_ALL_a As Double
-        Dim SDYRBBTHD2_ALL_b As Double
-        '离心式热泵
-        Dim LXSRBBTHD1_ALL_a As Double
-        Dim LXSRBBTHD1_ALL_b As Double
-        Dim LXSRBBTHD2_ALL_a As Double
-        Dim LXSRBBTHD2_ALL_b As Double
-        '空气源热泵
-        Dim KQYRBBTHD1_ALL_a As Double
-        Dim KQYRBBTHD1_ALL_b As Double
-        Dim KQYRBBTHD2_ALL_a As Double
-        Dim KQYRBBTHD2_ALL_b As Double
-        '各空调设备本体天然气耗量在考虑修正系数前的天然气耗量和考虑修正系数后的天然气耗量
-        '直燃型溴化锂
-        Dim ZRXXHLBTTRQ1_ALL_a As Double
-        Dim ZRXXHLBTTRQ1_ALL_b As Double
-        Dim ZRXXHLBTTRQ2_ALL_a As Double
-        Dim ZRXXHLBTTRQ2_ALL_b As Double
-        '内燃发电机
-        Dim NRJTRQ1_ALL_a As Double
-        Dim NRJTRQ1_ALL_b As Double
-        Dim NRJTRQ2_ALL_a As Double
-        Dim NRJTRQ2_ALL_b As Double
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '离心式冷水机（1）
-        '设备的装机总数量，台数
-        Dim LXSLSJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 10).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim LXSLSJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28).Value
-        Dim LXSLSJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40).Value / LXSLSJZJSL1
-        Dim LXSLSJFHL1 As Double = LXSLSJFHL1_GL + LXSLSJFHL1_XL
-        If LXSLSJZJSL1 > 0 And LXSLSJFHL1 >= LXSLSJFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSLSJBTHD1_ED As Double = LXSLSJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 10).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSLSJBTHD1_GL As Double = BTHDXS_GL_water * LXSLSJBTHD1_ED * LXSLSJFHL1_GL
-            Dim LXSLSJBTHD1_XL As Double = BTHDXS_XL_water * LXSLSJBTHD1_ED * LXSLSJFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            LXSLSJBTHD1_ALL_a = LXSLSJBTHD1_GL + LXSLSJBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim LXSLSJZLCOPXZ1 As Double = 离心式冷水机制冷COP曲线(LXSLSJFHL1)
-            '经过修正后的设备本体耗电功率
-            LXSLSJBTHD1_ALL_b = LXSLSJBTHD1_ALL_a / LXSLSJZLCOPXZ1
+        '只有全局寻优计算模式才进行修正
+        If calculation_mode = 2 Then
+            '各个设备可以允许运行的最低负荷率
+            '内燃机
+            Dim NRJFHL1_min As Double = FHL1_min_NRJ
+            Dim NRJFHL2_min As Double = FHL2_min_NRJ
+            '离心式冷水机
+            Dim LXSLSJFHL1_min As Double = FHL1_min_LXSLSJ
+            Dim LXSLSJFHL2_min As Double = FHL2_min_LXSLSJ
+            '水冷螺杆机
+            Dim SLLGJFHL1_min As Double = FHL1_min_SLLGJ
+            Dim SLLGJFHL2_min As Double = FHL2_min_SLLGJ
+            '风冷螺杆机
+            Dim FLLGJFHL1_min As Double = FHL1_min_FLLGJ
+            Dim FLLGJFHL2_min As Double = FHL2_min_FLLGJ
+            '水（地）源热泵
+            Dim SDYRBFHL1_min As Double = FHL1_min_SDYRB
+            Dim SDYRBFHL2_min As Double = FHL2_min_SDYRB
+            '离心式热泵
+            Dim LXSRBFHL1_min As Double = FHL1_min_LXSRB
+            Dim LXSRBFHL2_min As Double = FHL2_min_LXSRB
+            '空气源热泵
+            Dim KQYRBFHL1_min As Double = FHL1_min_KQYRB
+            Dim KQYRBFHL2_min As Double = FHL2_min_KQYRB
+            '直燃型溴化锂
+            Dim ZRXXHLFHL1_min As Double = FHL1_min_ZRXXHL
+            Dim ZRXXHLFHL2_min As Double = FHL2_min_ZRXXHL
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '根据已经计算出来，写入Excel的各个空调设备的负荷率，修正设备本体的耗电量和天然气耗量
+            '与水换热的设备供冷时本体耗电修正系数
+            Dim BTHDXS_GL_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(5, 7).Value
+            '与水换热的设备蓄冷时本体耗电修正系数
+            Dim BTHDXS_XL_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(9, 7).Value
+            '与空气换热的设备供冷时本体耗电修正系数
+            Dim BTHDXS_GL_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(6, 7).Value
+            '与空气换热的设备蓄冷时本体耗电修正系数
+            Dim BTHDXS_XL_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(10, 7).Value
+            '除内燃机以外的其它设备内燃机耗量修正系数
+            Dim TRQHLXZXS_QT As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(16, 9).Value + 1
+            '内燃机天然气耗量修正系数
+            Dim TRQHLXZXS_NRJ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(15, 9).Value + 1
+            '直燃型溴化锂制冷耗气量修正系数
+            Dim ZRXXHLZLHQXZ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(13, 7).Value
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '各空调设备本体耗电功率在考虑修正系数前的耗电功率和考虑修正系数后的耗电系数
+            '离心式冷水机
+            Dim LXSLSJBTHD1_ALL_a As Double
+            Dim LXSLSJBTHD1_ALL_b As Double
+            Dim LXSLSJBTHD2_ALL_a As Double
+            Dim LXSLSJBTHD2_ALL_b As Double
+            '水冷螺杆机
+            Dim SLLGJBTHD1_ALL_a As Double
+            Dim SLLGJBTHD1_ALL_b As Double
+            Dim SLLGJBTHD2_ALL_a As Double
+            Dim SLLGJBTHD2_ALL_b As Double
+            '风冷螺杆机
+            Dim FLLGJBTHD1_ALL_a As Double
+            Dim FLLGJBTHD1_ALL_b As Double
+            Dim FLLGJBTHD2_ALL_a As Double
+            Dim FLLGJBTHD2_ALL_b As Double
+            '水（地）源热泵
+            Dim SDYRBBTHD1_ALL_a As Double
+            Dim SDYRBBTHD1_ALL_b As Double
+            Dim SDYRBBTHD2_ALL_a As Double
+            Dim SDYRBBTHD2_ALL_b As Double
+            '离心式热泵
+            Dim LXSRBBTHD1_ALL_a As Double
+            Dim LXSRBBTHD1_ALL_b As Double
+            Dim LXSRBBTHD2_ALL_a As Double
+            Dim LXSRBBTHD2_ALL_b As Double
+            '空气源热泵
+            Dim KQYRBBTHD1_ALL_a As Double
+            Dim KQYRBBTHD1_ALL_b As Double
+            Dim KQYRBBTHD2_ALL_a As Double
+            Dim KQYRBBTHD2_ALL_b As Double
+            '各空调设备本体天然气耗量在考虑修正系数前的天然气耗量和考虑修正系数后的天然气耗量
+            '直燃型溴化锂
+            Dim ZRXXHLBTTRQ1_ALL_a As Double
+            Dim ZRXXHLBTTRQ1_ALL_b As Double
+            Dim ZRXXHLBTTRQ2_ALL_a As Double
+            Dim ZRXXHLBTTRQ2_ALL_b As Double
+            '内燃发电机
+            Dim NRJTRQ1_ALL_a As Double
+            Dim NRJTRQ1_ALL_b As Double
+            Dim NRJTRQ2_ALL_a As Double
+            Dim NRJTRQ2_ALL_b As Double
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '离心式冷水机（1）
+            '设备的装机总数量，台数
+            Dim LXSLSJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 10).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim LXSLSJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28).Value
+            Dim LXSLSJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40).Value / LXSLSJZJSL1
+            Dim LXSLSJFHL1 As Double = LXSLSJFHL1_GL + LXSLSJFHL1_XL
+            If LXSLSJZJSL1 > 0 And LXSLSJFHL1 >= LXSLSJFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSLSJBTHD1_ED As Double = LXSLSJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 10).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSLSJBTHD1_GL As Double = BTHDXS_GL_water * LXSLSJBTHD1_ED * LXSLSJFHL1_GL
+                Dim LXSLSJBTHD1_XL As Double = BTHDXS_XL_water * LXSLSJBTHD1_ED * LXSLSJFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                LXSLSJBTHD1_ALL_a = LXSLSJBTHD1_GL + LXSLSJBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim LXSLSJZLCOPXZ1 As Double = 离心式冷水机制冷COP曲线(LXSLSJFHL1)
+                '经过修正后的设备本体耗电功率
+                LXSLSJBTHD1_ALL_b = LXSLSJBTHD1_ALL_a / LXSLSJZLCOPXZ1
+            Else
+                LXSLSJBTHD1_ALL_a = 0
+                LXSLSJBTHD1_ALL_b = 0
+            End If
+            '离心式冷水机（2）
+            '设备的装机总数量，台数
+            Dim LXSLSJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 10).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim LXSLSJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 29).Value
+            Dim LXSLSJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 41).Value / LXSLSJZJSL2
+            Dim LXSLSJFHL2 As Double = LXSLSJFHL2_GL + LXSLSJFHL2_XL
+            If LXSLSJZJSL2 > 0 And LXSLSJFHL2 >= LXSLSJFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSLSJBTHD2_ED As Double = LXSLSJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 10).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSLSJBTHD2_GL As Double = BTHDXS_GL_water * LXSLSJBTHD2_ED * LXSLSJFHL2_GL
+                Dim LXSLSJBTHD2_XL As Double = BTHDXS_XL_water * LXSLSJBTHD2_ED * LXSLSJFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                LXSLSJBTHD2_ALL_a = LXSLSJBTHD2_GL + LXSLSJBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim LXSLSJZLCOPXZ2 As Double = 离心式冷水机制冷COP曲线(LXSLSJFHL2)
+                '经过修正后的设备本体耗电功率
+                LXSLSJBTHD2_ALL_b = LXSLSJBTHD2_ALL_a / LXSLSJZLCOPXZ2
+            Else
+                LXSLSJBTHD2_ALL_a = 0
+                LXSLSJBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '水冷螺杆机（1）
+            '设备的装机总数量，台数
+            Dim SLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 12).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim SLLGJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 36).Value
+            Dim SLLGJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 48).Value / SLLGJZJSL1
+            Dim SLLGJFHL1 As Double = SLLGJFHL1_GL + SLLGJFHL1_XL
+            If SLLGJZJSL1 > 0 And SLLGJFHL1 >= SLLGJFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SLLGJBTHD1_ED As Double = SLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 10).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SLLGJBTHD1_GL As Double = BTHDXS_GL_water * SLLGJBTHD1_ED * SLLGJFHL1_GL
+                Dim SLLGJBTHD1_XL As Double = BTHDXS_XL_water * SLLGJBTHD1_ED * SLLGJFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                SLLGJBTHD1_ALL_a = SLLGJBTHD1_GL + SLLGJBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim SLLGJZLCOPXZ1 As Double = 水冷螺杆机制冷COP曲线(SLLGJFHL1)
+                '经过修正后的设备本体耗电功率
+                SLLGJBTHD1_ALL_b = SLLGJBTHD1_ALL_a / SLLGJZLCOPXZ1
+            Else
+                SLLGJBTHD1_ALL_a = 0
+                SLLGJBTHD1_ALL_b = 0
+            End If
+            '水冷螺杆机（2）
+            '设备的装机总数量，台数
+            Dim SLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 12).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim SLLGJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 37).Value
+            Dim SLLGJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 49).Value / SLLGJZJSL2
+            Dim SLLGJFHL2 As Double = SLLGJFHL2_GL + SLLGJFHL2_XL
+            If SLLGJZJSL2 > 0 And SLLGJFHL2 >= SLLGJFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SLLGJBTHD2_ED As Double = SLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 10).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SLLGJBTHD2_GL As Double = BTHDXS_GL_water * SLLGJBTHD2_ED * SLLGJFHL2_GL
+                Dim SLLGJBTHD2_XL As Double = BTHDXS_XL_water * SLLGJBTHD2_ED * SLLGJFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                SLLGJBTHD2_ALL_a = SLLGJBTHD2_GL + SLLGJBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim SLLGJZLCOPXZ2 As Double = 水冷螺杆机制冷COP曲线(SLLGJFHL2)
+                '经过修正后的设备本体耗电功率
+                SLLGJBTHD2_ALL_b = SLLGJBTHD2_ALL_a / SLLGJZLCOPXZ2
+            Else
+                SLLGJBTHD2_ALL_a = 0
+                SLLGJBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '风冷螺杆机（1）
+            '设备的装机总数量，台数
+            Dim FLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 14).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim FLLGJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 30).Value
+            Dim FLLGJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 42).Value / FLLGJZJSL1
+            Dim FLLGJFHL1 As Double = FLLGJFHL1_GL + FLLGJFHL1_XL
+            If FLLGJZJSL1 > 0 And FLLGJFHL1 >= FLLGJFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim FLLGJBTHD1_ED As Double = FLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 14).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim FLLGJBTHD1_GL As Double = BTHDXS_GL_air * FLLGJBTHD1_ED * FLLGJFHL1_GL
+                Dim FLLGJBTHD1_XL As Double = BTHDXS_XL_air * FLLGJBTHD1_ED * FLLGJFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                FLLGJBTHD1_ALL_a = FLLGJBTHD1_GL + FLLGJBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim FLLGJZLCOPXZ1 As Double = 风冷螺杆式热泵制冷COP曲线(FLLGJFHL1)
+                '经过修正后的设备本体耗电功率
+                FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZLCOPXZ1
+            Else
+                FLLGJBTHD1_ALL_a = 0
+                FLLGJBTHD1_ALL_b = 0
+            End If
+            '风冷螺杆机（2）
+            '设备的装机总数量，台数
+            Dim FLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 14).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim FLLGJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 31).Value
+            Dim FLLGJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 43).Value / FLLGJZJSL2
+            Dim FLLGJFHL2 As Double = FLLGJFHL2_GL + FLLGJFHL2_XL
+            If FLLGJZJSL2 > 0 And FLLGJFHL2 >= FLLGJFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim FLLGJBTHD2_ED As Double = FLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 14).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim FLLGJBTHD2_GL As Double = BTHDXS_GL_air * FLLGJBTHD2_ED * FLLGJFHL2_GL
+                Dim FLLGJBTHD2_XL As Double = BTHDXS_XL_air * FLLGJBTHD2_ED * FLLGJFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                FLLGJBTHD2_ALL_a = FLLGJBTHD2_GL + FLLGJBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim FLLGJZLCOPXZ2 As Double = 风冷螺杆式热泵制冷COP曲线(FLLGJFHL2)
+                '经过修正后的设备本体耗电功率
+                FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZLCOPXZ2
+            Else
+                FLLGJBTHD2_ALL_a = 0
+                FLLGJBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '水（地）源热泵（1）
+            '设备的装机总数量，台数
+            Dim SDYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 16).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim SDYRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 34).Value
+            Dim SDYRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 46).Value / SDYRBZJSL1
+            Dim SDYRBFHL1 As Double = SDYRBFHL1_GL + SDYRBFHL1_XL
+            If SDYRBZJSL1 > 0 And SDYRBFHL1 >= SDYRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SDYRBBTHD1_ED As Double = SDYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 16).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SDYRBBTHD1_GL As Double = BTHDXS_GL_water * SDYRBBTHD1_ED * SDYRBFHL1_GL
+                Dim SDYRBBTHD1_XL As Double = BTHDXS_XL_water * SDYRBBTHD1_ED * SDYRBFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                SDYRBBTHD1_ALL_a = SDYRBBTHD1_GL + SDYRBBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim SDYRBZLCOPXZ1 As Double = 水_地源热泵制冷COP曲线(SDYRBFHL1)
+                '经过修正后的设备本体耗电功率
+                SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZLCOPXZ1
+            Else
+                SDYRBBTHD1_ALL_a = 0
+                SDYRBBTHD1_ALL_b = 0
+            End If
+            '水（地）源热泵（2）
+            '设备的装机总数量，台数
+            Dim SDYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 16).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim SDYRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 35).Value
+            Dim SDYRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 47).Value / SDYRBZJSL2
+            Dim SDYRBFHL2 As Double = SDYRBFHL2_GL + SDYRBFHL2_XL
+            If SDYRBZJSL2 > 0 And SDYRBFHL2 >= SDYRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SDYRBBTHD2_ED As Double = SDYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 16).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SDYRBBTHD2_GL As Double = BTHDXS_GL_water * SDYRBBTHD2_ED * SDYRBFHL2_GL
+                Dim SDYRBBTHD2_XL As Double = BTHDXS_XL_water * SDYRBBTHD2_ED * SDYRBFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                SDYRBBTHD2_ALL_a = SDYRBBTHD2_GL + SDYRBBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim SDYRBZLCOPXZ2 As Double = 水_地源热泵制冷COP曲线(SDYRBFHL2)
+                '经过修正后的设备本体耗电功率
+                SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZLCOPXZ2
+            Else
+                SDYRBBTHD2_ALL_a = 0
+                SDYRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '离心式热泵（1）
+            '设备的装机总数量，台数
+            Dim LXSRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 18).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim LXSRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 38).Value
+            Dim LXSRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 50).Value / LXSRBZJSL1
+            Dim LXSRBFHL1 As Double = LXSRBFHL1_GL + LXSRBFHL1_XL
+            If LXSRBZJSL1 > 0 And LXSRBFHL1 >= LXSRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSRBBTHD1_ED As Double = LXSRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 18).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSRBBTHD1_GL As Double = BTHDXS_GL_water * LXSRBBTHD1_ED * LXSRBFHL1_GL
+                Dim LXSRBBTHD1_XL As Double = BTHDXS_XL_water * LXSRBBTHD1_ED * LXSRBFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                LXSRBBTHD1_ALL_a = LXSRBBTHD1_GL + LXSRBBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim LXSRBZLCOPXZ1 As Double = 离心式热泵制冷COP曲线(LXSRBFHL1)
+                '经过修正后的设备本体耗电功率
+                LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZLCOPXZ1
+            Else
+                LXSRBBTHD1_ALL_a = 0
+                LXSRBBTHD1_ALL_b = 0
+            End If
+            '离心式热泵（2）
+            '设备的装机总数量，台数
+            Dim LXSRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 18).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim LXSRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39).Value
+            Dim LXSRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51).Value / LXSRBZJSL2
+            Dim LXSRBFHL2 As Double = LXSRBFHL2_GL + LXSRBFHL2_XL
+            If LXSRBZJSL2 > 0 And LXSRBFHL2 >= LXSRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSRBBTHD2_ED As Double = LXSRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 18).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSRBBTHD2_GL As Double = BTHDXS_GL_water * LXSRBBTHD2_ED * LXSRBFHL2_GL
+                Dim LXSRBBTHD2_XL As Double = BTHDXS_XL_water * LXSRBBTHD2_ED * LXSRBFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                LXSRBBTHD2_ALL_a = LXSRBBTHD2_GL + LXSRBBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim LXSRBZLCOPXZ2 As Double = 离心式热泵制冷COP曲线(LXSRBFHL2)
+                '经过修正后的设备本体耗电功率
+                LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZLCOPXZ2
+            Else
+                LXSRBBTHD2_ALL_a = 0
+                LXSRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '空气源热泵（1）
+            '设备的装机总数量，台数
+            Dim KQYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 20).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim KQYRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 32).Value
+            Dim KQYRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 44).Value / KQYRBZJSL1
+            Dim KQYRBFHL1 As Double = KQYRBFHL1_GL + KQYRBFHL1_XL
+            If KQYRBZJSL1 > 0 And KQYRBFHL1 >= KQYRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim KQYRBBTHD1_ED As Double = KQYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 20).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim KQYRBBTHD1_GL As Double = BTHDXS_GL_air * KQYRBBTHD1_ED * KQYRBFHL1_GL
+                Dim KQYRBBTHD1_XL As Double = BTHDXS_XL_air * KQYRBBTHD1_ED * KQYRBFHL1_XL
+                '在没有考虑修正系数前的，总耗电功率
+                KQYRBBTHD1_ALL_a = KQYRBBTHD1_GL + KQYRBBTHD1_XL
+                '计算此时的制冷COP修正系数
+                Dim KQYRBZLCOPXZ1 As Double = 空气源热泵制冷COP曲线(KQYRBFHL1)
+                '经过修正后的设备本体耗电功率
+                KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZLCOPXZ1
+            Else
+                KQYRBBTHD1_ALL_a = 0
+                KQYRBBTHD1_ALL_b = 0
+            End If
+            '空气源热泵（2）
+            '设备的装机总数量，台数
+            Dim KQYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 20).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim KQYRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 33).Value
+            Dim KQYRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 45).Value / KQYRBZJSL2
+            Dim KQYRBFHL2 As Double = KQYRBFHL2_GL + KQYRBFHL2_XL
+            If KQYRBZJSL2 > 0 And KQYRBFHL2 >= KQYRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim KQYRBBTHD2_ED As Double = KQYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 20).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim KQYRBBTHD2_GL As Double = BTHDXS_GL_air * KQYRBBTHD2_ED * KQYRBFHL2_GL
+                Dim KQYRBBTHD2_XL As Double = BTHDXS_XL_air * KQYRBBTHD2_ED * KQYRBFHL2_XL
+                '在没有考虑修正系数前的，总耗电功率
+                KQYRBBTHD2_ALL_a = KQYRBBTHD2_GL + KQYRBBTHD2_XL
+                '计算此时的制冷COP修正系数
+                Dim KQYRBZLCOPXZ2 As Double = 空气源热泵制冷COP曲线(KQYRBFHL2)
+                '经过修正后的设备本体耗电功率
+                KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZLCOPXZ2
+            Else
+                KQYRBBTHD2_ALL_a = 0
+                KQYRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '直燃型溴化锂（1）
+            '设备的装机总数量，台数
+            Dim ZRXXHLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 22).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim ZRXXHLFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90).Value
+            Dim ZRXXHLFHL1 As Double = ZRXXHLFHL1_GL
+            If ZRXXHLZJSL1 > 0 And ZRXXHLFHL1 >= ZRXXHLFHL1_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim ZRXXHLBTTRQ1_ED As Double = ZRXXHLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 22).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim ZRXXHLBTTRQ1_GL As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ1_ED * ZRXXHLFHL1 * ZRXXHLZLHQXZ
+                '在没有考虑修正系数前的，总天然气耗量
+                ZRXXHLBTTRQ1_ALL_a = ZRXXHLBTTRQ1_GL
+                '计算此时的制冷COP修正系数
+                Dim ZRXXHLZLCOPXZ1 As Double = 直燃型溴化锂制冷COP曲线(ZRXXHLFHL1)
+                '经过修正后的设备本体天然气耗量
+                ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZLCOPXZ1
+            Else
+                ZRXXHLBTTRQ1_ALL_a = 0
+                ZRXXHLBTTRQ1_ALL_b = 0
+            End If
+            '直燃型溴化锂（2）
+            '设备的装机总数量，台数
+            Dim ZRXXHLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 22).Value
+            '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
+            Dim ZRXXHLFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91).Value
+            Dim ZRXXHLFHL2 As Double = ZRXXHLFHL2_GL
+            If ZRXXHLZJSL2 > 0 And ZRXXHLFHL2 >= ZRXXHLFHL2_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim ZRXXHLBTTRQ2_ED As Double = ZRXXHLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 22).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim ZRXXHLBTTRQ2_GL As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ2_ED * ZRXXHLFHL2 * ZRXXHLZLHQXZ
+                '在没有考虑修正系数前的，总天然气耗量
+                ZRXXHLBTTRQ2_ALL_a = ZRXXHLBTTRQ2_GL
+                '计算此时的制冷COP修正系数
+                Dim ZRXXHLZLCOPXZ2 As Double = 直燃型溴化锂制冷COP曲线(ZRXXHLFHL2)
+                '经过修正后的设备本体天然气耗量
+                ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZLCOPXZ2
+            Else
+                ZRXXHLBTTRQ2_ALL_a = 0
+                ZRXXHLBTTRQ2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '根据内燃机负荷率，计算内燃机的发电效率
+            '内燃机（1）
+            '内燃发电机（1）
+            '设备的装机总数量，台数
+            Dim NRJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 2).Value
+            '此时的设备负荷率
+            Dim NRJFHL1 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
+            If NRJZJSL1 > 0 And NRJFHL1 >= NRJFHL1_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim NRJTRQ1_ED As Double = NRJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(12, 4).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim NRJTRQ1 As Double = TRQHLXZXS_NRJ * NRJTRQ1_ED * NRJFHL1
+                '在没有考虑修正系数前的，总天然气耗量
+                NRJTRQ1_ALL_a = NRJTRQ1
+                '计算此时的内燃机发电效率修正系数
+                Dim NRJZLXLXZ1 As Double = 内燃机发电效率曲线(NRJFHL1)
+                '经过修正后的设备本体天然气耗量
+                NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
+            Else
+                NRJTRQ1_ALL_a = 0
+                NRJTRQ1_ALL_b = 0
+            End If
+            '内燃发电机（2）
+            '设备的装机总数量，台数
+            Dim NRJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 2).Value
+            '此时的设备负荷率
+            Dim NRJFHL2 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
+            If NRJZJSL2 > 0 And NRJFHL2 >= NRJFHL2_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim NRJTRQ2_ED As Double = NRJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(31, 4).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim NRJTRQ2 As Double = TRQHLXZXS_NRJ * NRJTRQ2_ED * NRJFHL2
+                '在没有考虑修正系数前的，总天然气耗量
+                NRJTRQ2_ALL_a = NRJTRQ2
+                '计算此时的内燃机发电效率修正系数
+                Dim NRJZLXLXZ2 As Double = 内燃机发电效率曲线(NRJFHL2)
+                '经过修正后的设备本体天然气耗量
+                NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
+            Else
+                NRJTRQ2_ALL_a = 0
+                NRJTRQ2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '计算空调设备本体耗电综合修正系数
+            '空调设备在考虑修正系数前的本体总耗电功率
+            Dim ZHD_ALL_a As Double = LXSLSJBTHD1_ALL_a + LXSLSJBTHD2_ALL_a + SLLGJBTHD1_ALL_a + SLLGJBTHD2_ALL_a + FLLGJBTHD1_ALL_a + FLLGJBTHD2_ALL_a + SDYRBBTHD1_ALL_a + SDYRBBTHD2_ALL_a + KQYRBBTHD1_ALL_a + KQYRBBTHD2_ALL_a + LXSRBBTHD1_ALL_a + LXSRBBTHD2_ALL_a
+            '空调设备在考虑修正系数之后的本体总耗电功率
+            Dim ZHD_ALL_b As Double = LXSLSJBTHD1_ALL_b + LXSLSJBTHD2_ALL_b + SLLGJBTHD1_ALL_b + SLLGJBTHD2_ALL_b + FLLGJBTHD1_ALL_b + FLLGJBTHD2_ALL_b + SDYRBBTHD1_ALL_b + SDYRBBTHD2_ALL_b + KQYRBBTHD1_ALL_b + KQYRBBTHD2_ALL_b + LXSRBBTHD1_ALL_b + LXSRBBTHD2_ALL_b
+            '设备本体耗电功率综合修正系数
+            Dim BTHD_XZ As Double = 1
+            If ZHD_ALL_a > 0 And ZHD_ALL_b > 0 Then
+                BTHD_XZ = ZHD_ALL_b / ZHD_ALL_a
+            Else
+                '默认值等于1
+                BTHD_XZ = 1
+            End If
+            '天然气耗电综合修正系数
+            Dim ZHTRQ_ALL_a As Double = ZRXXHLBTTRQ1_ALL_a + ZRXXHLBTTRQ2_ALL_a + NRJTRQ1_ALL_a + NRJTRQ2_ALL_a
+            Dim ZHTRQ_ALL_b As Double = ZRXXHLBTTRQ1_ALL_b + ZRXXHLBTTRQ2_ALL_b + NRJTRQ1_ALL_b + NRJTRQ2_ALL_b
+            Dim TRQ_XZ As Double = 1
+            If ZHTRQ_ALL_a > 0 And ZHTRQ_ALL_b > 0 Then
+                TRQ_XZ = ZHTRQ_ALL_b / ZHTRQ_ALL_a
+            Else
+                '默认值等于1
+                TRQ_XZ = 1
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '将综合修正系数写入Excel
+            '制冷季系数
+            '制冷设备本体耗电修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 106).Value = BTHD_XZ
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 106).Value = BTHD_XZ
+            '制冷天然气消耗修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 107).Value = TRQ_XZ
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 107).Value = TRQ_XZ
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '计算出的结果保留3位小数，增加美观度
+            For i = 106 To 107
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
+            Next
         Else
-            LXSLSJBTHD1_ALL_a = 0
-            LXSLSJBTHD1_ALL_b = 0
+            '常规计算模式，修正系数全部设置为1
+            '制冷季系数
+            '制冷设备本体耗电修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 106).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 106).Value = 1
+            '制冷天然气消耗修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 107).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 107).Value = 1
         End If
-        '离心式冷水机（2）
-        '设备的装机总数量，台数
-        Dim LXSLSJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 10).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim LXSLSJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 29).Value
-        Dim LXSLSJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 41).Value / LXSLSJZJSL2
-        Dim LXSLSJFHL2 As Double = LXSLSJFHL2_GL + LXSLSJFHL2_XL
-        If LXSLSJZJSL2 > 0 And LXSLSJFHL2 >= LXSLSJFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSLSJBTHD2_ED As Double = LXSLSJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 10).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSLSJBTHD2_GL As Double = BTHDXS_GL_water * LXSLSJBTHD2_ED * LXSLSJFHL2_GL
-            Dim LXSLSJBTHD2_XL As Double = BTHDXS_XL_water * LXSLSJBTHD2_ED * LXSLSJFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            LXSLSJBTHD2_ALL_a = LXSLSJBTHD2_GL + LXSLSJBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim LXSLSJZLCOPXZ2 As Double = 离心式冷水机制冷COP曲线(LXSLSJFHL2)
-            '经过修正后的设备本体耗电功率
-            LXSLSJBTHD2_ALL_b = LXSLSJBTHD2_ALL_a / LXSLSJZLCOPXZ2
-        Else
-            LXSLSJBTHD2_ALL_a = 0
-            LXSLSJBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '水冷螺杆机（1）
-        '设备的装机总数量，台数
-        Dim SLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 12).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim SLLGJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 36).Value
-        Dim SLLGJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 48).Value / SLLGJZJSL1
-        Dim SLLGJFHL1 As Double = SLLGJFHL1_GL + SLLGJFHL1_XL
-        If SLLGJZJSL1 > 0 And SLLGJFHL1 >= SLLGJFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SLLGJBTHD1_ED As Double = SLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 10).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SLLGJBTHD1_GL As Double = BTHDXS_GL_water * SLLGJBTHD1_ED * SLLGJFHL1_GL
-            Dim SLLGJBTHD1_XL As Double = BTHDXS_XL_water * SLLGJBTHD1_ED * SLLGJFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            SLLGJBTHD1_ALL_a = SLLGJBTHD1_GL + SLLGJBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim SLLGJZLCOPXZ1 As Double = 水冷螺杆机制冷COP曲线(SLLGJFHL1)
-            '经过修正后的设备本体耗电功率
-            SLLGJBTHD1_ALL_b = SLLGJBTHD1_ALL_a / SLLGJZLCOPXZ1
-        Else
-            SLLGJBTHD1_ALL_a = 0
-            SLLGJBTHD1_ALL_b = 0
-        End If
-        '水冷螺杆机（2）
-        '设备的装机总数量，台数
-        Dim SLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 12).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim SLLGJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 37).Value
-        Dim SLLGJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 49).Value / SLLGJZJSL2
-        Dim SLLGJFHL2 As Double = SLLGJFHL2_GL + SLLGJFHL2_XL
-        If SLLGJZJSL2 > 0 And SLLGJFHL2 >= SLLGJFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SLLGJBTHD2_ED As Double = SLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 10).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SLLGJBTHD2_GL As Double = BTHDXS_GL_water * SLLGJBTHD2_ED * SLLGJFHL2_GL
-            Dim SLLGJBTHD2_XL As Double = BTHDXS_XL_water * SLLGJBTHD2_ED * SLLGJFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            SLLGJBTHD2_ALL_a = SLLGJBTHD2_GL + SLLGJBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim SLLGJZLCOPXZ2 As Double = 水冷螺杆机制冷COP曲线(SLLGJFHL2)
-            '经过修正后的设备本体耗电功率
-            SLLGJBTHD2_ALL_b = SLLGJBTHD2_ALL_a / SLLGJZLCOPXZ2
-        Else
-            SLLGJBTHD2_ALL_a = 0
-            SLLGJBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '风冷螺杆机（1）
-        '设备的装机总数量，台数
-        Dim FLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 14).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim FLLGJFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 30).Value
-        Dim FLLGJFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 42).Value / FLLGJZJSL1
-        Dim FLLGJFHL1 As Double = FLLGJFHL1_GL + FLLGJFHL1_XL
-        If FLLGJZJSL1 > 0 And FLLGJFHL1 >= FLLGJFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim FLLGJBTHD1_ED As Double = FLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 14).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim FLLGJBTHD1_GL As Double = BTHDXS_GL_air * FLLGJBTHD1_ED * FLLGJFHL1_GL
-            Dim FLLGJBTHD1_XL As Double = BTHDXS_XL_air * FLLGJBTHD1_ED * FLLGJFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            FLLGJBTHD1_ALL_a = FLLGJBTHD1_GL + FLLGJBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim FLLGJZLCOPXZ1 As Double = 风冷螺杆式热泵制冷COP曲线(FLLGJFHL1)
-            '经过修正后的设备本体耗电功率
-            FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZLCOPXZ1
-        Else
-            FLLGJBTHD1_ALL_a = 0
-            FLLGJBTHD1_ALL_b = 0
-        End If
-        '风冷螺杆机（2）
-        '设备的装机总数量，台数
-        Dim FLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 14).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim FLLGJFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 31).Value
-        Dim FLLGJFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 43).Value / FLLGJZJSL2
-        Dim FLLGJFHL2 As Double = FLLGJFHL2_GL + FLLGJFHL2_XL
-        If FLLGJZJSL2 > 0 And FLLGJFHL2 >= FLLGJFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim FLLGJBTHD2_ED As Double = FLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 14).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim FLLGJBTHD2_GL As Double = BTHDXS_GL_air * FLLGJBTHD2_ED * FLLGJFHL2_GL
-            Dim FLLGJBTHD2_XL As Double = BTHDXS_XL_air * FLLGJBTHD2_ED * FLLGJFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            FLLGJBTHD2_ALL_a = FLLGJBTHD2_GL + FLLGJBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim FLLGJZLCOPXZ2 As Double = 风冷螺杆式热泵制冷COP曲线(FLLGJFHL2)
-            '经过修正后的设备本体耗电功率
-            FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZLCOPXZ2
-        Else
-            FLLGJBTHD2_ALL_a = 0
-            FLLGJBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '水（地）源热泵（1）
-        '设备的装机总数量，台数
-        Dim SDYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 16).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim SDYRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 34).Value
-        Dim SDYRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 46).Value / SDYRBZJSL1
-        Dim SDYRBFHL1 As Double = SDYRBFHL1_GL + SDYRBFHL1_XL
-        If SDYRBZJSL1 > 0 And SDYRBFHL1 >= SDYRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SDYRBBTHD1_ED As Double = SDYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 16).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SDYRBBTHD1_GL As Double = BTHDXS_GL_water * SDYRBBTHD1_ED * SDYRBFHL1_GL
-            Dim SDYRBBTHD1_XL As Double = BTHDXS_XL_water * SDYRBBTHD1_ED * SDYRBFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            SDYRBBTHD1_ALL_a = SDYRBBTHD1_GL + SDYRBBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim SDYRBZLCOPXZ1 As Double = 水_地源热泵制冷COP曲线(SDYRBFHL1)
-            '经过修正后的设备本体耗电功率
-            SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZLCOPXZ1
-        Else
-            SDYRBBTHD1_ALL_a = 0
-            SDYRBBTHD1_ALL_b = 0
-        End If
-        '水（地）源热泵（2）
-        '设备的装机总数量，台数
-        Dim SDYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 16).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim SDYRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 35).Value
-        Dim SDYRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 47).Value / SDYRBZJSL2
-        Dim SDYRBFHL2 As Double = SDYRBFHL2_GL + SDYRBFHL2_XL
-        If SDYRBZJSL2 > 0 And SDYRBFHL2 >= SDYRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SDYRBBTHD2_ED As Double = SDYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 16).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SDYRBBTHD2_GL As Double = BTHDXS_GL_water * SDYRBBTHD2_ED * SDYRBFHL2_GL
-            Dim SDYRBBTHD2_XL As Double = BTHDXS_XL_water * SDYRBBTHD2_ED * SDYRBFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            SDYRBBTHD2_ALL_a = SDYRBBTHD2_GL + SDYRBBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim SDYRBZLCOPXZ2 As Double = 水_地源热泵制冷COP曲线(SDYRBFHL2)
-            '经过修正后的设备本体耗电功率
-            SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZLCOPXZ2
-        Else
-            SDYRBBTHD2_ALL_a = 0
-            SDYRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '离心式热泵（1）
-        '设备的装机总数量，台数
-        Dim LXSRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 18).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim LXSRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 38).Value
-        Dim LXSRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 50).Value / LXSRBZJSL1
-        Dim LXSRBFHL1 As Double = LXSRBFHL1_GL + LXSRBFHL1_XL
-        If LXSRBZJSL1 > 0 And LXSRBFHL1 >= LXSRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSRBBTHD1_ED As Double = LXSRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 18).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSRBBTHD1_GL As Double = BTHDXS_GL_water * LXSRBBTHD1_ED * LXSRBFHL1_GL
-            Dim LXSRBBTHD1_XL As Double = BTHDXS_XL_water * LXSRBBTHD1_ED * LXSRBFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            LXSRBBTHD1_ALL_a = LXSRBBTHD1_GL + LXSRBBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim LXSRBZLCOPXZ1 As Double = 离心式热泵制冷COP曲线(LXSRBFHL1)
-            '经过修正后的设备本体耗电功率
-            LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZLCOPXZ1
-        Else
-            LXSRBBTHD1_ALL_a = 0
-            LXSRBBTHD1_ALL_b = 0
-        End If
-        '离心式热泵（2）
-        '设备的装机总数量，台数
-        Dim LXSRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 18).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim LXSRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39).Value
-        Dim LXSRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51).Value / LXSRBZJSL2
-        Dim LXSRBFHL2 As Double = LXSRBFHL2_GL + LXSRBFHL2_XL
-        If LXSRBZJSL2 > 0 And LXSRBFHL2 >= LXSRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSRBBTHD2_ED As Double = LXSRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 18).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSRBBTHD2_GL As Double = BTHDXS_GL_water * LXSRBBTHD2_ED * LXSRBFHL2_GL
-            Dim LXSRBBTHD2_XL As Double = BTHDXS_XL_water * LXSRBBTHD2_ED * LXSRBFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            LXSRBBTHD2_ALL_a = LXSRBBTHD2_GL + LXSRBBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim LXSRBZLCOPXZ2 As Double = 离心式热泵制冷COP曲线(LXSRBFHL2)
-            '经过修正后的设备本体耗电功率
-            LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZLCOPXZ2
-        Else
-            LXSRBBTHD2_ALL_a = 0
-            LXSRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '空气源热泵（1）
-        '设备的装机总数量，台数
-        Dim KQYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 20).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim KQYRBFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 32).Value
-        Dim KQYRBFHL1_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 44).Value / KQYRBZJSL1
-        Dim KQYRBFHL1 As Double = KQYRBFHL1_GL + KQYRBFHL1_XL
-        If KQYRBZJSL1 > 0 And KQYRBFHL1 >= KQYRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim KQYRBBTHD1_ED As Double = KQYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 20).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim KQYRBBTHD1_GL As Double = BTHDXS_GL_air * KQYRBBTHD1_ED * KQYRBFHL1_GL
-            Dim KQYRBBTHD1_XL As Double = BTHDXS_XL_air * KQYRBBTHD1_ED * KQYRBFHL1_XL
-            '在没有考虑修正系数前的，总耗电功率
-            KQYRBBTHD1_ALL_a = KQYRBBTHD1_GL + KQYRBBTHD1_XL
-            '计算此时的制冷COP修正系数
-            Dim KQYRBZLCOPXZ1 As Double = 空气源热泵制冷COP曲线(KQYRBFHL1)
-            '经过修正后的设备本体耗电功率
-            KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZLCOPXZ1
-        Else
-            KQYRBBTHD1_ALL_a = 0
-            KQYRBBTHD1_ALL_b = 0
-        End If
-        '空气源热泵（2）
-        '设备的装机总数量，台数
-        Dim KQYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 20).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim KQYRBFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 33).Value
-        Dim KQYRBFHL2_XL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 45).Value / KQYRBZJSL2
-        Dim KQYRBFHL2 As Double = KQYRBFHL2_GL + KQYRBFHL2_XL
-        If KQYRBZJSL2 > 0 And KQYRBFHL2 >= KQYRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim KQYRBBTHD2_ED As Double = KQYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 20).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim KQYRBBTHD2_GL As Double = BTHDXS_GL_air * KQYRBBTHD2_ED * KQYRBFHL2_GL
-            Dim KQYRBBTHD2_XL As Double = BTHDXS_XL_air * KQYRBBTHD2_ED * KQYRBFHL2_XL
-            '在没有考虑修正系数前的，总耗电功率
-            KQYRBBTHD2_ALL_a = KQYRBBTHD2_GL + KQYRBBTHD2_XL
-            '计算此时的制冷COP修正系数
-            Dim KQYRBZLCOPXZ2 As Double = 空气源热泵制冷COP曲线(KQYRBFHL2)
-            '经过修正后的设备本体耗电功率
-            KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZLCOPXZ2
-        Else
-            KQYRBBTHD2_ALL_a = 0
-            KQYRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '直燃型溴化锂（1）
-        '设备的装机总数量，台数
-        Dim ZRXXHLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 22).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim ZRXXHLFHL1_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90).Value
-        Dim ZRXXHLFHL1 As Double = ZRXXHLFHL1_GL
-        If ZRXXHLZJSL1 > 0 And ZRXXHLFHL1 >= ZRXXHLFHL1_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim ZRXXHLBTTRQ1_ED As Double = ZRXXHLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(6, 22).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim ZRXXHLBTTRQ1_GL As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ1_ED * ZRXXHLFHL1 * ZRXXHLZLHQXZ
-            '在没有考虑修正系数前的，总天然气耗量
-            ZRXXHLBTTRQ1_ALL_a = ZRXXHLBTTRQ1_GL
-            '计算此时的制冷COP修正系数
-            Dim ZRXXHLZLCOPXZ1 As Double = 直燃型溴化锂制冷COP曲线(ZRXXHLFHL1)
-            '经过修正后的设备本体天然气耗量
-            ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZLCOPXZ1
-        Else
-            ZRXXHLBTTRQ1_ALL_a = 0
-            ZRXXHLBTTRQ1_ALL_b = 0
-        End If
-        '直燃型溴化锂（2）
-        '设备的装机总数量，台数
-        Dim ZRXXHLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 22).Value
-        '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
-        Dim ZRXXHLFHL2_GL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91).Value
-        Dim ZRXXHLFHL2 As Double = ZRXXHLFHL2_GL
-        If ZRXXHLZJSL2 > 0 And ZRXXHLFHL2 >= ZRXXHLFHL2_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim ZRXXHLBTTRQ2_ED As Double = ZRXXHLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(25, 22).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim ZRXXHLBTTRQ2_GL As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ2_ED * ZRXXHLFHL2 * ZRXXHLZLHQXZ
-            '在没有考虑修正系数前的，总天然气耗量
-            ZRXXHLBTTRQ2_ALL_a = ZRXXHLBTTRQ2_GL
-            '计算此时的制冷COP修正系数
-            Dim ZRXXHLZLCOPXZ2 As Double = 直燃型溴化锂制冷COP曲线(ZRXXHLFHL2)
-            '经过修正后的设备本体天然气耗量
-            ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZLCOPXZ2
-        Else
-            ZRXXHLBTTRQ2_ALL_a = 0
-            ZRXXHLBTTRQ2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '根据内燃机负荷率，计算内燃机的发电效率
-        '内燃机（1）
-        '内燃发电机（1）
-        '设备的装机总数量，台数
-        Dim NRJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(4, 2).Value
-        '此时的设备负荷率
-        Dim NRJFHL1 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value
-        If NRJZJSL1 > 0 And NRJFHL1 >= NRJFHL1_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim NRJTRQ1_ED As Double = NRJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(12, 4).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim NRJTRQ1 As Double = TRQHLXZXS_NRJ * NRJTRQ1_ED * NRJFHL1
-            '在没有考虑修正系数前的，总天然气耗量
-            NRJTRQ1_ALL_a = NRJTRQ1
-            '计算此时的内燃机发电效率修正系数
-            Dim NRJZLXLXZ1 As Double = 内燃机发电效率曲线(NRJFHL1)
-            '经过修正后的设备本体天然气耗量
-            NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
-        Else
-            NRJTRQ1_ALL_a = 0
-            NRJTRQ1_ALL_b = 0
-        End If
-        '内燃发电机（2）
-        '设备的装机总数量，台数
-        Dim NRJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(23, 2).Value
-        '此时的设备负荷率
-        Dim NRJFHL2 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
-        If NRJZJSL2 > 0 And NRJFHL2 >= NRJFHL2_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim NRJTRQ2_ED As Double = NRJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(31, 4).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim NRJTRQ2 As Double = TRQHLXZXS_NRJ * NRJTRQ2_ED * NRJFHL2
-            '在没有考虑修正系数前的，总天然气耗量
-            NRJTRQ2_ALL_a = NRJTRQ2
-            '计算此时的内燃机发电效率修正系数
-            Dim NRJZLXLXZ2 As Double = 内燃机发电效率曲线(NRJFHL2)
-            '经过修正后的设备本体天然气耗量
-            NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
-        Else
-            NRJTRQ2_ALL_a = 0
-            NRJTRQ2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '计算空调设备本体耗电综合修正系数
-        '空调设备在考虑修正系数前的本体总耗电功率
-        Dim ZHD_ALL_a As Double = LXSLSJBTHD1_ALL_a + LXSLSJBTHD2_ALL_a + SLLGJBTHD1_ALL_a + SLLGJBTHD2_ALL_a + FLLGJBTHD1_ALL_a + FLLGJBTHD2_ALL_a + SDYRBBTHD1_ALL_a + SDYRBBTHD2_ALL_a + KQYRBBTHD1_ALL_a + KQYRBBTHD2_ALL_a + LXSRBBTHD1_ALL_a + LXSRBBTHD2_ALL_a
-        '空调设备在考虑修正系数之后的本体总耗电功率
-        Dim ZHD_ALL_b As Double = LXSLSJBTHD1_ALL_b + LXSLSJBTHD2_ALL_b + SLLGJBTHD1_ALL_b + SLLGJBTHD2_ALL_b + FLLGJBTHD1_ALL_b + FLLGJBTHD2_ALL_b + SDYRBBTHD1_ALL_b + SDYRBBTHD2_ALL_b + KQYRBBTHD1_ALL_b + KQYRBBTHD2_ALL_b + LXSRBBTHD1_ALL_b + LXSRBBTHD2_ALL_b
-        '设备本体耗电功率综合修正系数
-        Dim BTHD_XZ As Double = 1
-        If ZHD_ALL_a > 0 And ZHD_ALL_b > 0 Then
-            BTHD_XZ = ZHD_ALL_b / ZHD_ALL_a
-        Else
-            '默认值等于1
-            BTHD_XZ = 1
-        End If
-        '天然气耗电综合修正系数
-        Dim ZHTRQ_ALL_a As Double = ZRXXHLBTTRQ1_ALL_a + ZRXXHLBTTRQ2_ALL_a + NRJTRQ1_ALL_a + NRJTRQ2_ALL_a
-        Dim ZHTRQ_ALL_b As Double = ZRXXHLBTTRQ1_ALL_b + ZRXXHLBTTRQ2_ALL_b + NRJTRQ1_ALL_b + NRJTRQ2_ALL_b
-        Dim TRQ_XZ As Double = 1
-        If ZHTRQ_ALL_a > 0 And ZHTRQ_ALL_b > 0 Then
-            TRQ_XZ = ZHTRQ_ALL_b / ZHTRQ_ALL_a
-        Else
-            '默认值等于1
-            TRQ_XZ = 1
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '将综合修正系数写入Excel
-        '制冷季系数
-        '制冷设备本体耗电修正
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 106).Value = BTHD_XZ
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 106).Value = BTHD_XZ
-        '制冷天然气消耗修正
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 107).Value = TRQ_XZ
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 107).Value = TRQ_XZ
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '计算出的结果保留3位小数，增加美观度
-        For i = 106 To 107
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
-        Next
     End Sub
-    Sub 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b As Integer)
+    Sub 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b As Integer, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
         ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
-        '各个设备可以允许运行的最低负荷率
-        '内燃机
-        Dim NRJFHL1_min As Double = FHL1_min_NRJ
-        Dim NRJFHL2_min As Double = FHL2_min_NRJ
-        '离心式冷水机
-        Dim LXSLSJFHL1_min As Double = FHL1_min_LXSLSJ
-        Dim LXSLSJFHL2_min As Double = FHL2_min_LXSLSJ
-        '水冷螺杆机
-        Dim SLLGJFHL1_min As Double = FHL1_min_SLLGJ
-        Dim SLLGJFHL2_min As Double = FHL2_min_SLLGJ
-        '风冷螺杆机
-        Dim FLLGJFHL1_min As Double = FHL1_min_FLLGJ
-        Dim FLLGJFHL2_min As Double = FHL2_min_FLLGJ
-        '水（地）源热泵
-        Dim SDYRBFHL1_min As Double = FHL1_min_SDYRB
-        Dim SDYRBFHL2_min As Double = FHL2_min_SDYRB
-        '离心式热泵
-        Dim LXSRBFHL1_min As Double = FHL1_min_LXSRB
-        Dim LXSRBFHL2_min As Double = FHL2_min_LXSRB
-        '空气源热泵
-        Dim KQYRBFHL1_min As Double = FHL1_min_KQYRB
-        Dim KQYRBFHL2_min As Double = FHL2_min_KQYRB
-        '直燃型溴化锂
-        Dim ZRXXHLFHL1_min As Double = FHL1_min_ZRXXHL
-        Dim ZRXXHLFHL2_min As Double = FHL2_min_ZRXXHL
-        '电采暖锅炉
-        Dim DGLFHL1_min As Double = FHL1_min_DGL
-        Dim DGLFHL2_min As Double = FHL2_min_DGL
-        '天然气采暖锅炉
-        Dim TRQGLFHL1_min As Double = FHL1_min_TRQGL
-        Dim TRQGLFHL2_min As Double = FHL2_min_TRQGL
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '根据已经计算出来，写入Excel的各个空调设备的负荷率，修正设备本体的耗电量和天然气耗量
-        '与水换热的设备供热时本体耗电修正系数
-        Dim BTHDXS_GR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(7, 7).Value
-        '与水换热的设备蓄热时本体耗电修正系数
-        Dim BTHDXS_XR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(11, 7).Value
-        '与空气换热的设备供热时本体耗电修正系数
-        Dim BTHDXS_GR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(8, 7).Value
-        '与空气换热的设备蓄热时本体耗电修正系数
-        Dim BTHDXS_XR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(12, 7).Value
-        '除内燃机以外的其它设备内燃机耗量修正系数
-        Dim TRQHLXZXS_QT As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(16, 9).Value + 1
-        '内燃机天然气耗量修正系数
-        Dim TRQHLXZXS_NRJ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(15, 9).Value + 1
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '各空调设备本体耗电功率在考虑修正系数前的耗电功率和考虑修正系数后的耗电系数
-        '风冷螺杆机
-        Dim FLLGJBTHD1_ALL_a As Double
-        Dim FLLGJBTHD1_ALL_b As Double
-        Dim FLLGJBTHD2_ALL_a As Double
-        Dim FLLGJBTHD2_ALL_b As Double
-        '水（地）源热泵
-        Dim SDYRBBTHD1_ALL_a As Double
-        Dim SDYRBBTHD1_ALL_b As Double
-        Dim SDYRBBTHD2_ALL_a As Double
-        Dim SDYRBBTHD2_ALL_b As Double
-        '离心式热泵
-        Dim LXSRBBTHD1_ALL_a As Double
-        Dim LXSRBBTHD1_ALL_b As Double
-        Dim LXSRBBTHD2_ALL_a As Double
-        Dim LXSRBBTHD2_ALL_b As Double
-        '空气源热泵
-        Dim KQYRBBTHD1_ALL_a As Double
-        Dim KQYRBBTHD1_ALL_b As Double
-        Dim KQYRBBTHD2_ALL_a As Double
-        Dim KQYRBBTHD2_ALL_b As Double
-        '电采暖锅炉
-        Dim DGLBTHD1_ALL_a As Double
-        Dim DGLBTHD1_ALL_b As Double
-        Dim DGLBTHD2_ALL_a As Double
-        Dim DGLBTHD2_ALL_b As Double
-        '各空调设备本体天然气耗量在考虑修正系数前的天然气耗量和考虑修正系数后的天然气耗量
-        '天然气锅炉
-        Dim TRQGLBTTRQ1_ALL_a As Double
-        Dim TRQGLBTTRQ1_ALL_b As Double
-        Dim TRQGLBTTRQ2_ALL_a As Double
-        Dim TRQGLBTTRQ2_ALL_b As Double
-        '直燃型溴化锂
-        Dim ZRXXHLBTTRQ1_ALL_a As Double
-        Dim ZRXXHLBTTRQ1_ALL_b As Double
-        Dim ZRXXHLBTTRQ2_ALL_a As Double
-        Dim ZRXXHLBTTRQ2_ALL_b As Double
-        '内燃发电机
-        Dim NRJTRQ1_ALL_a As Double
-        Dim NRJTRQ1_ALL_b As Double
-        Dim NRJTRQ2_ALL_a As Double
-        Dim NRJTRQ2_ALL_b As Double
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '天然气锅炉（1）
-        '设备的装机总数量，台数
-        Dim TRQGLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 10).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim TRQGLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value
-        Dim TRQGLFHL1 As Double = TRQGLFHL1_GR
-        If TRQGLZJSL1 > 0 And TRQGLFHL1 >= TRQGLFHL1_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim TRQGLBTTRQ1_ED As Double = TRQGLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 10).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim TRQGLBTTRQ1_GR As Double = TRQHLXZXS_QT * TRQGLBTTRQ1_ED * TRQGLFHL1_GR
-            '在没有考虑修正系数前的，总天然气耗量
-            TRQGLBTTRQ1_ALL_a = TRQGLBTTRQ1_GR
-            '计算此时的制热COP修正系数
-            Dim TRQGLZLCOPXZ1 As Double = 天然气采暖锅炉制热效率曲线(TRQGLFHL1)
-            '经过修正后的设备本体天然气耗量
-            TRQGLBTTRQ1_ALL_b = TRQGLBTTRQ1_ALL_a / TRQGLZLCOPXZ1
+        '只有全局寻优计算模式才进行修正
+        If calculation_mode = 2 Then
+            '各个设备可以允许运行的最低负荷率
+            '内燃机
+            Dim NRJFHL1_min As Double = FHL1_min_NRJ
+            Dim NRJFHL2_min As Double = FHL2_min_NRJ
+            '离心式冷水机
+            Dim LXSLSJFHL1_min As Double = FHL1_min_LXSLSJ
+            Dim LXSLSJFHL2_min As Double = FHL2_min_LXSLSJ
+            '水冷螺杆机
+            Dim SLLGJFHL1_min As Double = FHL1_min_SLLGJ
+            Dim SLLGJFHL2_min As Double = FHL2_min_SLLGJ
+            '风冷螺杆机
+            Dim FLLGJFHL1_min As Double = FHL1_min_FLLGJ
+            Dim FLLGJFHL2_min As Double = FHL2_min_FLLGJ
+            '水（地）源热泵
+            Dim SDYRBFHL1_min As Double = FHL1_min_SDYRB
+            Dim SDYRBFHL2_min As Double = FHL2_min_SDYRB
+            '离心式热泵
+            Dim LXSRBFHL1_min As Double = FHL1_min_LXSRB
+            Dim LXSRBFHL2_min As Double = FHL2_min_LXSRB
+            '空气源热泵
+            Dim KQYRBFHL1_min As Double = FHL1_min_KQYRB
+            Dim KQYRBFHL2_min As Double = FHL2_min_KQYRB
+            '直燃型溴化锂
+            Dim ZRXXHLFHL1_min As Double = FHL1_min_ZRXXHL
+            Dim ZRXXHLFHL2_min As Double = FHL2_min_ZRXXHL
+            '电采暖锅炉
+            Dim DGLFHL1_min As Double = FHL1_min_DGL
+            Dim DGLFHL2_min As Double = FHL2_min_DGL
+            '天然气采暖锅炉
+            Dim TRQGLFHL1_min As Double = FHL1_min_TRQGL
+            Dim TRQGLFHL2_min As Double = FHL2_min_TRQGL
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '根据已经计算出来，写入Excel的各个空调设备的负荷率，修正设备本体的耗电量和天然气耗量
+            '与水换热的设备供热时本体耗电修正系数
+            Dim BTHDXS_GR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(7, 7).Value
+            '与水换热的设备蓄热时本体耗电修正系数
+            Dim BTHDXS_XR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(11, 7).Value
+            '与空气换热的设备供热时本体耗电修正系数
+            Dim BTHDXS_GR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(8, 7).Value
+            '与空气换热的设备蓄热时本体耗电修正系数
+            Dim BTHDXS_XR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(12, 7).Value
+            '除内燃机以外的其它设备内燃机耗量修正系数
+            Dim TRQHLXZXS_QT As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(16, 9).Value + 1
+            '内燃机天然气耗量修正系数
+            Dim TRQHLXZXS_NRJ As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(15, 9).Value + 1
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '各空调设备本体耗电功率在考虑修正系数前的耗电功率和考虑修正系数后的耗电系数
+            '风冷螺杆机
+            Dim FLLGJBTHD1_ALL_a As Double
+            Dim FLLGJBTHD1_ALL_b As Double
+            Dim FLLGJBTHD2_ALL_a As Double
+            Dim FLLGJBTHD2_ALL_b As Double
+            '水（地）源热泵
+            Dim SDYRBBTHD1_ALL_a As Double
+            Dim SDYRBBTHD1_ALL_b As Double
+            Dim SDYRBBTHD2_ALL_a As Double
+            Dim SDYRBBTHD2_ALL_b As Double
+            '离心式热泵
+            Dim LXSRBBTHD1_ALL_a As Double
+            Dim LXSRBBTHD1_ALL_b As Double
+            Dim LXSRBBTHD2_ALL_a As Double
+            Dim LXSRBBTHD2_ALL_b As Double
+            '空气源热泵
+            Dim KQYRBBTHD1_ALL_a As Double
+            Dim KQYRBBTHD1_ALL_b As Double
+            Dim KQYRBBTHD2_ALL_a As Double
+            Dim KQYRBBTHD2_ALL_b As Double
+            '电采暖锅炉
+            Dim DGLBTHD1_ALL_a As Double
+            Dim DGLBTHD1_ALL_b As Double
+            Dim DGLBTHD2_ALL_a As Double
+            Dim DGLBTHD2_ALL_b As Double
+            '各空调设备本体天然气耗量在考虑修正系数前的天然气耗量和考虑修正系数后的天然气耗量
+            '天然气锅炉
+            Dim TRQGLBTTRQ1_ALL_a As Double
+            Dim TRQGLBTTRQ1_ALL_b As Double
+            Dim TRQGLBTTRQ2_ALL_a As Double
+            Dim TRQGLBTTRQ2_ALL_b As Double
+            '直燃型溴化锂
+            Dim ZRXXHLBTTRQ1_ALL_a As Double
+            Dim ZRXXHLBTTRQ1_ALL_b As Double
+            Dim ZRXXHLBTTRQ2_ALL_a As Double
+            Dim ZRXXHLBTTRQ2_ALL_b As Double
+            '内燃发电机
+            Dim NRJTRQ1_ALL_a As Double
+            Dim NRJTRQ1_ALL_b As Double
+            Dim NRJTRQ2_ALL_a As Double
+            Dim NRJTRQ2_ALL_b As Double
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '供热的综合耗电系数计算要考虑混水供热设备和梯级供热设备
+            '梯级供热设备
+            Dim FHL_TJGR_FLLGJ As Double = 0
+            Dim FHL_TJGR_KQYRB As Double = 0
+            Dim FHL_TJGR_SDYRB As Double = 0
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "风冷螺杆机" Then
+                FHL_TJGR_FLLGJ = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+            End If
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "空气源热泵" Then
+                FHL_TJGR_KQYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+            End If
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "水(地)源热泵" Then
+                FHL_TJGR_SDYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+            End If
+            '混水供热
+            Dim FHL_HSGR_FLLGJ As Double = 0
+            Dim FHL_HSGR_KQYRB As Double = 0
+            Dim FHL_HSGR_SDYRB As Double = 0
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                FHL_HSGR_FLLGJ = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+            End If
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                FHL_HSGR_KQYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+            End If
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                FHL_HSGR_SDYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '天然气锅炉（1）
+            '设备的装机总数量，台数
+            Dim TRQGLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 10).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim TRQGLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value
+            Dim TRQGLFHL1 As Double = TRQGLFHL1_GR
+            If TRQGLZJSL1 > 0 And TRQGLFHL1 >= TRQGLFHL1_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim TRQGLBTTRQ1_ED As Double = TRQGLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 10).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim TRQGLBTTRQ1_GR As Double = TRQHLXZXS_QT * TRQGLBTTRQ1_ED * TRQGLFHL1_GR
+                '在没有考虑修正系数前的，总天然气耗量
+                TRQGLBTTRQ1_ALL_a = TRQGLBTTRQ1_GR
+                '计算此时的制热COP修正系数
+                Dim TRQGLZLCOPXZ1 As Double = 天然气采暖锅炉制热效率曲线(TRQGLFHL1)
+                '经过修正后的设备本体天然气耗量
+                TRQGLBTTRQ1_ALL_b = TRQGLBTTRQ1_ALL_a / TRQGLZLCOPXZ1
+            Else
+                TRQGLBTTRQ1_ALL_a = 0
+                TRQGLBTTRQ1_ALL_b = 0
+            End If
+            '天然气锅炉（2）
+            '设备的装机总数量，台数
+            Dim TRQGLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 10).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim TRQGLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 53).Value
+            Dim TRQGLFHL2 As Double = TRQGLFHL2_GR
+            If TRQGLZJSL2 > 0 And TRQGLFHL2 >= TRQGLFHL2_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim TRQGLBTTRQ2_ED As Double = TRQGLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 10).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim TRQGLBTTRQ2_GR As Double = TRQHLXZXS_QT * TRQGLBTTRQ2_ED * TRQGLFHL2_GR
+                '在没有考虑修正系数前的，总天然气耗量
+                TRQGLBTTRQ2_ALL_a = TRQGLBTTRQ2_GR
+                '计算此时的制热COP修正系数
+                Dim TRQGLZLCOPXZ2 As Double = 天然气采暖锅炉制热效率曲线(TRQGLFHL2)
+                '经过修正后的设备本体天然气耗量
+                TRQGLBTTRQ2_ALL_b = TRQGLBTTRQ2_ALL_a / TRQGLZLCOPXZ2
+            Else
+                TRQGLBTTRQ2_ALL_a = 0
+                TRQGLBTTRQ2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '直燃型溴化锂（1）
+            '设备的装机总数量，台数
+            Dim ZRXXHLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 20).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim ZRXXHLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value
+            Dim ZRXXHLFHL1 As Double = ZRXXHLFHL1_GR
+            If ZRXXHLZJSL1 > 0 And ZRXXHLFHL1 >= ZRXXHLFHL1_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim ZRXXHLBTTRQ1_ED As Double = ZRXXHLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 20).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim ZRXXHLBTTRQ1_GR As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ1_ED * ZRXXHLFHL1_GR
+                '在没有考虑修正系数前的，总天然气耗量
+                ZRXXHLBTTRQ1_ALL_a = ZRXXHLBTTRQ1_GR
+                '计算此时的制热COP修正系数
+                Dim ZRXXHLZLCOPXZ1 As Double = 直燃型溴化锂制热COP曲线(ZRXXHLFHL1)
+                '经过修正后的设备本体天然气耗量
+                ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZLCOPXZ1
+            Else
+                ZRXXHLBTTRQ1_ALL_a = 0
+                ZRXXHLBTTRQ1_ALL_b = 0
+            End If
+            '直燃型溴化锂（2）
+            '设备的装机总数量，台数
+            Dim ZRXXHLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 20).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim ZRXXHLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 93).Value
+            Dim ZRXXHLFHL2 As Double = ZRXXHLFHL2_GR
+            If ZRXXHLZJSL2 > 0 And ZRXXHLFHL2 >= ZRXXHLFHL2_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim ZRXXHLBTTRQ2_ED As Double = ZRXXHLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 20).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim ZRXXHLBTTRQ2_GR As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ2_ED * ZRXXHLFHL2_GR
+                '在没有考虑修正系数前的，总天然气耗量
+                ZRXXHLBTTRQ2_ALL_a = ZRXXHLBTTRQ2_GR
+                '计算此时的制热COP修正系数
+                Dim ZRXXHLZLCOPXZ2 As Double = 直燃型溴化锂制热COP曲线(ZRXXHLFHL2)
+                '经过修正后的设备本体天然气耗量
+                ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZLCOPXZ2
+            Else
+                ZRXXHLBTTRQ2_ALL_a = 0
+                ZRXXHLBTTRQ2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '根据内燃机负荷率，计算内燃机的发电效率
+            '内燃机（1）
+            '内燃发电机（1）
+            '设备的装机总数量，台数
+            Dim NRJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 2).Value
+            '此时的设备负荷率
+            Dim NRJFHL1 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
+            If NRJZJSL1 > 0 And NRJFHL1 >= NRJFHL1_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim NRJTRQ1_ED As Double = NRJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(57, 4).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim NRJTRQ1 As Double = TRQHLXZXS_NRJ * NRJTRQ1_ED * NRJFHL1
+                '在没有考虑修正系数前的，总天然气耗量
+                NRJTRQ1_ALL_a = NRJTRQ1
+                '计算此时的内燃机发电效率修正系数
+                Dim NRJZLXLXZ1 As Double = 内燃机发电效率曲线(NRJFHL1)
+                '经过修正后的设备本体天然气耗量
+                NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
+            Else
+                NRJTRQ1_ALL_a = 0
+                NRJTRQ1_ALL_b = 0
+            End If
+            '内燃发电机（2）
+            '设备的装机总数量，台数
+            Dim NRJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 2).Value
+            '此时的设备负荷率
+            Dim NRJFHL2 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
+            If NRJZJSL2 > 0 And NRJFHL2 >= NRJFHL2_min Then
+                '设备100%负荷时的额定本体天然气耗量
+                Dim NRJTRQ2_ED As Double = NRJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(76, 4).Value
+                '在没有考虑修正系数前的，设备本体天然气耗量
+                Dim NRJTRQ2 As Double = TRQHLXZXS_NRJ * NRJTRQ2_ED * NRJFHL2
+                '在没有考虑修正系数前的，总天然气耗量
+                NRJTRQ2_ALL_a = NRJTRQ2
+                '计算此时的内燃机发电效率修正系数
+                Dim NRJZLXLXZ2 As Double = 内燃机发电效率曲线(NRJFHL2)
+                '经过修正后的设备本体天然气耗量
+                NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
+            Else
+                NRJTRQ2_ALL_a = 0
+                NRJTRQ2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '风冷螺杆机（1）（2）梯级供热和混水供热负荷率
+            '设备（1）的制热装机总功率
+            Dim ZJRGL_FLLGJ1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 12).Value
+            '设备（2）的制热装机总功率
+            Dim ZJRGL_FLLGJ2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 12).Value
+            '混水供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim FLLGJFHL1_HSGR As Double = ZJRGL_FLLGJ1 / (ZJRGL_FLLGJ1 + ZJRGL_FLLGJ2) * FHL_HSGR_FLLGJ
+            Dim FLLGJFHL2_HSGR As Double = ZJRGL_FLLGJ2 / (ZJRGL_FLLGJ1 + ZJRGL_FLLGJ2) * FHL_HSGR_FLLGJ
+            '梯级供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim FLLGJFHL1_TJGR As Double = ZJRGL_FLLGJ1 / (ZJRGL_FLLGJ1 + ZJRGL_FLLGJ2) * FHL_TJGR_FLLGJ
+            Dim FLLGJFHL2_TJGR As Double = ZJRGL_FLLGJ2 / (ZJRGL_FLLGJ1 + ZJRGL_FLLGJ2) * FHL_TJGR_FLLGJ
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '风冷螺杆机（1）
+            '设备的装机总数量，台数
+            Dim FLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 12).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim FLLGJFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 54).Value
+            Dim FLLGJFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62).Value / FLLGJZJSL1
+            Dim FLLGJFHL1 As Double = FLLGJFHL1_GR + FLLGJFHL1_XR + FLLGJFHL1_HSGR + FLLGJFHL1_TJGR
+            If FLLGJZJSL1 > 0 And FLLGJFHL1 >= FLLGJFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim FLLGJBTHD1_ED As Double = FLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 12).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim FLLGJBTHD1_GR As Double = BTHDXS_GR_air * FLLGJBTHD1_ED * FLLGJFHL1_GR
+                Dim FLLGJBTHD1_XR As Double = BTHDXS_XR_air * FLLGJBTHD1_ED * FLLGJFHL1_XR
+                '在没有考虑修正系数前的，总耗电功率
+                FLLGJBTHD1_ALL_a = FLLGJBTHD1_GR + FLLGJBTHD1_XR
+                '计算此时的制热COP修正系数
+                Dim FLLGJZLCOPXZ1 As Double = 风冷螺杆式热泵制热COP曲线(FLLGJFHL1)
+                '经过修正后的设备本体耗电功率
+                FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZLCOPXZ1
+            Else
+                FLLGJBTHD1_ALL_a = 0
+                FLLGJBTHD1_ALL_b = 0
+            End If
+            '风冷螺杆机（2）
+            '设备的装机总数量，台数
+            Dim FLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 12).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim FLLGJFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 55).Value
+            Dim FLLGJFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 63).Value / FLLGJZJSL2
+            Dim FLLGJFHL2 As Double = FLLGJFHL2_GR + FLLGJFHL2_XR + FLLGJFHL2_HSGR + FLLGJFHL2_TJGR
+            If FLLGJZJSL2 > 0 And FLLGJFHL2 >= FLLGJFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim FLLGJBTHD2_ED As Double = FLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 12).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim FLLGJBTHD2_GR As Double = BTHDXS_GR_air * FLLGJBTHD2_ED * FLLGJFHL2_GR
+                Dim FLLGJBTHD2_XR As Double = BTHDXS_XR_air * FLLGJBTHD2_ED * FLLGJFHL2_XR
+                '在没有考虑修正系数前的，总耗电功率
+                FLLGJBTHD2_ALL_a = FLLGJBTHD2_GR + FLLGJBTHD2_XR
+                '计算此时的制热COP修正系数
+                Dim FLLGJZLCOPXZ2 As Double = 风冷螺杆式热泵制热COP曲线(FLLGJFHL2)
+                '经过修正后的设备本体耗电功率
+                FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZLCOPXZ2
+            Else
+                FLLGJBTHD2_ALL_a = 0
+                FLLGJBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '水（地）源热泵（1）（2）梯级供热和混水供热负荷率
+            '设备（1）的制热装机总功率
+            Dim ZJRGL_SDYRB1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 14).Value
+            '设备（2）的制热装机总功率
+            Dim ZJRGL_SDYRB2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 14).Value
+            '混水供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim SDYRBFHL1_HSGR As Double = ZJRGL_SDYRB1 / (ZJRGL_SDYRB1 + ZJRGL_SDYRB2) * FHL_HSGR_SDYRB
+            Dim SDYRBFHL2_HSGR As Double = ZJRGL_SDYRB2 / (ZJRGL_SDYRB1 + ZJRGL_SDYRB2) * FHL_HSGR_SDYRB
+            '梯级供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim SDYRBFHL1_TJGR As Double = ZJRGL_SDYRB1 / (ZJRGL_SDYRB1 + ZJRGL_SDYRB2) * FHL_TJGR_SDYRB
+            Dim SDYRBFHL2_TJGR As Double = ZJRGL_SDYRB2 / (ZJRGL_SDYRB1 + ZJRGL_SDYRB2) * FHL_TJGR_SDYRB
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '水（地）源热泵（1）
+            '设备的装机总数量，台数
+            Dim SDYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 14).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim SDYRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 58).Value
+            Dim SDYRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 66).Value / SDYRBZJSL1
+            Dim SDYRBFHL1 As Double = SDYRBFHL1_GR + SDYRBFHL1_XR + SDYRBFHL1_HSGR + SDYRBFHL1_TJGR
+            If SDYRBZJSL1 > 0 And SDYRBFHL1 >= SDYRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SDYRBBTHD1_ED As Double = SDYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 14).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SDYRBBTHD1_GR As Double = BTHDXS_GR_water * SDYRBBTHD1_ED * SDYRBFHL1_GR
+                Dim SDYRBBTHD1_XR As Double = BTHDXS_XR_water * SDYRBBTHD1_ED * SDYRBFHL1_XR
+                '在没有考虑修正系数前的，总耗电功率
+                SDYRBBTHD1_ALL_a = SDYRBBTHD1_GR + SDYRBBTHD1_XR
+                '计算此时的制热COP修正系数
+                Dim SDYRBZLCOPXZ1 As Double = 水_地源热泵制热COP曲线(SDYRBFHL1)
+                '经过修正后的设备本体耗电功率
+                SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZLCOPXZ1
+            Else
+                SDYRBBTHD1_ALL_a = 0
+                SDYRBBTHD1_ALL_b = 0
+            End If
+            '水（地）源热泵（2）
+            '设备的装机总数量，台数
+            Dim SDYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 14).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim SDYRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 59).Value
+            Dim SDYRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 67).Value / SDYRBZJSL2
+            Dim SDYRBFHL2 As Double = SDYRBFHL2_GR + SDYRBFHL2_XR + SDYRBFHL2_HSGR + SDYRBFHL2_TJGR
+            If SDYRBZJSL2 > 0 And SDYRBFHL2 >= SDYRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim SDYRBBTHD2_ED As Double = SDYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 14).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim SDYRBBTHD2_GR As Double = BTHDXS_GR_water * SDYRBBTHD2_ED * SDYRBFHL2_GR
+                Dim SDYRBBTHD2_XR As Double = BTHDXS_XR_water * SDYRBBTHD2_ED * SDYRBFHL2_XR
+                '在没有考虑修正系数前的，总耗电功率
+                SDYRBBTHD2_ALL_a = SDYRBBTHD2_GR + SDYRBBTHD2_XR
+                '计算此时的制热COP修正系数
+                Dim SDYRBZLCOPXZ2 As Double = 水_地源热泵制热COP曲线(SDYRBFHL2)
+                '经过修正后的设备本体耗电功率
+                SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZLCOPXZ2
+            Else
+                SDYRBBTHD2_ALL_a = 0
+                SDYRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '空气源热泵（1）（2）梯级供热和混水供热负荷率
+            '设备（1）的制热装机总功率
+            Dim ZJRGL_KQYRB1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 16).Value
+            '设备（2）的制热装机总功率
+            Dim ZJRGL_KQYRB2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 16).Value
+            '混水供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim KQYRBFHL1_HSGR As Double = ZJRGL_KQYRB1 / (ZJRGL_KQYRB1 + ZJRGL_KQYRB2) * FHL_HSGR_KQYRB
+            Dim KQYRBFHL2_HSGR As Double = ZJRGL_KQYRB2 / (ZJRGL_KQYRB1 + ZJRGL_KQYRB2) * FHL_HSGR_KQYRB
+            '梯级供热负荷率按照设备（1）（2）的制热装机总功率进行分摊
+            Dim KQYRBFHL1_TJGR As Double = ZJRGL_KQYRB1 / (ZJRGL_KQYRB1 + ZJRGL_KQYRB2) * FHL_TJGR_KQYRB
+            Dim KQYRBFHL2_TJGR As Double = ZJRGL_KQYRB2 / (ZJRGL_KQYRB1 + ZJRGL_KQYRB2) * FHL_TJGR_KQYRB
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '空气源热泵（1）
+            '设备的装机总数量，台数
+            Dim KQYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 16).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim KQYRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 56).Value
+            Dim KQYRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 64).Value / KQYRBZJSL1
+            Dim KQYRBFHL1 As Double = KQYRBFHL1_GR + KQYRBFHL1_XR + KQYRBFHL1_HSGR + KQYRBFHL1_TJGR
+            If KQYRBZJSL1 > 0 And KQYRBFHL1 >= KQYRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim KQYRBBTHD1_ED As Double = KQYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 16).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim KQYRBBTHD1_GR As Double = BTHDXS_GR_air * KQYRBBTHD1_ED * KQYRBFHL1_GR
+                Dim KQYRBBTHD1_XR As Double = BTHDXS_XR_air * KQYRBBTHD1_ED * KQYRBFHL1_XR
+                '在没有考虑修正系数前的，总耗电功率
+                KQYRBBTHD1_ALL_a = KQYRBBTHD1_GR + KQYRBBTHD1_XR
+                '计算此时的制热COP修正系数
+                Dim KQYRBZLCOPXZ1 As Double = 空气源热泵制热COP曲线(KQYRBFHL1)
+                '经过修正后的设备本体耗电功率
+                KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZLCOPXZ1
+            Else
+                KQYRBBTHD1_ALL_a = 0
+                KQYRBBTHD1_ALL_b = 0
+            End If
+            '空气源热泵（2）
+            '设备的装机总数量，台数
+            Dim KQYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 16).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim KQYRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 57).Value
+            Dim KQYRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 65).Value / KQYRBZJSL2
+            Dim KQYRBFHL2 As Double = KQYRBFHL2_GR + KQYRBFHL2_XR + KQYRBFHL2_HSGR + KQYRBFHL2_TJGR
+            If KQYRBZJSL2 > 0 And KQYRBFHL2 >= KQYRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim KQYRBBTHD2_ED As Double = KQYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 16).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim KQYRBBTHD2_GR As Double = BTHDXS_GR_air * KQYRBBTHD2_ED * KQYRBFHL2_GR
+                Dim KQYRBBTHD2_XR As Double = BTHDXS_XR_air * KQYRBBTHD2_ED * KQYRBFHL2_XR
+                '在没有考虑修正系数前的，总耗电功率
+                KQYRBBTHD2_ALL_a = KQYRBBTHD2_GR + KQYRBBTHD2_XR
+                '计算此时的制热COP修正系数
+                Dim KQYRBZLCOPXZ2 As Double = 空气源热泵制热COP曲线(KQYRBFHL2)
+                '经过修正后的设备本体耗电功率
+                KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZLCOPXZ2
+            Else
+                KQYRBBTHD2_ALL_a = 0
+                KQYRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '离心式热泵（1）
+            '设备的装机总数量，台数
+            Dim LXSRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 18).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim LXSRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 60).Value
+            Dim LXSRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 68).Value / LXSRBZJSL1
+            Dim LXSRBFHL1 As Double = LXSRBFHL1_GR + LXSRBFHL1_XR
+            If LXSRBZJSL1 > 0 And LXSRBFHL1 >= LXSRBFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSRBBTHD1_ED As Double = LXSRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 18).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSRBBTHD1_GR As Double = BTHDXS_GR_water * LXSRBBTHD1_ED * LXSRBFHL1_GR
+                Dim LXSRBBTHD1_XR As Double = BTHDXS_XR_water * LXSRBBTHD1_ED * LXSRBFHL1_XR
+                '在没有考虑修正系数前的，总耗电功率
+                LXSRBBTHD1_ALL_a = LXSRBBTHD1_GR + LXSRBBTHD1_XR
+                '计算此时的制热COP修正系数
+                Dim LXSRBZLCOPXZ1 As Double = 离心式热泵制热COP曲线(LXSRBFHL1)
+                '经过修正后的设备本体耗电功率
+                LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZLCOPXZ1
+            Else
+                LXSRBBTHD1_ALL_a = 0
+                LXSRBBTHD1_ALL_b = 0
+            End If
+            '离心式热泵（2）
+            '设备的装机总数量，台数
+            Dim LXSRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 18).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
+            Dim LXSRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61).Value
+            Dim LXSRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 69).Value / LXSRBZJSL2
+            Dim LXSRBFHL2 As Double = LXSRBFHL2_GR + LXSRBFHL2_XR
+            If LXSRBZJSL2 > 0 And LXSRBFHL2 >= LXSRBFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim LXSRBBTHD2_ED As Double = LXSRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 18).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim LXSRBBTHD2_GR As Double = BTHDXS_GR_water * LXSRBBTHD2_ED * LXSRBFHL2_GR
+                Dim LXSRBBTHD2_XR As Double = BTHDXS_XR_water * LXSRBBTHD2_ED * LXSRBFHL2_XR
+                '在没有考虑修正系数前的，总耗电功率
+                LXSRBBTHD2_ALL_a = LXSRBBTHD2_GR + LXSRBBTHD2_XR
+                '计算此时的制热COP修正系数
+                Dim LXSRBZLCOPXZ2 As Double = 离心式热泵制热COP曲线(LXSRBFHL2)
+                '经过修正后的设备本体耗电功率
+                LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZLCOPXZ2
+            Else
+                LXSRBBTHD2_ALL_a = 0
+                LXSRBBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '电采暖锅炉（1）
+            '设备的装机总功率
+            Dim DGLZJZGL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 20).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率
+            Dim DGLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value
+            Dim DGLFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value
+            Dim DGLFHL1 As Double = DGLFHL1_GR + DGLFHL1_XR
+            If DGLZJZGL1 > 0 And DGLFHL1 >= DGLFHL1_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim DGLBTHD1_ED As Double = DGLZJZGL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(50, 20).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim DGLBTHD1_GR As Double = DGLBTHD1_ED * DGLFHL1_GR
+                Dim DGLBTHD1_XR As Double = DGLBTHD1_ED * DGLFHL1_XR
+                '在没有考虑修正系数前的，总耗电功率
+                DGLBTHD1_ALL_a = DGLBTHD1_GR + DGLBTHD1_XR
+                '计算此时的制热COP修正系数
+                Dim DGLZLCOPXZ1 As Double = 电采暖锅炉制热效率曲线(DGLFHL1)
+                '经过修正后的设备本体耗电功率
+                DGLBTHD1_ALL_b = DGLBTHD1_ALL_a / DGLZLCOPXZ1
+            Else
+                DGLBTHD1_ALL_a = 0
+                DGLBTHD1_ALL_b = 0
+            End If
+            '电采暖锅炉（2）
+            '设备的装机总功率
+            Dim DGLZJZGL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 20).Value
+            '此时的设备负荷率=供热负荷率+蓄热负荷率
+            Dim DGLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 95).Value
+            Dim DGLFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97).Value
+            Dim DGLFHL2 As Double = DGLFHL2_GR + DGLFHL2_XR
+            If DGLZJZGL2 > 0 And DGLFHL2 >= DGLFHL2_min Then
+                '设备100%负荷时的额定本体耗电功率
+                Dim DGLBTHD2_ED As Double = DGLZJZGL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(69, 20).Value
+                '在没有考虑修正系数前的，设备本体耗电功率
+                Dim DGLBTHD2_GR As Double = DGLBTHD2_ED * DGLFHL2_GR
+                Dim DGLBTHD2_XR As Double = DGLBTHD2_ED * DGLFHL2_XR
+                '在没有考虑修正系数前的，总耗电功率
+                DGLBTHD2_ALL_a = DGLBTHD2_GR + DGLBTHD2_XR
+                '计算此时的制热COP修正系数
+                Dim DGLZLCOPXZ2 As Double = 电采暖锅炉制热效率曲线(DGLFHL2)
+                '经过修正后的设备本体耗电功率
+                DGLBTHD2_ALL_b = DGLBTHD2_ALL_a / DGLZLCOPXZ2
+            Else
+                DGLBTHD2_ALL_a = 0
+                DGLBTHD2_ALL_b = 0
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '计算空调设备本体耗电综合修正系数
+            '空调设备在考虑修正系数前的本体总耗电功率
+            Dim ZHD_ALL_a As Double = FLLGJBTHD1_ALL_a + FLLGJBTHD2_ALL_a + SDYRBBTHD1_ALL_a + SDYRBBTHD2_ALL_a + KQYRBBTHD1_ALL_a + KQYRBBTHD2_ALL_a + LXSRBBTHD1_ALL_a + LXSRBBTHD2_ALL_a + DGLBTHD1_ALL_a + DGLBTHD2_ALL_a
+            '空调设备在考虑修正系数之后的本体总耗电功率
+            Dim ZHD_ALL_b As Double = FLLGJBTHD1_ALL_b + FLLGJBTHD2_ALL_b + SDYRBBTHD1_ALL_b + SDYRBBTHD2_ALL_b + KQYRBBTHD1_ALL_b + KQYRBBTHD2_ALL_b + LXSRBBTHD1_ALL_b + LXSRBBTHD2_ALL_b + DGLBTHD1_ALL_b + DGLBTHD2_ALL_b
+            '设备本体耗电功率综合修正系数
+            Dim BTHD_XZ As Double = 1
+            If ZHD_ALL_a > 0 And ZHD_ALL_b > 0 Then
+                BTHD_XZ = ZHD_ALL_b / ZHD_ALL_a
+            Else
+                '默认值等于1
+                BTHD_XZ = 1
+            End If
+            '天然气耗电综合修正系数
+            Dim ZHTRQ_ALL_a As Double = ZRXXHLBTTRQ1_ALL_a + ZRXXHLBTTRQ2_ALL_a + TRQGLBTTRQ1_ALL_a + TRQGLBTTRQ2_ALL_a + NRJTRQ1_ALL_a + NRJTRQ2_ALL_a
+            Dim ZHTRQ_ALL_b As Double = ZRXXHLBTTRQ1_ALL_b + ZRXXHLBTTRQ2_ALL_b + TRQGLBTTRQ1_ALL_b + TRQGLBTTRQ2_ALL_b + NRJTRQ1_ALL_b + NRJTRQ2_ALL_b
+            Dim TRQ_XZ As Double = 1
+            If ZHTRQ_ALL_a > 0 And ZHTRQ_ALL_b > 0 Then
+                TRQ_XZ = ZHTRQ_ALL_b / ZHTRQ_ALL_a
+            Else
+                '默认值等于1
+                TRQ_XZ = 1
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '将综合修正系数写入Excel
+            '将综合修正系数写入Excel
+            '制热季系数
+            '制热设备本体耗电修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 108).Value = BTHD_XZ
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 108).Value = BTHD_XZ
+            '制热天然气消耗修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109).Value = TRQ_XZ
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109).Value = TRQ_XZ
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '计算出的结果保留3位小数，增加美观度
+            For i = 108 To 109
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
+            Next
         Else
-            TRQGLBTTRQ1_ALL_a = 0
-            TRQGLBTTRQ1_ALL_b = 0
+            '常规计算模式，修正系数全部设置为1
+            '制热设备本体耗电修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 108).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 108).Value = 1
+            '制热天然气消耗修正
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109).Value = 1
         End If
-        '天然气锅炉（2）
-        '设备的装机总数量，台数
-        Dim TRQGLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 10).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim TRQGLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 53).Value
-        Dim TRQGLFHL2 As Double = TRQGLFHL2_GR
-        If TRQGLZJSL2 > 0 And TRQGLFHL2 >= TRQGLFHL2_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim TRQGLBTTRQ2_ED As Double = TRQGLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 10).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim TRQGLBTTRQ2_GR As Double = TRQHLXZXS_QT * TRQGLBTTRQ2_ED * TRQGLFHL2_GR
-            '在没有考虑修正系数前的，总天然气耗量
-            TRQGLBTTRQ2_ALL_a = TRQGLBTTRQ2_GR
-            '计算此时的制热COP修正系数
-            Dim TRQGLZLCOPXZ2 As Double = 天然气采暖锅炉制热效率曲线(TRQGLFHL2)
-            '经过修正后的设备本体天然气耗量
-            TRQGLBTTRQ2_ALL_b = TRQGLBTTRQ2_ALL_a / TRQGLZLCOPXZ2
-        Else
-            TRQGLBTTRQ2_ALL_a = 0
-            TRQGLBTTRQ2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '直燃型溴化锂（1）
-        '设备的装机总数量，台数
-        Dim ZRXXHLZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 20).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim ZRXXHLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value
-        Dim ZRXXHLFHL1 As Double = ZRXXHLFHL1_GR
-        If ZRXXHLZJSL1 > 0 And ZRXXHLFHL1 >= ZRXXHLFHL1_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim ZRXXHLBTTRQ1_ED As Double = ZRXXHLZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 20).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim ZRXXHLBTTRQ1_GR As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ1_ED * ZRXXHLFHL1_GR
-            '在没有考虑修正系数前的，总天然气耗量
-            ZRXXHLBTTRQ1_ALL_a = ZRXXHLBTTRQ1_GR
-            '计算此时的制热COP修正系数
-            Dim ZRXXHLZLCOPXZ1 As Double = 直燃型溴化锂制热COP曲线(ZRXXHLFHL1)
-            '经过修正后的设备本体天然气耗量
-            ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZLCOPXZ1
-        Else
-            ZRXXHLBTTRQ1_ALL_a = 0
-            ZRXXHLBTTRQ1_ALL_b = 0
-        End If
-        '直燃型溴化锂（2）
-        '设备的装机总数量，台数
-        Dim ZRXXHLZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 20).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim ZRXXHLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 93).Value
-        Dim ZRXXHLFHL2 As Double = ZRXXHLFHL2_GR
-        If ZRXXHLZJSL2 > 0 And ZRXXHLFHL2 >= ZRXXHLFHL2_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim ZRXXHLBTTRQ2_ED As Double = ZRXXHLZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 20).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim ZRXXHLBTTRQ2_GR As Double = TRQHLXZXS_QT * ZRXXHLBTTRQ2_ED * ZRXXHLFHL2_GR
-            '在没有考虑修正系数前的，总天然气耗量
-            ZRXXHLBTTRQ2_ALL_a = ZRXXHLBTTRQ2_GR
-            '计算此时的制热COP修正系数
-            Dim ZRXXHLZLCOPXZ2 As Double = 直燃型溴化锂制热COP曲线(ZRXXHLFHL2)
-            '经过修正后的设备本体天然气耗量
-            ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZLCOPXZ2
-        Else
-            ZRXXHLBTTRQ2_ALL_a = 0
-            ZRXXHLBTTRQ2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '根据内燃机负荷率，计算内燃机的发电效率
-        '内燃机（1）
-        '内燃发电机（1）
-        '设备的装机总数量，台数
-        Dim NRJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 2).Value
-        '此时的设备负荷率
-        Dim NRJFHL1 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value
-        If NRJZJSL1 > 0 And NRJFHL1 >= NRJFHL1_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim NRJTRQ1_ED As Double = NRJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(57, 4).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim NRJTRQ1 As Double = TRQHLXZXS_NRJ * NRJTRQ1_ED * NRJFHL1
-            '在没有考虑修正系数前的，总天然气耗量
-            NRJTRQ1_ALL_a = NRJTRQ1
-            '计算此时的内燃机发电效率修正系数
-            Dim NRJZLXLXZ1 As Double = 内燃机发电效率曲线(NRJFHL1)
-            '经过修正后的设备本体天然气耗量
-            NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
-        Else
-            NRJTRQ1_ALL_a = 0
-            NRJTRQ1_ALL_b = 0
-        End If
-        '内燃发电机（2）
-        '设备的装机总数量，台数
-        Dim NRJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 2).Value
-        '此时的设备负荷率
-        Dim NRJFHL2 As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
-        If NRJZJSL2 > 0 And NRJFHL2 >= NRJFHL2_min Then
-            '设备100%负荷时的额定本体天然气耗量
-            Dim NRJTRQ2_ED As Double = NRJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(76, 4).Value
-            '在没有考虑修正系数前的，设备本体天然气耗量
-            Dim NRJTRQ2 As Double = TRQHLXZXS_NRJ * NRJTRQ2_ED * NRJFHL2
-            '在没有考虑修正系数前的，总天然气耗量
-            NRJTRQ2_ALL_a = NRJTRQ2
-            '计算此时的内燃机发电效率修正系数
-            Dim NRJZLXLXZ2 As Double = 内燃机发电效率曲线(NRJFHL2)
-            '经过修正后的设备本体天然气耗量
-            NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
-        Else
-            NRJTRQ2_ALL_a = 0
-            NRJTRQ2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '风冷螺杆机（1）
-        '设备的装机总数量，台数
-        Dim FLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 12).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim FLLGJFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 54).Value
-        Dim FLLGJFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 62).Value / FLLGJZJSL1
-        Dim FLLGJFHL1 As Double = FLLGJFHL1_GR + FLLGJFHL1_XR
-        If FLLGJZJSL1 > 0 And FLLGJFHL1 >= FLLGJFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim FLLGJBTHD1_ED As Double = FLLGJZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 12).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim FLLGJBTHD1_GR As Double = BTHDXS_GR_air * FLLGJBTHD1_ED * FLLGJFHL1_GR
-            Dim FLLGJBTHD1_XR As Double = BTHDXS_XR_air * FLLGJBTHD1_ED * FLLGJFHL1_XR
-            '在没有考虑修正系数前的，总耗电功率
-            FLLGJBTHD1_ALL_a = FLLGJBTHD1_GR + FLLGJBTHD1_XR
-            '计算此时的制热COP修正系数
-            Dim FLLGJZLCOPXZ1 As Double = 风冷螺杆式热泵制热COP曲线(FLLGJFHL1)
-            '经过修正后的设备本体耗电功率
-            FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZLCOPXZ1
-        Else
-            FLLGJBTHD1_ALL_a = 0
-            FLLGJBTHD1_ALL_b = 0
-        End If
-        '风冷螺杆机（2）
-        '设备的装机总数量，台数
-        Dim FLLGJZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 12).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim FLLGJFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 55).Value
-        Dim FLLGJFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 63).Value / FLLGJZJSL2
-        Dim FLLGJFHL2 As Double = FLLGJFHL2_GR + FLLGJFHL2_XR
-        If FLLGJZJSL2 > 0 And FLLGJFHL2 >= FLLGJFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim FLLGJBTHD2_ED As Double = FLLGJZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 12).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim FLLGJBTHD2_GR As Double = BTHDXS_GR_air * FLLGJBTHD2_ED * FLLGJFHL2_GR
-            Dim FLLGJBTHD2_XR As Double = BTHDXS_XR_air * FLLGJBTHD2_ED * FLLGJFHL2_XR
-            '在没有考虑修正系数前的，总耗电功率
-            FLLGJBTHD2_ALL_a = FLLGJBTHD2_GR + FLLGJBTHD2_XR
-            '计算此时的制热COP修正系数
-            Dim FLLGJZLCOPXZ2 As Double = 风冷螺杆式热泵制热COP曲线(FLLGJFHL2)
-            '经过修正后的设备本体耗电功率
-            FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZLCOPXZ2
-        Else
-            FLLGJBTHD2_ALL_a = 0
-            FLLGJBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '水（地）源热泵（1）
-        '设备的装机总数量，台数
-        Dim SDYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 14).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim SDYRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 58).Value
-        Dim SDYRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 66).Value / SDYRBZJSL1
-        Dim SDYRBFHL1 As Double = SDYRBFHL1_GR + SDYRBFHL1_XR
-        If SDYRBZJSL1 > 0 And SDYRBFHL1 >= SDYRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SDYRBBTHD1_ED As Double = SDYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 14).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SDYRBBTHD1_GR As Double = BTHDXS_GR_water * SDYRBBTHD1_ED * SDYRBFHL1_GR
-            Dim SDYRBBTHD1_XR As Double = BTHDXS_XR_water * SDYRBBTHD1_ED * SDYRBFHL1_XR
-            '在没有考虑修正系数前的，总耗电功率
-            SDYRBBTHD1_ALL_a = SDYRBBTHD1_GR + SDYRBBTHD1_XR
-            '计算此时的制热COP修正系数
-            Dim SDYRBZLCOPXZ1 As Double = 水_地源热泵制热COP曲线(SDYRBFHL1)
-            '经过修正后的设备本体耗电功率
-            SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZLCOPXZ1
-        Else
-            SDYRBBTHD1_ALL_a = 0
-            SDYRBBTHD1_ALL_b = 0
-        End If
-        '水（地）源热泵（2）
-        '设备的装机总数量，台数
-        Dim SDYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 14).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim SDYRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 59).Value
-        Dim SDYRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 67).Value / SDYRBZJSL2
-        Dim SDYRBFHL2 As Double = SDYRBFHL2_GR + SDYRBFHL2_XR
-        If SDYRBZJSL2 > 0 And SDYRBFHL2 >= SDYRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim SDYRBBTHD2_ED As Double = SDYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 14).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim SDYRBBTHD2_GR As Double = BTHDXS_GR_water * SDYRBBTHD2_ED * SDYRBFHL2_GR
-            Dim SDYRBBTHD2_XR As Double = BTHDXS_XR_water * SDYRBBTHD2_ED * SDYRBFHL2_XR
-            '在没有考虑修正系数前的，总耗电功率
-            SDYRBBTHD2_ALL_a = SDYRBBTHD2_GR + SDYRBBTHD2_XR
-            '计算此时的制热COP修正系数
-            Dim SDYRBZLCOPXZ2 As Double = 水_地源热泵制热COP曲线(SDYRBFHL2)
-            '经过修正后的设备本体耗电功率
-            SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZLCOPXZ2
-        Else
-            SDYRBBTHD2_ALL_a = 0
-            SDYRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '空气源热泵（1）
-        '设备的装机总数量，台数
-        Dim KQYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 16).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim KQYRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 56).Value
-        Dim KQYRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 64).Value / KQYRBZJSL1
-        Dim KQYRBFHL1 As Double = KQYRBFHL1_GR + KQYRBFHL1_XR
-        If KQYRBZJSL1 > 0 And KQYRBFHL1 >= KQYRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim KQYRBBTHD1_ED As Double = KQYRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 16).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim KQYRBBTHD1_GR As Double = BTHDXS_GR_air * KQYRBBTHD1_ED * KQYRBFHL1_GR
-            Dim KQYRBBTHD1_XR As Double = BTHDXS_XR_air * KQYRBBTHD1_ED * KQYRBFHL1_XR
-            '在没有考虑修正系数前的，总耗电功率
-            KQYRBBTHD1_ALL_a = KQYRBBTHD1_GR + KQYRBBTHD1_XR
-            '计算此时的制热COP修正系数
-            Dim KQYRBZLCOPXZ1 As Double = 空气源热泵制热COP曲线(KQYRBFHL1)
-            '经过修正后的设备本体耗电功率
-            KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZLCOPXZ1
-        Else
-            KQYRBBTHD1_ALL_a = 0
-            KQYRBBTHD1_ALL_b = 0
-        End If
-        '空气源热泵（2）
-        '设备的装机总数量，台数
-        Dim KQYRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 16).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim KQYRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 57).Value
-        Dim KQYRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 65).Value / KQYRBZJSL2
-        Dim KQYRBFHL2 As Double = KQYRBFHL2_GR + KQYRBFHL2_XR
-        If KQYRBZJSL2 > 0 And KQYRBFHL2 >= KQYRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim KQYRBBTHD2_ED As Double = KQYRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 16).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim KQYRBBTHD2_GR As Double = BTHDXS_GR_air * KQYRBBTHD2_ED * KQYRBFHL2_GR
-            Dim KQYRBBTHD2_XR As Double = BTHDXS_XR_air * KQYRBBTHD2_ED * KQYRBFHL2_XR
-            '在没有考虑修正系数前的，总耗电功率
-            KQYRBBTHD2_ALL_a = KQYRBBTHD2_GR + KQYRBBTHD2_XR
-            '计算此时的制热COP修正系数
-            Dim KQYRBZLCOPXZ2 As Double = 空气源热泵制热COP曲线(KQYRBFHL2)
-            '经过修正后的设备本体耗电功率
-            KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZLCOPXZ2
-        Else
-            KQYRBBTHD2_ALL_a = 0
-            KQYRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '离心式热泵（1）
-        '设备的装机总数量，台数
-        Dim LXSRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 18).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim LXSRBFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 60).Value
-        Dim LXSRBFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 68).Value / LXSRBZJSL1
-        Dim LXSRBFHL1 As Double = LXSRBFHL1_GR + LXSRBFHL1_XR
-        If LXSRBZJSL1 > 0 And LXSRBFHL1 >= LXSRBFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSRBBTHD1_ED As Double = LXSRBZJSL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 18).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSRBBTHD1_GR As Double = BTHDXS_GR_water * LXSRBBTHD1_ED * LXSRBFHL1_GR
-            Dim LXSRBBTHD1_XR As Double = BTHDXS_XR_water * LXSRBBTHD1_ED * LXSRBFHL1_XR
-            '在没有考虑修正系数前的，总耗电功率
-            LXSRBBTHD1_ALL_a = LXSRBBTHD1_GR + LXSRBBTHD1_XR
-            '计算此时的制热COP修正系数
-            Dim LXSRBZLCOPXZ1 As Double = 离心式热泵制热COP曲线(LXSRBFHL1)
-            '经过修正后的设备本体耗电功率
-            LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZLCOPXZ1
-        Else
-            LXSRBBTHD1_ALL_a = 0
-            LXSRBBTHD1_ALL_b = 0
-        End If
-        '离心式热泵（2）
-        '设备的装机总数量，台数
-        Dim LXSRBZJSL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 18).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
-        Dim LXSRBFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 61).Value
-        Dim LXSRBFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 69).Value / LXSRBZJSL2
-        Dim LXSRBFHL2 As Double = LXSRBFHL2_GR + LXSRBFHL2_XR
-        If LXSRBZJSL2 > 0 And LXSRBFHL2 >= LXSRBFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim LXSRBBTHD2_ED As Double = LXSRBZJSL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 18).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim LXSRBBTHD2_GR As Double = BTHDXS_GR_water * LXSRBBTHD2_ED * LXSRBFHL2_GR
-            Dim LXSRBBTHD2_XR As Double = BTHDXS_XR_water * LXSRBBTHD2_ED * LXSRBFHL2_XR
-            '在没有考虑修正系数前的，总耗电功率
-            LXSRBBTHD2_ALL_a = LXSRBBTHD2_GR + LXSRBBTHD2_XR
-            '计算此时的制热COP修正系数
-            Dim LXSRBZLCOPXZ2 As Double = 离心式热泵制热COP曲线(LXSRBFHL2)
-            '经过修正后的设备本体耗电功率
-            LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZLCOPXZ2
-        Else
-            LXSRBBTHD2_ALL_a = 0
-            LXSRBBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '电采暖锅炉（1）
-        '设备的装机总功率
-        Dim DGLZJZGL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 20).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率
-        Dim DGLFHL1_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value
-        Dim DGLFHL1_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value
-        Dim DGLFHL1 As Double = DGLFHL1_GR + DGLFHL1_XR
-        If DGLZJZGL1 > 0 And DGLFHL1 >= DGLFHL1_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim DGLBTHD1_ED As Double = DGLZJZGL1 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(50, 20).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim DGLBTHD1_GR As Double = DGLBTHD1_ED * DGLFHL1_GR
-            Dim DGLBTHD1_XR As Double = DGLBTHD1_ED * DGLFHL1_XR
-            '在没有考虑修正系数前的，总耗电功率
-            DGLBTHD1_ALL_a = DGLBTHD1_GR + DGLBTHD1_XR
-            '计算此时的制热COP修正系数
-            Dim DGLZLCOPXZ1 As Double = 电采暖锅炉制热效率曲线(DGLFHL1)
-            '经过修正后的设备本体耗电功率
-            DGLBTHD1_ALL_b = DGLBTHD1_ALL_a / DGLZLCOPXZ1
-        Else
-            DGLBTHD1_ALL_a = 0
-            DGLBTHD1_ALL_b = 0
-        End If
-        '电采暖锅炉（2）
-        '设备的装机总功率
-        Dim DGLZJZGL2 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 20).Value
-        '此时的设备负荷率=供热负荷率+蓄热负荷率
-        Dim DGLFHL2_GR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 95).Value
-        Dim DGLFHL2_XR As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97).Value
-        Dim DGLFHL2 As Double = DGLFHL2_GR + DGLFHL2_XR
-        If DGLZJZGL2 > 0 And DGLFHL2 >= DGLFHL2_min Then
-            '设备100%负荷时的额定本体耗电功率
-            Dim DGLBTHD2_ED As Double = DGLZJZGL2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(69, 20).Value
-            '在没有考虑修正系数前的，设备本体耗电功率
-            Dim DGLBTHD2_GR As Double = DGLBTHD2_ED * DGLFHL2_GR
-            Dim DGLBTHD2_XR As Double = DGLBTHD2_ED * DGLFHL2_XR
-            '在没有考虑修正系数前的，总耗电功率
-            DGLBTHD2_ALL_a = DGLBTHD2_GR + DGLBTHD2_XR
-            '计算此时的制热COP修正系数
-            Dim DGLZLCOPXZ2 As Double = 电采暖锅炉制热效率曲线(DGLFHL2)
-            '经过修正后的设备本体耗电功率
-            DGLBTHD2_ALL_b = DGLBTHD2_ALL_a / DGLZLCOPXZ2
-        Else
-            DGLBTHD2_ALL_a = 0
-            DGLBTHD2_ALL_b = 0
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '计算空调设备本体耗电综合修正系数
-        '空调设备在考虑修正系数前的本体总耗电功率
-        Dim ZHD_ALL_a As Double = FLLGJBTHD1_ALL_a + FLLGJBTHD2_ALL_a + SDYRBBTHD1_ALL_a + SDYRBBTHD2_ALL_a + KQYRBBTHD1_ALL_a + KQYRBBTHD2_ALL_a + LXSRBBTHD1_ALL_a + LXSRBBTHD2_ALL_a + DGLBTHD1_ALL_a + DGLBTHD2_ALL_a
-        '空调设备在考虑修正系数之后的本体总耗电功率
-        Dim ZHD_ALL_b As Double = FLLGJBTHD1_ALL_b + FLLGJBTHD2_ALL_b + SDYRBBTHD1_ALL_b + SDYRBBTHD2_ALL_b + KQYRBBTHD1_ALL_b + KQYRBBTHD2_ALL_b + LXSRBBTHD1_ALL_b + LXSRBBTHD2_ALL_b + DGLBTHD1_ALL_b + DGLBTHD2_ALL_b
-        '设备本体耗电功率综合修正系数
-        Dim BTHD_XZ As Double = 1
-        If ZHD_ALL_a > 0 And ZHD_ALL_b > 0 Then
-            BTHD_XZ = ZHD_ALL_b / ZHD_ALL_a
-        Else
-            '默认值等于1
-            BTHD_XZ = 1
-        End If
-        '天然气耗电综合修正系数
-        Dim ZHTRQ_ALL_a As Double = ZRXXHLBTTRQ1_ALL_a + ZRXXHLBTTRQ2_ALL_a + TRQGLBTTRQ1_ALL_a + TRQGLBTTRQ2_ALL_a + NRJTRQ1_ALL_a + NRJTRQ2_ALL_a
-        Dim ZHTRQ_ALL_b As Double = ZRXXHLBTTRQ1_ALL_b + ZRXXHLBTTRQ2_ALL_b + TRQGLBTTRQ1_ALL_b + TRQGLBTTRQ2_ALL_b + NRJTRQ1_ALL_b + NRJTRQ2_ALL_b
-        Dim TRQ_XZ As Double = 1
-        If ZHTRQ_ALL_a > 0 And ZHTRQ_ALL_b > 0 Then
-            TRQ_XZ = ZHTRQ_ALL_b / ZHTRQ_ALL_a
-        Else
-            '默认值等于1
-            TRQ_XZ = 1
-        End If
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '将综合修正系数写入Excel
-        '将综合修正系数写入Excel
-        '制热季系数
-        '制热设备本体耗电修正
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 108).Value = BTHD_XZ
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 108).Value = BTHD_XZ
-        '制热天然气消耗修正
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109).Value = TRQ_XZ
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109).Value = TRQ_XZ
-        '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
-        '计算出的结果保留3位小数，增加美观度
-        For i = 108 To 109
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
-        Next
     End Sub
     Sub 制冷和蓄冷空调设备负荷率修正(b As Integer)
         On Error Resume Next
@@ -15675,6 +15915,47 @@ qqq:
         Dim ZRXXHLFHL2_min As Double = FHL2_min_ZRXXHL
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
+        '供热的综合负荷率计算要考虑混水供热设备和梯级供热设备
+        '梯级供热设备
+        Dim FHL_TJGR_FLLGJ As Double = 0
+        Dim FHL_TJGR_KQYRB As Double = 0
+        Dim FHL_TJGR_SDYRB As Double = 0
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "风冷螺杆机" Then
+            FHL_TJGR_FLLGJ = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "空气源热泵" Then
+            FHL_TJGR_KQYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "水(地)源热泵" Then
+            FHL_TJGR_SDYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
+        End If
+        '3种设备不可能同时存在
+        If FHL_TJGR_FLLGJ + FHL_TJGR_KQYRB + FHL_TJGR_SDYRB < 0.1 And FHL_TJGR_FLLGJ + FHL_TJGR_KQYRB + FHL_TJGR_SDYRB > 0 Then
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = 0.1
+        ElseIf FHL_TJGR_FLLGJ + FHL_TJGR_KQYRB + FHL_TJGR_SDYRB > 1 Then
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = 1
+        End If
+        '混水供热
+        Dim FHL_HSGR_FLLGJ As Double = 0
+        Dim FHL_HSGR_KQYRB As Double = 0
+        Dim FHL_HSGR_SDYRB As Double = 0
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+            FHL_HSGR_FLLGJ = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+            FHL_HSGR_KQYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+            FHL_HSGR_SDYRB = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+        End If
+        '3种设备不可能同时存在
+        If FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB < 0.1 And FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB > 0 Then
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = 0.1
+        ElseIf FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB > 1 Then
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = 1
+        End If
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————  
         '如果计算出的设备总负荷率大于0，但是小于设备允许的最低负荷率，则重新修正设备负荷率
         '天然气锅炉（1）
         '设备的装机总数量，台数
@@ -15765,7 +16046,7 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97).Value = 1 * (DGLFHL2_XR / DGLFHL2)
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
+        '————————————————————————————————————————————————————————————————————————————————————————              
         '风冷螺杆机（1）
         '设备的装机总数量，台数
         Dim FLLGJZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 12).Value
@@ -15817,7 +16098,7 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 63).Value = 1 * (FLLGJFHL2_XR / FLLGJFHL2) * FLLGJZJSL2
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
+        '————————————————————————————————————————————————————————————————————————————————————————                   
         '水（地）源热泵（1）
         '设备的装机总数量，台数
         Dim SDYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 14).Value
@@ -15921,7 +16202,7 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 69).Value = 1 * (LXSRBFHL2_XR / LXSRBFHL2) * LXSRBZJSL2
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
-        '————————————————————————————————————————————————————————————————————————————————————————        
+        '————————————————————————————————————————————————————————————————————————————————————————                    
         '空气源热泵（1）
         '设备的装机总数量，台数
         Dim KQYRBZJSL1 As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 16).Value
