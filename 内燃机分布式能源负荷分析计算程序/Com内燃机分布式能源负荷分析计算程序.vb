@@ -1882,7 +1882,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '计算循环体
             Call 计算循环体(n)
             '将各工况混水比例显示出来
-            Dim XianShi As String
+            Dim XianShi As String = Nothing
             For Each XXX In HSBL
                 XianShi = XianShi & XXX.ToString & "  "
             Next
@@ -16461,8 +16461,20 @@ qqq:
         End If
         '定义局部变量
         '制冷设备负荷分段计算中用到的变量
-        Dim D1SXZLCOP, D2SXZLCOP, D3SXZLCOP, D4SXZLCOP, D5SXZLCOP, D6SXZLCOP '第一到第六顺序制冷设备COP
-        Dim D1SXZLGL, D2SXZLGL, D3SXZLGL, D4SXZLGL, D5SXZLGL, D6SXZLGL '第一到第六顺序制冷设备制冷功率
+        '第一到第六顺序制冷设备COP（初始值为0）
+        Dim D1SXZLCOP As Double = 0
+        Dim D2SXZLCOP As Double = 0
+        Dim D3SXZLCOP As Double = 0
+        Dim D4SXZLCOP As Double = 0
+        Dim D5SXZLCOP As Double = 0
+        Dim D6SXZLCOP As Double = 0
+        '第一到第六顺序制冷设备制冷功率（初始值为0）
+        Dim D1SXZLGL As Double = 0
+        Dim D2SXZLGL As Double = 0
+        Dim D3SXZLGL As Double = 0
+        Dim D4SXZLGL As Double = 0
+        Dim D5SXZLGL As Double = 0
+        Dim D6SXZLGL As Double = 0
         Dim NRJGDGL, NRJGDGL30p '内燃机供电功率，最小功率单台内燃机供电功率30%，扣除内燃机和溴化锂的自用电
         Dim XHLZLa, XHLZLa30p '溴化锂制冷功率，最小功率单台溴化锂制冷功率30%
         Dim NRJ30pGDGLSY = 0 '单台内燃机30%负荷发电功率还剩余的量
@@ -17005,8 +17017,20 @@ qqq:
         End If
         '定义局部变量
         '制热设备负荷分段计算中用到的变量
-        Dim D1SXZRCOP, D2SXZRCOP, D3SXZRCOP, D4SXZRCOP, D5SXZRCOP, D6SXZRCOP '第一到第六顺序制热设备COP
-        Dim D1SXZRGL, D2SXZRGL, D3SXZRGL, D4SXZRGL, D5SXZRGL, D6SXZRGL '第一到第六顺序制热设备制热功率
+        '第一到第六顺序制热设备COP（初始值=0）
+        Dim D1SXZRCOP As Double = 0
+        Dim D2SXZRCOP As Double = 0
+        Dim D3SXZRCOP As Double = 0
+        Dim D4SXZRCOP As Double = 0
+        Dim D5SXZRCOP As Double = 0
+        Dim D6SXZRCOP As Double = 0
+        '第一到第六顺序制热设备制热功率（初始值=0）
+        Dim D1SXZRGL As Double = 0
+        Dim D2SXZRGL As Double = 0
+        Dim D3SXZRGL As Double = 0
+        Dim D4SXZRGL As Double = 0
+        Dim D5SXZRGL As Double = 0
+        Dim D6SXZRGL As Double = 0
         Dim NRJGDGL, NRJGDGL30p '内燃机供电功率，最小功率单台内燃机供电功率30%，扣除内燃机和溴化锂的自用电
         Dim XHLZRa, XHLZRa30p '溴化锂制热功率，最小功率单台溴化锂制热功率30%
         Dim NRJ30pGDGLSY = 0 '单台内燃机30%负荷发电功率还剩余的量
@@ -17205,7 +17229,10 @@ qqq:
             XHLZRa = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(173, 4).Value * ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(20, 7).Value
             '功率最小的单台内燃机在30%负荷情况下，内燃机扣除自用电后向外供电功率以及溴化锂制热功率
             '两种型号内燃机中，单机功率最小的一台
-            Dim NRJDJFDGLmin, NRJDJYRGLmin  '内燃机单机发电功率min，内燃机单机余热功率min
+            '内燃机单机发电功率min
+            Dim NRJDJFDGLmin As Double = 0
+            '内燃机单机余热功率min
+            Dim NRJDJYRGLmin As Double = 0
             Dim NRJ1DJFDGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 4).Value '内燃机1单机发电功率
             Dim NRJ2DJFDGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 4).Value '内燃机1单机发电功率
             Dim NRJ1DJYRGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(56, 4).Value '内燃机1单机余热功率
