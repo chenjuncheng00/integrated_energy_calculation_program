@@ -10171,26 +10171,60 @@ qqq:
         ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
-        '判断供冷、供热计算结果是否都正确，如果出现不正确，则报错
+        '判断供冷计算结果是否都正确，如果出现不正确，则报错
+        Dim GL_ERROR As String = Nothing
         For i = 1 To n
-            If (ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 18).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35).Value = "不正确") Then
-                MsgBox("供冷、供热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
-                Exit For
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 18).Value = "不正确" Then
+                Dim XH_GL As String = "(" & i & ")"
+                GL_ERROR = GL_ERROR & XH_GL & "  "
+                'MsgBox("供冷的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)                
             End If
         Next
-        '判断蓄冷、蓄热计算结果是否都正确，如果出现不正确，则报错
+        '判断供热计算结果是否都正确，如果出现不正确，则报错
+        Dim GR_ERROR As String = Nothing
         For i = 1 To n
-            If (ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 61).Value = "不正确") Then
-                MsgBox("蓄冷、蓄热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
-                Exit For
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35).Value = "不正确" Then
+                Dim XH_GR As String = "(" & i & ")"
+                GR_ERROR = GR_ERROR & XH_GR & "  "
+                'MsgBox("供热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
+            End If
+        Next
+        '判断蓄冷计算结果是否都正确，如果出现不正确，则报错
+        Dim XL_ERROR As String = Nothing
+        For i = 1 To n
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49).Value = "不正确" Then
+                Dim XH_XL As String = "(" & i & ")"
+                XL_ERROR = XL_ERROR & XH_XL & "  "
+                'MsgBox("蓄冷的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
+            End If
+        Next
+        '判断蓄热计算结果是否都正确，如果出现不正确，则报错
+        Dim XR_ERROR As String = Nothing
+        For i = 1 To n
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 61).Value = "不正确" Then
+                Dim XH_XR As String = "(" & i & ")"
+                XR_ERROR = XR_ERROR & XH_XR & "  "
+                'MsgBox("蓄热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
             End If
         Next
         '判断向外供电计算结果是否正确，如果出现不正确则报错
         '只有当处于不可以向外供电的计算模式，并且内燃机发电量大于总耗电量，才会报错
+        '制冷季
+        Dim GD_ERROR_L As String = Nothing
         For i = 1 To n
-            If (ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 62).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 63).Value = "不正确") Then
-                MsgBox("供电的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
-                Exit For
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 62).Value = "不正确" Then
+                Dim XH_GD_L As String = "(" & i & ")"
+                GD_ERROR_L = GD_ERROR_L & XH_GD_L & "  "
+                'MsgBox("供电的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
+            End If
+        Next
+        '制热季
+        Dim GD_ERROR_R As String = Nothing
+        For i = 1 To n
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 63).Value = "不正确" Then
+                Dim XH_GD_R As String = "(" & i & ")"
+                GD_ERROR_R = GD_ERROR_R & XH_GD_R & "  "
+                'MsgBox("供电的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & i)
             End If
         Next
         '检查天然气耗量计算结果中是否出现了不正确
@@ -10202,93 +10236,170 @@ qqq:
         'Next
         '检查计算出来的各种设备负荷率是否小于0或者大于1，有则报错
         '内燃机负荷率
+        Dim NRJ_ERROR_L_1 As String = Nothing
+        Dim NRJ_ERROR_L_2 As String = Nothing
+        Dim NRJ_ERROR_R_1 As String = Nothing
+        Dim NRJ_ERROR_R_2 As String = Nothing
         For i = 1 To n
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 2).Value > 1 Then
-                MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_NRJ_L_1 As String = "(" & i & ")"
+                NRJ_ERROR_L_1 = NRJ_ERROR_L_1 & XH_NRJ_L_1 & "  "
+                'MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 3).Value > 1 Then
-                MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_NRJ_L_2 As String = "(" & i & ")"
+                NRJ_ERROR_L_2 = NRJ_ERROR_L_2 & XH_NRJ_L_2 & "  "
+                'MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 19).Value > 1 Then
-                MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_NRJ_R_1 As String = "(" & i & ")"
+                NRJ_ERROR_R_1 = NRJ_ERROR_R_1 & XH_NRJ_R_1 & "  "
+                'MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 20).Value > 1 Then
-                MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_NRJ_R_2 As String = "(" & i & ")"
+                NRJ_ERROR_R_2 = NRJ_ERROR_R_2 & XH_NRJ_R_2 & "  "
+                'MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
         '制冷+蓄冷设备（上限设置为1.02，放大一些容错）
+        Dim ZL_XL_FHL_ERROR As String = Nothing
         For i = 1 To n
             For j = 1 To 12
                 If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 3 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35 + j).Value > 1.02 Then
-                    MsgBox("制冷设备和蓄冷设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                    Exit For
+                    Dim XH_ZL_XL As String = "(" & i & ")"
+                    ZL_XL_FHL_ERROR = ZL_XL_FHL_ERROR & XH_ZL_XL & "  "
+                    'MsgBox("制冷设备和蓄冷设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
                 End If
             Next
         Next
         '纯制冷设备（上限设置为1.02，放大一些容错）
+        Dim ZL_FHL_ERROR As String = Nothing
         For i = 1 To n
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 16).Value > 1.02 Then
-                MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZL As String = "(" & i & ")"
+                ZL_FHL_ERROR = ZL_FHL_ERROR & XH_ZL & "  "
+                'MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 17).Value > 1.02 Then
-                MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZL As String = "(" & i & ")"
+                ZL_FHL_ERROR = ZL_FHL_ERROR & XH_ZL & "  "
+                'MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
         '制热+蓄热设备（上限设置为1.02，放大一些容错）
+        Dim ZR_XR_FHL_ERROR As String = Nothing
         For i = 1 To n
             For j = 1 To 8
                 If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49 + j).Value > 1.02 Then
-                    MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                    Exit For
+                    Dim XH_ZR_XR As String = "(" & i & ")"
+                    ZR_XR_FHL_ERROR = ZR_XR_FHL_ERROR & XH_ZR_XR & "  "
+                    'MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
                 End If
             Next
         Next
         For i = 1 To n
             For j = 1 To 2
                 If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 57 + j).Value > 1.02 Then
-                    MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                    Exit For
+                    Dim XH_ZR_XR As String = "(" & i & ")"
+                    ZR_XR_FHL_ERROR = ZR_XR_FHL_ERROR & XH_ZR_XR & "  "
+                    'MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
                 End If
             Next
         Next
         '纯制热设备（上限设置为1.02，放大一些容错）
+        Dim ZR_FHL_ERROR As String = Nothing
         For i = 1 To n
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 21).Value > 1.02 Then
-                MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZR As String = "(" & i & ")"
+                ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
+                'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22).Value > 1.02 Then
-                MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZR As String = "(" & i & ")"
+                ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
+                'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 31).Value > 1.02 Then
-                MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZR As String = "(" & i & ")"
+                ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
+                'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
             If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32).Value > 1.02 Then
-                MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_ZR As String = "(" & i & ")"
+                ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
+                'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
-        '梯级供热和混水供热设备负荷率计算结果（上限设置为1.02，放大一些容错）
+        '梯级供热设备负荷率计算结果（上限设置为1.02，放大一些容错）
+        Dim TJGR_ERROR As String = Nothing
         For i = 1 To n
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 81).Value > 1.02 Then
-                MsgBox("梯级供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_TJGR As String = "(" & i & ")"
+                TJGR_ERROR = TJGR_ERROR & XH_TJGR & "  "
+                ' MsgBox("梯级供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
+        '混水供热设备负荷率计算结果（上限设置为1.02，放大一些容错）
+        Dim HSGR_ERROR As String = Nothing
         For i = 1 To n
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value > 1.02 Then
-                MsgBox("混水供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
-                Exit For
+                Dim XH_HSGR As String = "(" & i & ")"
+                HSGR_ERROR = HSGR_ERROR & XH_HSGR & "  "
+                'MsgBox("混水供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
+        '报错弹框
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————  
+        If GL_ERROR <> Nothing Then
+            MsgBox("供冷的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & GL_ERROR)
+        End If
+        If GR_ERROR <> Nothing Then
+            MsgBox("供热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & GR_ERROR)
+        End If
+        If XL_ERROR <> Nothing Then
+            MsgBox("蓄冷的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & XL_ERROR)
+        End If
+        If XR_ERROR <> Nothing Then
+            MsgBox("蓄热的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & XR_ERROR)
+        End If
+        If GD_ERROR_L <> Nothing Then
+            MsgBox("供冷季供电的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & GD_ERROR_L)
+        End If
+        If GD_ERROR_R <> Nothing Then
+            MsgBox("采暖季供电的计算结果中出现了误差较大的不正确结果，请检查！！" & "不正确的工况序号为： " & GD_ERROR_R)
+        End If
+        If NRJ_ERROR_L_1 <> Nothing Then
+            MsgBox("供冷季内燃机(1)负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & NRJ_ERROR_L_1)
+        End If
+        If NRJ_ERROR_L_2 <> Nothing Then
+            MsgBox("供冷季内燃机(2)负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & NRJ_ERROR_L_2)
+        End If
+        If NRJ_ERROR_R_1 <> Nothing Then
+            MsgBox("采暖季内燃机(1)负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & NRJ_ERROR_R_1)
+        End If
+        If NRJ_ERROR_R_2 <> Nothing Then
+            MsgBox("采暖季内燃机(2)负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & NRJ_ERROR_R_2)
+        End If
+        If ZL_XL_FHL_ERROR <> Nothing Then
+            MsgBox("制冷设备和蓄冷设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & ZL_XL_FHL_ERROR)
+        End If
+        If ZL_FHL_ERROR <> Nothing Then
+            MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & ZL_FHL_ERROR)
+        End If
+        If ZR_XR_FHL_ERROR <> Nothing Then
+            MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & ZR_XR_FHL_ERROR)
+        End If
+        If ZR_FHL_ERROR <> Nothing Then
+            MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & ZR_FHL_ERROR)
+        End If
+        If TJGR_ERROR <> Nothing Then
+            MsgBox("梯级供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & TJGR_ERROR)
+        End If
+        If HSGR_ERROR <> Nothing Then
+            MsgBox("混水供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & HSGR_ERROR)
+        End If
     End Sub
     Sub 判断冷热负荷需求量是否大于冷热负荷装机量()
         On Error Resume Next
