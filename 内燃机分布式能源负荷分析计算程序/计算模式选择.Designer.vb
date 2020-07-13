@@ -117,7 +117,7 @@ Partial Class 计算模式选择
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(682, 24)
         Me.Label6.TabIndex = 7
-        Me.Label6.Text = "输入的负荷调节精度数值越小，计算精度越高，但计算速度越慢"
+        Me.Label6.Text = "输入的负荷调节精度数值越小，计算精度越高，但计算速度稍慢"
         '
         'Label7
         '
