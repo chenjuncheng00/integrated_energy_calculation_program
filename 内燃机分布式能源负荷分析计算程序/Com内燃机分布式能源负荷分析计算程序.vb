@@ -376,7 +376,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 '如果此时处于内燃机不启动的时间段，则关闭所有内燃机，内燃机负荷率为0
                 If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(24, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(25, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(26, 9).Value) Then
                     '将已有的制冷制热设备运行负荷率，蓄冷蓄热工况设备启动情况清空
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 76)).Value = 0
+                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
+                    Call 清空制热和蓄热设备负荷率计算结果(b)
                     '内燃机负荷率赋值为0
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = 0
                     '使用内燃机可以向外供电情况下的代码进行计算
@@ -394,9 +395,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 Else
                     '如果本工况蓄冷功率为0同时冷负荷总需求量大于0，则进行下列计算（蓄冷功率为0时，内燃机发电量只需要平衡掉制冷空调设备的耗电即可）
                     If (XNXLGL(b) = 0 And LFHZXQL(b) > 0) Then
-                        '将已有的制冷设备运行负荷率，蓄冷工况设备启动情况清空
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '调用子程序进行计算——制冷不同设备负荷率计算
                         '第一步，进行制冷设备计算
                         Call 内燃机不可以向外供电时制冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
@@ -406,8 +406,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '如果本工况蓄热功率为0同时热负荷总需求量大于0，则进行下列计算（蓄热功率为0时，内燃机发电量只需要平衡掉制热空调设备的耗电即可）
                     If (XNXRGL(b) = 0 And RFHZXQL(b) > 0) Then
                         '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '调用子程序进行计算——制热不同设备负荷率计算
                         '第一步，进行制热设备计算
                         Call 内燃机不可以向外供电时制热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
@@ -416,17 +415,15 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     End If
                     '当本工况蓄冷功率大于0时同时冷负荷总需求量大于0，制冷内燃机的发电功率需要能够抵消掉制冷设备和蓄冷设备的总耗电量
                     If (XNXLGL(b) > 0 And LFHZXQL(b) >= 0) Then
-                        '将已有的制冷设备运行负荷率，蓄冷工况设备启动情况清空
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '进行计算
                         Call 内燃机不可以向外供电时制冷和蓄冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                     End If
                     '当本工况蓄热功率大于0时同时热负荷总需求量大于0，制热内燃机的发电功率需要能够抵消掉制热设备和蓄热设备的总耗电量
                     If (XNXRGL(b) > 0 And RFHZXQL(b) >= 0) Then
                         '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '进行计算
                         Call 内燃机不可以向外供电时制热和蓄热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                     End If
@@ -461,7 +458,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '如果此时处于内燃机不启动的时间段，则关闭所有内燃机，内燃机负荷率为0
             If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(24, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(25, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(26, 9).Value) Then
                 '将已有的制冷制热设备运行负荷率，蓄冷蓄热工况设备启动情况清空
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 76)).Value = 0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '内燃机负荷率赋值为0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = 0
                 '使用内燃机可以向外供电情况下的代码进行计算
@@ -479,9 +477,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Else
                 '如果本工况蓄冷功率为0同时冷负荷总需求量大于0，则进行下列计算（蓄冷功率为0时，内燃机发电量只需要平衡掉制冷空调设备的耗电即可）
                 If (XNXLGL(b) = 0 And LFHZXQL(b) > 0) Then
-                    '将已有的制冷设备运行负荷率，蓄冷工况设备启动情况清空
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
+                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                     '调用子程序进行计算——制冷不同设备负荷率计算
                     '第一步，进行制冷设备计算
                     Call 内燃机不可以向外供电时制冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
@@ -491,8 +488,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 '如果本工况蓄热功率为0同时热负荷总需求量大于0，则进行下列计算（蓄热功率为0时，内燃机发电量只需要平衡掉制热空调设备的耗电即可）
                 If (XNXRGL(b) = 0 And RFHZXQL(b) > 0) Then
                     '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+                    Call 清空制热和蓄热设备负荷率计算结果(b)
                     '调用子程序进行计算——制热不同设备负荷率计算
                     '第一步，进行制热设备计算
                     Call 内燃机不可以向外供电时制热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
@@ -501,17 +497,15 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 End If
                 '当本工况蓄冷功率大于0时同时冷负荷总需求量大于0，制冷内燃机的发电功率需要能够抵消掉制冷设备和蓄冷设备的总耗电量
                 If (XNXLGL(b) > 0 And LFHZXQL(b) >= 0) Then
-                    '将已有的制冷设备运行负荷率，蓄冷工况设备启动情况清空
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
+                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                     '进行计算
                     Call 内燃机不可以向外供电时制冷和蓄冷设备运行计算(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                 End If
                 '当本工况蓄热功率大于0时同时热负荷总需求量大于0，制热内燃机的发电功率需要能够抵消掉制热设备和蓄热设备的总耗电量
                 If (XNXRGL(b) > 0 And RFHZXQL(b) >= 0) Then
                     '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+                    Call 清空制热和蓄热设备负荷率计算结果(b)
                     '进行计算
                     Call 内燃机不可以向外供电时制热和蓄热设备运行计算(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                 End If
@@ -1908,27 +1902,15 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '制冷计算,常规模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
             Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
         ElseIf LFHZXQL(b) = 0 Then
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '制冷和蓄冷计算，全局寻优计算模式（此时只有蓄冷负荷）
             Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
         ElseIf LFHZXQL(b) < 0 Then
@@ -5475,21 +5457,15 @@ aaa:
             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
             Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
         ElseIf RFHZXQL(b) = 0 Then
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热和蓄热计算，全局寻优计算模式（此时只有蓄热负荷）
             Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
         ElseIf RFHZXQL(b) < 0 Then
@@ -10517,14 +10493,8 @@ qqq:
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
                         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '设备制冷计算 ,常规计算模式
                         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                         '制冷和蓄冷计算，全局寻优计算模式
@@ -10568,14 +10538,8 @@ qqq:
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                         '记录下溴化锂(1)+(2)的总制冷量
                         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '设备制冷计算 ,常规计算模式
                         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                         '制冷和蓄冷计算，全局寻优计算模式
@@ -10615,14 +10579,8 @@ qqq:
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
                             '记录下溴化锂(1)+(2)的总制冷量
                             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                            Call 清空制冷和蓄冷设备负荷率计算结果(b)
                             '设备制冷计算 ,常规计算模式
                             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                             '制冷和蓄冷计算，全局寻优计算模式
@@ -10665,14 +10623,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = 0
             End If
         ElseIf LFHZXQL(b) = 0 Then
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '制冷和蓄冷计算，全局寻优计算模式（此时只有蓄冷负荷）
             Call 制冷季设备制冷和蓄冷全局寻优计算(b, FHTJJD, XHLZL, HSLFH, D_price, TRQ_price, calculation_mode)
         ElseIf LFHZXQL(b) < 0 Then
@@ -10695,14 +10647,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        Call 清空制冷和蓄冷设备负荷率计算结果(b)
         '重新进行制冷计算
         '设备制冷计算 ,常规计算模式
         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
@@ -10747,11 +10693,8 @@ qqq:
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
                         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '制热计算，常规计算模式
                         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                         '制热和蓄热计算，全局寻优计算模式
@@ -10794,11 +10737,8 @@ qqq:
                         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                         '记录下溴化锂(1)+(2)的总制热量
                         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '制热计算，常规计算模式
                         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                         '制热和蓄热计算，全局寻优计算模式
@@ -10838,11 +10778,8 @@ qqq:
                             Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
                             '记录下溴化锂(1)+(2)的总制热量
                             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-                            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                            Call 清空制热和蓄热设备负荷率计算结果(b)
                             '制热计算，常规计算模式
                             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                             '制热和蓄热计算，全局寻优计算模式
@@ -10885,11 +10822,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = 0
             End If
         ElseIf RFHZXQL(b) = 0 Then
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热和蓄热计算，全局寻优计算模式（此时只有蓄热负荷）
             Call 制热季设备制热和蓄热全局寻优计算(b, FHTJJD, XHLZR, HSRFH, D_price, TRQ_price, calculation_mode)
         ElseIf RFHZXQL(b) < 0 Then
@@ -10912,11 +10846,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+        Call 清空制热和蓄热设备负荷率计算结果(b)
         '重新进行制热计算
         '制热计算，常规计算模式
         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
@@ -10977,14 +10908,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                             '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                            Call 清空制冷和蓄冷设备负荷率计算结果(b)
                             '设备制冷计算 ,常规计算模式
                             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                             '进行蓄冷设备计算
@@ -11007,14 +10932,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '重新进行一次蓄冷计算
@@ -11023,14 +10942,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '重新进行一次蓄冷计算
@@ -11049,15 +10962,8 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                             End If
-                            '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                            Call 清空制冷和蓄冷设备负荷率计算结果(b)
                             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                             '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -11075,15 +10981,8 @@ qqq:
                                 Exit For
                                 '当向外供电量满足条件，但是不满足蓄冷需求时
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 1) Then
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '重新进行一次蓄冷计算
                                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -11092,14 +10991,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 1) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                 '重新进行一次蓄冷计算
@@ -11149,14 +11042,8 @@ qqq:
                                     '将溴化锂蓄冷的数据清空
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '设备制冷计算 ,常规计算模式
                                     Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                                     '进行蓄冷设备计算
@@ -11179,14 +11066,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄冷计算
@@ -11195,14 +11076,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄冷计算
@@ -11222,15 +11097,8 @@ qqq:
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                                     End If
-                                    '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '进行蓄冷计算
                                     Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                                     '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -11251,14 +11119,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄冷计算
@@ -11267,14 +11129,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
-                                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄冷计算
@@ -11306,14 +11162,8 @@ qqq:
                                 '将溴化锂蓄冷的数据清空
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '设备制冷计算 ,常规计算模式
                                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                                 '进行蓄冷设备计算
@@ -11336,14 +11186,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                     '将此时的内燃机(1)负荷率记录下来
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄冷计算
@@ -11352,14 +11196,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                     '将此时的内燃机(1)负荷率记录下来
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄冷计算
@@ -11379,15 +11217,8 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                                 End If
-                                '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                 '进行蓄冷计算
                                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -11408,14 +11239,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                     '将此时的内燃机(1)负荷率记录下来
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄冷计算
@@ -11424,14 +11249,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(40, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(42, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 4).Value < LFHZXQL(b)) Then
                                     '将此时的内燃机(1)负荷率记录下来
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
-                                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制冷计算修正(b, FHTJJD, JSBC, HSLFH， D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄冷计算
@@ -11516,11 +11335,8 @@ qqq:
                             '将溴化锂蓄热的数据清空
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                            Call 清空制热和蓄热设备负荷率计算结果(b)
                             '制热计算，常规计算模式
                             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                             '进行蓄热设备计算
@@ -11543,11 +11359,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '进行蓄热设备计算
@@ -11556,11 +11369,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '进行蓄热设备计算
@@ -11579,11 +11389,8 @@ qqq:
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                             End If
-                            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                            Call 清空制热和蓄热设备负荷率计算结果(b)
                             '进行蓄热计算
                             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                             '制热和蓄热计算，全局寻优计算模式
@@ -11604,11 +11411,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '进行蓄热设备计算
@@ -11617,11 +11421,8 @@ qqq:
                             ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                 '将此时的内燃机负荷率记录下来
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '修正计算
                                 Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                 '进行蓄热设备计算
@@ -11669,11 +11470,8 @@ qqq:
                                     '将溴化锂蓄热的数据清空
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '制热计算，常规计算模式
                                     Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                                     '进行蓄热设备计算
@@ -11696,11 +11494,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
-                                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                        Call 清空制热和蓄热设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄热计算
@@ -11709,11 +11504,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
-                                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                        Call 清空制热和蓄热设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄热计算
@@ -11733,11 +11525,8 @@ qqq:
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                                     End If
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '进行蓄热计算
                                     Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                                     '制热和蓄热计算，全局寻优计算模式
@@ -11758,11 +11547,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
-                                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                        Call 清空制热和蓄热设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄热计算
@@ -11771,11 +11557,8 @@ qqq:
                                     ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                         '将此时的内燃机(2)负荷率记录下来
                                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
-                                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                        Call 清空制热和蓄热设备负荷率计算结果(b)
                                         '修正计算
                                         Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                         '重新进行一次蓄热计算
@@ -11807,11 +11590,8 @@ qqq:
                                 '将溴化锂蓄热的数据清空
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '制热计算，常规计算模式
                                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                                 '进行蓄热设备计算
@@ -11834,11 +11614,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                     '记录下此时的内燃机(1)负荷率
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄热计算
@@ -11847,11 +11624,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                     '记录下此时的内燃机(1)负荷率
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄热计算
@@ -11871,11 +11645,8 @@ qqq:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                                 End If
-                                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                Call 清空制热和蓄热设备负荷率计算结果(b)
                                 '进行蓄热计算
                                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                                 '制热和蓄热计算，全局寻优计算模式
@@ -11896,11 +11667,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value <= ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                     '记录下此时的内燃机(1)负荷率
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄热计算
@@ -11909,11 +11677,8 @@ qqq:
                                 ElseIf (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(85, 8).Value > ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(87, 8).Value And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b)) Then
                                     '记录下此时的内燃机(1)负荷率
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
-                                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                                    Call 清空制热和蓄热设备负荷率计算结果(b)
                                     '修正计算
                                     Call 内燃机不可以向外供电时制热计算修正(b, FHTJJD, JSBC, HSRFH, D_price, TRQ_price, calculation_mode)
                                     '重新进行一次蓄热计算
@@ -11974,14 +11739,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -12000,14 +11759,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -12048,11 +11801,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -12071,11 +11821,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -12107,14 +11854,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        Call 清空制冷和蓄冷设备负荷率计算结果(b)
         '设备制冷计算 ,常规计算模式
         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
         '制冷和蓄冷计算，全局寻优计算模式
@@ -12126,14 +11867,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12150,14 +11885,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12190,11 +11919,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+        Call 清空制热和蓄热设备负荷率计算结果(b)
         '制热计算，常规计算模式
         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
         '制热和蓄热计算，全局寻优计算模式
@@ -12206,11 +11932,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12227,11 +11950,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12265,14 +11985,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        Call 清空制冷和蓄冷设备负荷率计算结果(b)
         '设备制冷计算 ,常规计算模式
         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
         '制冷和蓄冷计算，全局寻优计算模式
@@ -12285,14 +11999,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12310,14 +12018,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12353,14 +12055,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
         '记录下溴化锂(1)+(2)的总制冷量
         XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        Call 清空制冷和蓄冷设备负荷率计算结果(b)
         '设备制冷计算 ,常规计算模式
         Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
         '制冷和蓄冷计算，全局寻优计算模式
@@ -12373,14 +12069,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12398,14 +12088,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value
             '记录下溴化锂(1)+(2)的总制冷量
             XHLZL = 制冷季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '制冷和蓄冷计算，全局寻优计算模式
@@ -12439,11 +12123,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+        Call 清空制热和蓄热设备负荷率计算结果(b)
         '制热计算，常规计算模式
         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
         '制热和蓄热计算，全局寻优计算模式
@@ -12456,11 +12137,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12478,11 +12156,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12518,11 +12193,8 @@ qqq:
         Dim NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
         '记录下溴化锂(1)+(2)的总制热量
         XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+        Call 清空制热和蓄热设备负荷率计算结果(b)
         '制热计算，常规计算模式
         Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
         '制热和蓄热计算，全局寻优计算模式
@@ -12535,11 +12207,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12557,11 +12226,8 @@ qqq:
             NRJFHL2 = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value
             '记录下溴化锂(1)+(2)的总制热量
             XHLZR = 制热季内燃机及其余热利用系统计算(b, NRJFHL1, NRJFHL2, calculation_mode)(0)
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12603,14 +12269,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
             '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '进行蓄冷设备计算
@@ -12629,14 +12289,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -12660,14 +12314,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -12693,14 +12341,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
             End If
             '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
             '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -12724,14 +12366,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -12760,14 +12396,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -12810,11 +12440,8 @@ qqq:
             '将溴化锂蓄热的数据清空
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '进行蓄热设备计算
@@ -12833,11 +12460,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -12861,11 +12485,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -12890,11 +12511,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
             End If
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -12917,11 +12535,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -12949,11 +12564,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -12997,14 +12609,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
             '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '进行蓄冷设备计算
@@ -13024,14 +12630,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -13056,14 +12656,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -13090,14 +12684,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
             End If
             '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
             '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13122,14 +12710,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13158,14 +12740,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13209,11 +12785,8 @@ qqq:
             '将溴化锂蓄热的数据清空
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '进行蓄热设备计算
@@ -13232,11 +12805,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -13260,11 +12830,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -13289,11 +12856,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
             End If
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -13316,11 +12880,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -13348,11 +12909,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                     If XNXRGL(b) > 0 Then
-                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '进行蓄热计算
                         Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                         '制热和蓄热计算，全局寻优计算模式
@@ -13398,14 +12956,8 @@ qqq:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
             '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '设备制冷计算 ,常规计算模式
             Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
             '进行蓄冷设备计算
@@ -13424,14 +12976,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -13455,14 +13001,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = 0
                 '如果溴化锂的制冷量小于等于冷负荷总需求量，则溴化锂不参与蓄冷只进行供冷
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '设备制冷计算 ,常规计算模式
                 Call 设备六种顺序制冷计算(b, FHTJJD, JSBC, XHLZL, HSLFH, calculation_mode)
                 '进行蓄冷设备计算
@@ -13488,14 +13028,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
             End If
             '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-            '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-            '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+            '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+            Call 清空制冷和蓄冷设备负荷率计算结果(b)
             '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
             Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
             '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13519,14 +13053,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13555,14 +13083,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
                 '因为所有的供冷负荷均有溴化锂提供，则将所有的制冷空调负荷率设置为0
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
                 '计算一次蓄冷，确定此时总耗电量，判断此时向外供电量
                 Call 蓄能装置蓄冷工况计算(b, FHTJJD, calculation_mode)
                 '全局寻优模式进行蓄冷计算（此时只有蓄冷负荷）
@@ -13605,11 +13127,8 @@ qqq:
             '将溴化锂蓄热的数据清空
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '制热计算，常规计算模式
             Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
             '进行蓄热设备计算
@@ -13628,11 +13147,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -13656,11 +13172,8 @@ qqq:
                 '将溴化锂蓄热的数据清空
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = 0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '制热计算，常规计算模式
                 Call 设备六种顺序制热计算(b, FHTJJD, JSBC, XHLZR, HSRFH, calculation_mode)
                 '进行蓄热设备计算
@@ -13685,11 +13198,8 @@ qqq:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
             End If
-            '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+            '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+            Call 清空制热和蓄热设备负荷率计算结果(b)
             '进行蓄热计算
             Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
             '制热和蓄热计算，全局寻优计算模式
@@ -13713,11 +13223,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
                 '因为所有的供热负荷均有溴化锂提供，则将所有的制热空调负荷率设置为0
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -13745,11 +13252,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
                 '进行蓄热计算
                 Call 蓄能装置蓄热工况计算(b, FHTJJD, calculation_mode)
                 '制热和蓄热计算，全局寻优计算模式
@@ -13814,14 +13318,8 @@ qqq:
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                     End If
-                    '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                    '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                    '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                    Call 清空制冷和蓄冷设备负荷率计算结果(b)
                     '设置跳出条件
                     '如果有蓄冷
                     If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -13873,14 +13371,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                         End If
-                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '设置跳出条件
                         '如果有蓄冷
                         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -13917,14 +13409,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                         End If
-                        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                        '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                        Call 清空制冷和蓄冷设备负荷率计算结果(b)
                         '设置跳出条件
                         '如果有蓄冷
                         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -14176,11 +13662,8 @@ qqq:
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                     End If
-                    '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                    '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                    Call 清空制热和蓄热设备负荷率计算结果(b)
                     '设置跳出条件
                     '如果有蓄热
                     If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -14233,11 +13716,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                         End If
-                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '设置跳出条件
                         '如果有蓄热
                         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -14275,11 +13755,8 @@ qqq:
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                         End If
-                        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                        '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                        Call 清空制热和蓄热设备负荷率计算结果(b)
                         '设置跳出条件
                         '如果有蓄热
                         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
@@ -14538,14 +14015,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 73).Value = XHLXL
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 73).Value = XHLXL
                 End If
-                '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
-                '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+                '将已有的制冷和蓄冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+                Call 清空制冷和蓄冷设备负荷率计算结果(b)
             End If
         ElseIf LFHZXQL(b) < 0 Then
             Dim XZ1
@@ -14610,11 +14081,8 @@ qqq:
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 74).Value = XHLXR
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 74).Value = XHLXR
                 End If
-                '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '将已有的制热设备运行负荷率，蓄热工况设备启动情况清空
+                Call 清空制热和蓄热设备负荷率计算结果(b)
             End If
         ElseIf RFHZXQL(b) < 0 Then
             Dim XZ1
@@ -18114,9 +17582,8 @@ qqq:
         On Error Resume Next
         '输出结果为小于等于1的小数，用于修正在不同负荷率情况下，设备的COP相对100%负荷率时的比例
         '制冷和蓄冷都用这条曲线
-        '冷COP、热COP变化率系数暂时采用同样的曲线
         Dim ans As Double
-        ans = 1
+        ans = -2.7857 * FHL ^ 2 + 3.1264 * FHL + 0.6593
         '返回结果
         Return ans
     End Function
@@ -18125,9 +17592,8 @@ qqq:
         '输出结果为小于等于1的小数，用于修正在不同负荷率情况下，设备的COP相对100%负荷率时的比例
         '制冷和蓄冷都用这条曲线
         '暂时与风冷螺杆式热泵采用同样的系数曲线
-        '冷COP、热COP变化率系数暂时采用同样的曲线
         Dim ans As Double
-        ans = 1
+        ans = -2.7857 * FHL ^ 2 + 3.1264 * FHL + 0.6593
         '返回结果
         Return ans
     End Function
@@ -18182,9 +17648,8 @@ qqq:
         On Error Resume Next
         '输出结果为小于等于1的小数，用于修正在不同负荷率情况下，设备的COP相对100%负荷率时的比例
         '制热和蓄热都用这条曲线
-        '冷COP、热COP变化率系数暂时采用同样的曲线
         Dim ans As Double
-        ans = 1
+        ans = -2.4176 * FHL ^ 2 + 2.6661 * FHL + 0.7515
         '返回结果
         Return ans
     End Function
@@ -18193,9 +17658,8 @@ qqq:
         '输出结果为小于等于1的小数，用于修正在不同负荷率情况下，设备的COP相对100%负荷率时的比例
         '制热和蓄热都用这条曲线
         '暂时与风冷螺杆式热泵采用同样的系数曲线
-        '冷COP、热COP变化率系数暂时采用同样的曲线
         Dim ans As Double
-        ans = 1
+        ans = -2.4176 * FHL ^ 2 + 2.6661 * FHL + 0.7515
         '返回结果
         Return ans
     End Function
@@ -18302,6 +17766,33 @@ qqq:
         '清空冷热负荷分段计算结果
         ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D80:D88").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D91:D99").ClearContents
+    End Sub
+    Sub 清空制冷和蓄冷设备负荷率计算结果(b As Integer)
+        On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '——————————————————————————————————————————————————————————————————————————————————————————
+        '将已有的制冷设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 39)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 39)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 91)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91)).Value = 0
+        '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+    End Sub
+    Sub 清空制热和蓄热设备负荷率计算结果(b As Integer)
+        On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '——————————————————————————————————————————————————————————————————————————————————————————
+        '将已有的制热设备和蓄热设备运行负荷率重置为0，每一次重新计算必需重置一次0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
     End Sub
     Sub 清空指定工况输入输出数据(b)
         On Error Resume Next
