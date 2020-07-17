@@ -129,8 +129,8 @@ Public Class 指定工况计算
                     '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
                     Call mainprogram.将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1), 0, 0, calculation_mode)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(b)
-                    Call mainprogram.制热和蓄热空调设备负荷率修正(b)
+                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
+                    Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)
                     '只有全局寻优计算模式才修正
                     Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
                     Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
@@ -308,8 +308,8 @@ Public Class 指定工况计算
                     '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
                     Call mainprogram.将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1), D_price, TRQ_price, calculation_mode)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(b)
-                    Call mainprogram.制热和蓄热空调设备负荷率修正(b)
+                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
+                    Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)
                     '只有全局寻优计算模式才修正
                     Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
                     Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(b, calculation_mode)
