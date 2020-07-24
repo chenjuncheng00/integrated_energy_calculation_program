@@ -169,34 +169,36 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '针对计算出错的工况，采用常规模式重新进行计算
             Dim len_n As Integer = QJXYJS_ERROR.Count
             Dim QJXY_ERROR_BH As String = Nothing
+            '新的列表，用来储存筛选后的，没有重复的工况序号
+            Dim XH_ERROR As New List(Of Integer)
             If len_n > 0 Then
                 For i = 0 To len_n - 1
                     If QJXYJS_ERROR(i) > QJXYJS_ERROR(i - 1) Then
                         Dim XH As String = "(" & QJXYJS_ERROR(i) & ")" & "  "
                         QJXY_ERROR_BH = QJXY_ERROR_BH & XH
+                        '加入新的列表
+                        XH_ERROR.Add(QJXYJS_ERROR(i))
                     End If
                 Next
                 MsgBox("全局寻优计算存在计算错误的工况，程序会自动采用常规模型重算错误工况！" & "工况序号为： " & QJXY_ERROR_BH)
-                For i = 1 To len_n - 1
-                    If QJXYJS_ERROR(i) > QJXYJS_ERROR(i - 1) Then
-                        '采用模式1进行计算
-                        Dim calculation_mode_a As Integer = 1
-                        '错误的工况序号
-                        Dim a As Integer = QJXYJS_ERROR(i)
-                        '调用程序进行计算
-                        Call 清空指定工况输入输出数据(a)
-                        Dim ans_FHFX = 负荷分析计算程序(a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode_a)
-                        '混水计算预处理
-                        Call 存在混水供热的工况特殊处理(a, FHTJJD, JSBC)
-                        '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                        Call 将内燃机单台负荷率低于百分之30的内燃机关闭(a, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode_a)
-                        '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                        Call 制冷和蓄冷空调设备负荷率修正(a, calculation_mode_a)
-                        Call 制热和蓄热空调设备负荷率修正(a, calculation_mode_a)
-                        '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                        Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
-                        Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
-                    End If
+                For i = 0 To XH_ERROR.Count - 1
+                    '采用模式1进行计算
+                    Dim calculation_mode_a As Integer = 1
+                    '错误的工况序号
+                    Dim a As Integer = XH_ERROR(i)
+                    '调用程序进行计算
+                    Call 清空指定工况输入输出数据(a)
+                    Dim ans_FHFX = 负荷分析计算程序(a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode_a)
+                    '混水计算预处理
+                    Call 存在混水供热的工况特殊处理(a, FHTJJD, JSBC)
+                    '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
+                    Call 将内燃机单台负荷率低于百分之30的内燃机关闭(a, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode_a)
+                    '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
+                    Call 制冷和蓄冷空调设备负荷率修正(a, calculation_mode_a)
+                    Call 制热和蓄热空调设备负荷率修正(a, calculation_mode_a)
+                    '计算制冷季和制热季天然气耗量和耗电量综合修正系数
+                    Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
+                    Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(a, calculation_mode_a)
                 Next
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -1820,7 +1822,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '计算混水设备负荷率计算初始值（如果此时有内燃机和溴化锂，则这个初始值会偏大，后续计算会往下减；如果没有内燃机和溴化锂，这个比例基本正确，但是为了防止出错，初始值放大10%，然后往下减）
                     '(TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ）即为两种混水设备的总输出功率，例如风冷螺杆式热泵+天然气锅炉混水总功率
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = (TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ） * HSGRGLBL / HSSBGL
-                    Dim HSSBFHL_CSZ As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value '定义混水设备负荷率初始值
+                    '定义混水设备负荷率初始值
+                    Dim HSSBFHL_CSZ As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value
                     'MsgBox("计算序号：  " & n & "比例初始值：  " & HSSBFHL_CSZ)
                     '循环的次数最大值
                     Dim JSCS_max As Integer = CType(HSSBFHL_CSZ * 100 / FHTJJD, Integer)
@@ -2167,14 +2170,16 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
-            '将总冷负荷（供冷+蓄冷）分配给6个设备
+            '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
-            Dim FHFPCS_start As Integer = 5 '初始值
-            Dim JS_start As Integer = 1 '已经计算过的次数计数，用于改变FHFPCS的值
+            Dim FHFPCS_start As Integer = 20 '初始值
+            Dim FHFPCS_max As Integer = 50 '负荷分配次数参数的最大允许值
+            Dim JS_start As Integer = 0 '已经计算过的次数计数，用于改变FHFPCS的值
 zzzzz：
-            Dim FHFPCS As Integer = FHFPCS_start * JS_start
+            Dim FHFPCS As Integer = FHFPCS_start + JS_start * 5
+            '————————————————————————————————————————————————————————————————————————————————————————
             '如果FHFPCS太大，直接结束计算并报错
-            If FHFPCS > 100 Then
+            If FHFPCS > FHFPCS_max Then
                 '将当前工况的序号加入列表
                 QJXYJS_ERROR.Add(b)
                 'MsgBox("供冷和蓄冷全局寻优计算出错，计算结束！！" & “当前正在计算的工况序号为：   ” & b)
@@ -2724,6 +2729,8 @@ aaa:
                     FHL2_XL_ZRXXHL_r.Add(FHL2_XL_ZRXXHL(i))
                 End If
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
             '找出总（电、气）成本最低的运行模式
             Dim COST_min As Double
             Try
@@ -5592,11 +5599,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_TRQGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 10).Value
             '装机总功率
-            Dim ZJZGR_TRQGL As Double = 0
+            Dim ZJZGL_TRQGL As Double = 0
             If ZJJC_TRQGL = 1 Then
-                ZJZGR_TRQGL = ZJRGL1_TRQGL + ZJRGL2_TRQGL
+                ZJZGL_TRQGL = ZJRGL1_TRQGL + ZJRGL2_TRQGL
             Else
-                ZJZGR_TRQGL = 0
+                ZJZGL_TRQGL = 0
             End If
             '允许运行最低负荷
             Dim FH_min_TRQGL As Double = 0
@@ -5611,11 +5618,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value
             '装机总功率
-            Dim ZJZGR_DGL As Double = 0
+            Dim ZJZGL_DGL As Double = 0
             If ZJJC_DGL = 1 Then
-                ZJZGR_DGL = ZJRGL1_DGL + ZJRGL2_DGL
+                ZJZGL_DGL = ZJRGL1_DGL + ZJRGL2_DGL
             Else
-                ZJZGR_DGL = 0
+                ZJZGL_DGL = 0
             End If
             '允许运行最低负荷
             Dim FH_min_DGL As Double = 0
@@ -5630,11 +5637,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_SDYRB As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 14).Value
             '装机总功率
-            Dim ZJZGR_SDYRB As Double = 0
+            Dim ZJZGL_SDYRB As Double = 0
             If ZJJC_SDYRB = 1 Then
-                ZJZGR_SDYRB = ZJRGL1_SDYRB + ZJRGL2_SDYRB
+                ZJZGL_SDYRB = ZJRGL1_SDYRB + ZJRGL2_SDYRB
             Else
-                ZJZGR_SDYRB = 0
+                ZJZGL_SDYRB = 0
             End If
             '允许运行最低负荷
             Dim FH_min_SDYRB As Double = 0
@@ -5649,11 +5656,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_LXSRB As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 18).Value
             '装机总功率
-            Dim ZJZGR_LXSRB As Double = 0
+            Dim ZJZGL_LXSRB As Double = 0
             If ZJJC_LXSRB = 1 Then
-                ZJZGR_LXSRB = ZJRGL1_LXSRB + ZJRGL2_LXSRB
+                ZJZGL_LXSRB = ZJRGL1_LXSRB + ZJRGL2_LXSRB
             Else
-                ZJZGR_LXSRB = 0
+                ZJZGL_LXSRB = 0
             End If
             '允许运行最低负荷
             Dim FH_min_LXSRB As Double = 0
@@ -5668,11 +5675,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_FLLGJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 12).Value
             '装机总功率
-            Dim ZJZGR_FLLGJ As Double = 0
+            Dim ZJZGL_FLLGJ As Double = 0
             If ZJJC_FLLGJ = 1 Then
-                ZJZGR_FLLGJ = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
+                ZJZGL_FLLGJ = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
             Else
-                ZJZGR_FLLGJ = 0
+                ZJZGL_FLLGJ = 0
             End If
             '允许运行最低负荷
             Dim FH_min_FLLGJ As Double = 0
@@ -5687,11 +5694,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_KQYRB As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 16).Value
             '装机总功率
-            Dim ZJZGR_KQYRB As Double = 0
+            Dim ZJZGL_KQYRB As Double = 0
             If ZJJC_KQYRB = 1 Then
-                ZJZGR_KQYRB = ZJRGL1_KQYRB + ZJRGL2_KQYRB
+                ZJZGL_KQYRB = ZJRGL1_KQYRB + ZJRGL2_KQYRB
             Else
-                ZJZGR_KQYRB = 0
+                ZJZGL_KQYRB = 0
             End If
             '允许运行最低负荷
             Dim FH_min_KQYRB As Double = 0
@@ -5706,11 +5713,11 @@ aaa:
             '设备（2）装机功率
             Dim ZJRGL2_ZRXXHL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 20).Value
             '装机总功率
-            Dim ZJZGR_ZRXXHL As Double = 0
+            Dim ZJZGL_ZRXXHL As Double = 0
             If ZJJC_ZRXXHL = 1 Then
-                ZJZGR_ZRXXHL = ZJRGL1_ZRXXHL + ZJRGL2_ZRXXHL
+                ZJZGL_ZRXXHL = ZJRGL1_ZRXXHL + ZJRGL2_ZRXXHL
             Else
-                ZJZGR_ZRXXHL = 0
+                ZJZGL_ZRXXHL = 0
             End If
             '允许运行最低负荷
             Dim FH_min_ZRXXHL As Double = 0
@@ -5720,15 +5727,17 @@ aaa:
                 FH_min_ZRXXHL = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            '————————————————————————————————————————————————————————————————————————————————————————        
+            '————————————————————————————————————————————————————————————————————————————————————————   
             '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
-            Dim FHFPCS_start As Integer = 5 '初始值
-            Dim JS_start As Integer = 1 '已经计算过的次数计数，用于改变FHFPCS的值
+            Dim FHFPCS_start As Integer = 20 '初始值
+            Dim FHFPCS_max As Integer = 50 '负荷分配次数参数的最大允许值
+            Dim JS_start As Integer = 0 '已经计算过的次数计数，用于改变FHFPCS的值
 zzzzz：
-            Dim FHFPCS As Integer = FHFPCS_start * JS_start
+            Dim FHFPCS As Integer = FHFPCS_start + JS_start * 5
+            '————————————————————————————————————————————————————————————————————————————————————————
             '如果FHFPCS太大，直接结束计算并报错
-            If FHFPCS > 100 Then
+            If FHFPCS > FHFPCS_max Then
                 '将当前工况的序号加入列表
                 QJXYJS_ERROR.Add(b)
                 'MsgBox("供热和蓄热全局寻优计算出错，计算结束！！" & “当前正在计算的工况序号为：   ” & b)
@@ -5803,103 +5812,103 @@ zzzzz：
             '各种设备已经计算的次数计数（如果设备不存在或者装机量为0，才参与计算）
             Dim JS_end_TRQGL As Integer = 0
             '将总负荷分为供热功率和蓄热功率,进行计算
-            For a_1 = 0 To ZJZGR_TRQGL Step ZJZGR_TRQGL / FHFPCS
+            For a_1 = 0 To ZJZGL_TRQGL Step ZJZGL_TRQGL / FHFPCS
                 '直接结束计算
                 If JS_end_TRQGL >= 1 Then
                     Exit For
                 End If
                 '如果不存在装机或者装机功率等于0
-                If ZJJC_TRQGL = 0 Or ZJZGR_TRQGL = 0 Then
+                If ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
                     JS_end_TRQGL = JS_end_TRQGL + 1
                 End If
                 '根据装机量判断是否直接进入下一次循环
-                If a_1 + ZJZGR_DGL + ZJZGR_SDYRB + ZJZGR_LXSRB + ZJZGR_FLLGJ + ZJZGR_KQYRB + ZJZGR_ZRXXHL < RFH_ALL Then
+                If a_1 + ZJZGL_DGL + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL < RFH_ALL Then
                     GoTo aaa
                 End If
                 '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                 Dim JS_end_DGL As Integer = 0
-                For a_2 = 0 To ZJZGR_DGL Step ZJZGR_DGL / FHFPCS
+                For a_2 = 0 To ZJZGL_DGL Step ZJZGL_DGL / FHFPCS
                     '直接结束计算
                     If JS_end_DGL >= 1 Then
                         Exit For
                     End If
                     '如果不存在装机或者装机功率等于0
-                    If ZJJC_DGL = 0 Or ZJZGR_DGL = 0 Then
+                    If ZJJC_DGL = 0 Or ZJZGL_DGL = 0 Then
                         JS_end_DGL = JS_end_DGL + 1
                     End If
                     '根据装机量判断是否直接进入下一次循环
-                    If a_1 + a_2 + ZJZGR_SDYRB + ZJZGR_LXSRB + ZJZGR_FLLGJ + ZJZGR_KQYRB + ZJZGR_ZRXXHL < RFH_ALL Then
+                    If a_1 + a_2 + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL < RFH_ALL Then
                         GoTo bbb
                     End If
                     '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     Dim JS_end_SDYRB As Integer = 0
-                    For a_3 = 0 To ZJZGR_SDYRB Step ZJZGR_SDYRB / FHFPCS
+                    For a_3 = 0 To ZJZGL_SDYRB Step ZJZGL_SDYRB / FHFPCS
                         '直接结束计算
                         If JS_end_SDYRB >= 1 Then
                             Exit For
                         End If
                         '如果不存在装机或者装机功率等于0
-                        If ZJJC_SDYRB = 0 Or ZJZGR_SDYRB = 0 Then
+                        If ZJJC_SDYRB = 0 Or ZJZGL_SDYRB = 0 Then
                             JS_end_SDYRB = JS_end_SDYRB + 1
                         End If
                         '根据装机量判断是否直接进入下一次循环
-                        If a_1 + a_2 + a_3 + ZJZGR_LXSRB + ZJZGR_FLLGJ + ZJZGR_KQYRB + ZJZGR_ZRXXHL < RFH_ALL Then
+                        If a_1 + a_2 + a_3 + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL < RFH_ALL Then
                             GoTo ccc
                         End If
                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                         Dim JS_end_LXSRB As Integer = 0
-                        For a_4 = 0 To ZJZGR_LXSRB Step ZJZGR_LXSRB / FHFPCS
+                        For a_4 = 0 To ZJZGL_LXSRB Step ZJZGL_LXSRB / FHFPCS
                             '直接结束计算
                             If JS_end_LXSRB >= 1 Then
                                 Exit For
                             End If
                             '如果不存在装机或者装机功率等于0
-                            If ZJJC_LXSRB = 0 Or ZJZGR_LXSRB = 0 Then
+                            If ZJJC_LXSRB = 0 Or ZJZGL_LXSRB = 0 Then
                                 JS_end_LXSRB = JS_end_LXSRB + 1
                             End If
                             '根据装机量判断是否直接进入下一次循环
-                            If a_1 + a_2 + a_3 + a_4 + ZJZGR_FLLGJ + ZJZGR_KQYRB + ZJZGR_ZRXXHL < RFH_ALL Then
+                            If a_1 + a_2 + a_3 + a_4 + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL < RFH_ALL Then
                                 GoTo ddd
                             End If
                             '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                             Dim JS_end_FLLGJ As Integer = 0
-                            For a_5 = 0 To ZJZGR_FLLGJ Step ZJZGR_FLLGJ / FHFPCS
+                            For a_5 = 0 To ZJZGL_FLLGJ Step ZJZGL_FLLGJ / FHFPCS
                                 '直接结束计算
                                 If JS_end_FLLGJ >= 1 Then
                                     Exit For
                                 End If
                                 '如果不存在装机或者装机功率等于0
-                                If ZJJC_FLLGJ = 0 Or ZJZGR_FLLGJ = 0 Then
+                                If ZJJC_FLLGJ = 0 Or ZJZGL_FLLGJ = 0 Then
                                     JS_end_FLLGJ = JS_end_FLLGJ + 1
                                 End If
                                 '根据装机量判断是否直接进入下一次循环
-                                If a_1 + a_2 + a_3 + a_4 + a_5 + ZJZGR_KQYRB + ZJZGR_ZRXXHL < RFH_ALL Then
+                                If a_1 + a_2 + a_3 + a_4 + a_5 + ZJZGL_KQYRB + ZJZGL_ZRXXHL < RFH_ALL Then
                                     GoTo eee
                                 End If
                                 '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                 Dim JS_end_KQYRB As Integer = 0
-                                For a_6 = 0 To ZJZGR_KQYRB Step ZJZGR_KQYRB / FHFPCS
+                                For a_6 = 0 To ZJZGL_KQYRB Step ZJZGL_KQYRB / FHFPCS
                                     '直接结束计算
                                     If JS_end_KQYRB >= 1 Then
                                         Exit For
                                     End If
                                     '如果不存在装机或者装机功率等于0
-                                    If ZJJC_KQYRB = 0 Or ZJZGR_KQYRB = 0 Then
+                                    If ZJJC_KQYRB = 0 Or ZJZGL_KQYRB = 0 Then
                                         JS_end_KQYRB = JS_end_KQYRB + 1
                                     End If
                                     '根据装机量判断是否直接进入下一次循环
-                                    If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + ZJZGR_ZRXXHL < RFH_ALL Then
+                                    If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + ZJZGL_ZRXXHL < RFH_ALL Then
                                         GoTo fff
                                     End If
                                     '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                     Dim JS_end_ZRXXHL As Integer = 0
-                                    For a_7 = 0 To ZJZGR_ZRXXHL Step ZJZGR_ZRXXHL / FHFPCS
+                                    For a_7 = 0 To ZJZGL_ZRXXHL Step ZJZGL_ZRXXHL / FHFPCS
                                         '直接结束计算
                                         If JS_end_ZRXXHL >= 1 Then
                                             Exit For
                                         End If
                                         '如果不存在装机或者装机功率等于0
-                                        If ZJJC_ZRXXHL = 0 Or ZJZGR_ZRXXHL = 0 Then
+                                        If ZJJC_ZRXXHL = 0 Or ZJZGL_ZRXXHL = 0 Then
                                             JS_end_ZRXXHL = JS_end_ZRXXHL + 1
                                         End If
                                         '根据装机量判断是否直接进入下一次循环
@@ -5910,7 +5919,7 @@ zzzzz：
                                         End If
                                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                         '天然气锅炉计算
-                                        If a_1 >= FH_min_TRQGL And ZJJC_TRQGL = 1 And ZJZGR_TRQGL > 0 Then
+                                        If a_1 >= FH_min_TRQGL And ZJJC_TRQGL = 1 And ZJZGL_TRQGL > 0 Then
                                             Dim ans_TRQGL = 天然气锅炉供热寻优计算(b, FHTJJD, a_1, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_TRQGL.AddRange(ans_TRQGL(0))
                                             GR_ALL_TRQGL.AddRange(ans_TRQGL(1))
@@ -5922,7 +5931,7 @@ zzzzz：
                                             HQ_ALL_min_TRQGL.AddRange(ans_TRQGL(8))
                                         End If
                                         '电锅炉计算
-                                        If a_2 >= FH_min_DGL And ZJJC_DGL = 1 And ZJZGR_DGL > 0 Then
+                                        If a_2 >= FH_min_DGL And ZJJC_DGL = 1 And ZJZGL_DGL > 0 Then
                                             Dim ans_DGL = 电锅炉供热和蓄热分配寻优计算(b, FHTJJD, a_2, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_DGL.AddRange(ans_DGL(0))
                                             GR_ALL_DGL.AddRange(ans_DGL(1))
@@ -5933,7 +5942,7 @@ zzzzz：
                                             FHL2_XR_DGL.AddRange(ans_DGL(7))
                                         End If
                                         '水（地）源热泵计算
-                                        If a_3 >= FH_min_SDYRB And ZJJC_SDYRB = 1 And ZJZGR_SDYRB > 0 Then
+                                        If a_3 >= FH_min_SDYRB And ZJJC_SDYRB = 1 And ZJZGL_SDYRB > 0 Then
                                             Dim ans_SDYRB = 水_地源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_3, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_SDYRB.AddRange(ans_SDYRB(0))
                                             GR_ALL_SDYRB.AddRange(ans_SDYRB(1))
@@ -5944,7 +5953,7 @@ zzzzz：
                                             FHL2_XR_SDYRB.AddRange(ans_SDYRB(7))
                                         End If
                                         '离心式热泵计算
-                                        If a_4 >= FH_min_LXSRB And ZJJC_LXSRB = 1 And ZJZGR_LXSRB > 0 Then
+                                        If a_4 >= FH_min_LXSRB And ZJJC_LXSRB = 1 And ZJZGL_LXSRB > 0 Then
                                             Dim ans_LXSRB = 离心式热泵供热和蓄热分配寻优计算(b, FHTJJD, a_4, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_LXSRB.AddRange(ans_LXSRB(0))
                                             GR_ALL_LXSRB.AddRange(ans_LXSRB(1))
@@ -5955,7 +5964,7 @@ zzzzz：
                                             FHL2_XR_LXSRB.AddRange(ans_LXSRB(7))
                                         End If
                                         '风冷螺杆机计算
-                                        If a_5 >= FH_min_FLLGJ And ZJJC_FLLGJ = 1 And ZJZGR_FLLGJ > 0 Then
+                                        If a_5 >= FH_min_FLLGJ And ZJJC_FLLGJ = 1 And ZJZGL_FLLGJ > 0 Then
                                             Dim ans_FLLGJ = 风冷螺杆机供热和蓄热分配寻优计算(b, FHTJJD, a_5, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_FLLGJ.AddRange(ans_FLLGJ(0))
                                             GR_ALL_FLLGJ.AddRange(ans_FLLGJ(1))
@@ -5966,7 +5975,7 @@ zzzzz：
                                             FHL2_XR_FLLGJ.AddRange(ans_FLLGJ(7))
                                         End If
                                         '空气源热泵计算
-                                        If a_6 >= FH_min_KQYRB And ZJJC_KQYRB = 1 And ZJZGR_KQYRB > 0 Then
+                                        If a_6 >= FH_min_KQYRB And ZJJC_KQYRB = 1 And ZJZGL_KQYRB > 0 Then
                                             Dim ans_KQYRB = 空气源热泵供热和蓄热分配寻优计算(b, FHTJJD, a_6, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_min_KQYRB.AddRange(ans_KQYRB(0))
                                             GR_ALL_KQYRB.AddRange(ans_KQYRB(1))
@@ -5977,7 +5986,7 @@ zzzzz：
                                             FHL2_XR_KQYRB.AddRange(ans_KQYRB(7))
                                         End If
                                         '直燃型溴化锂计算
-                                        If a_7 >= FH_min_ZRXXHL And ZJJC_ZRXXHL = 1 And ZJZGR_ZRXXHL > 0 Then
+                                        If a_7 >= FH_min_ZRXXHL And ZJJC_ZRXXHL = 1 And ZJZGL_ZRXXHL > 0 Then
                                             Dim ans_ZRXXHL = 直燃型溴化锂供热寻优计算(b, FHTJJD, a_7, FHFPCS, RFH_GR_now, RFH_XR_now)
                                             HD_ALL_ZRXXHL.AddRange(ans_ZRXXHL(0))
                                             GR_ALL_ZRXXHL.AddRange(ans_ZRXXHL(1))
@@ -6010,7 +6019,7 @@ zzzzz：
                                         Dim n_max_result As Integer = n_max.Max
                                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                         '天然气锅炉计算结果的列表长度修正
-                                        If a_1 < FH_min_TRQGL Or ZJJC_TRQGL = 0 Or ZJZGR_TRQGL = 0 Then
+                                        If a_1 < FH_min_TRQGL Or ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_1
                                             If n_x > 0 Then
@@ -6030,7 +6039,7 @@ zzzzz：
                                             End If
                                         End If
                                         '电锅炉计算结果的列表长度修正
-                                        If a_2 < FH_min_DGL Or ZJJC_DGL = 0 Or ZJZGR_DGL = 0 Then
+                                        If a_2 < FH_min_DGL Or ZJJC_DGL = 0 Or ZJZGL_DGL = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_2
                                             If n_x > 0 Then
@@ -6049,7 +6058,7 @@ zzzzz：
                                             End If
                                         End If
                                         '水（地）源热泵计算结果的列表长度修正
-                                        If a_3 < FH_min_SDYRB Or ZJJC_SDYRB = 0 Or ZJZGR_SDYRB = 0 Then
+                                        If a_3 < FH_min_SDYRB Or ZJJC_SDYRB = 0 Or ZJZGL_SDYRB = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_3
                                             If n_x > 0 Then
@@ -6068,7 +6077,7 @@ zzzzz：
                                             End If
                                         End If
                                         '离心式热泵计算结果的列表长度修正
-                                        If a_4 < FH_min_LXSRB Or ZJJC_LXSRB = 0 Or ZJZGR_LXSRB = 0 Then
+                                        If a_4 < FH_min_LXSRB Or ZJJC_LXSRB = 0 Or ZJZGL_LXSRB = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_4
                                             If n_x > 0 Then
@@ -6087,7 +6096,7 @@ zzzzz：
                                             End If
                                         End If
                                         '风冷螺杆机计算结果的列表长度修正
-                                        If a_5 < FH_min_FLLGJ Or ZJJC_FLLGJ = 0 Or ZJZGR_FLLGJ = 0 Then
+                                        If a_5 < FH_min_FLLGJ Or ZJJC_FLLGJ = 0 Or ZJZGL_FLLGJ = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_5
                                             If n_x > 0 Then
@@ -6106,7 +6115,7 @@ zzzzz：
                                             End If
                                         End If
                                         '空气源热泵计算结果的列表长度修正
-                                        If a_6 < FH_min_KQYRB Or ZJJC_KQYRB = 0 Or ZJZGR_KQYRB = 0 Then
+                                        If a_6 < FH_min_KQYRB Or ZJJC_KQYRB = 0 Or ZJZGL_KQYRB = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_6
                                             If n_x > 0 Then
@@ -6125,7 +6134,7 @@ zzzzz：
                                             End If
                                         End If
                                         '直燃型溴化锂计算结果的列表长度修正
-                                        If a_7 < FH_min_ZRXXHL Or ZJJC_ZRXXHL = 0 Or ZJZGR_ZRXXHL = 0 Then
+                                        If a_7 < FH_min_ZRXXHL Or ZJJC_ZRXXHL = 0 Or ZJZGL_ZRXXHL = 0 Then
                                             '长度补充
                                             Dim n_x As Integer = n_max_result - n_7
                                             If n_x > 0 Then
@@ -6281,13 +6290,15 @@ aaa:
                     FHL2_XR_ZRXXHL_r.Add(FHL2_XR_ZRXXHL(i))
                 End If
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
             '找出总（电、气）成本最低的运行模式
             Dim COST_min As Double
             Try
                 COST_min = COST_ALL.Min
             Catch ex As Exception
                 JS_start = JS_start + 1
-                '回头重算
+                '返回zzzzz处重算
                 GoTo zzzzz
             End Try
             '找到所在标签
@@ -9033,7 +9044,10 @@ aaa:
             If XNXLGL(b) > 0 Then
                 '将本工况蓄能量和蓄能时间带入计算一次
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 14).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 14).Value
+                '蓄冷时间
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 24).Value
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 25).Value
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 26).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 26).Value
                 '————————————————————————————————————————————————————————————————————————————————————————————
                 '————————————————————————————————————————————————————————————————————————————————————————————
                 '读取第一顺序
@@ -9462,8 +9476,12 @@ aaa:
             '蓄热时不同空调机的启动顺序和制热时一样
             If XNXRGL(b) > 0 Then
                 '将本工况蓄能量和蓄能时间带入计算一次
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 23).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 23).Value '蓄热量
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 25).Value '蓄热时间
+                '蓄热量
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 23).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 23).Value
+                '蓄热时间
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 24).Value
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 25).Value
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 26).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 26).Value
                 '————————————————————————————————————————————————————————————————————————————————————————————
                 '————————————————————————————————————————————————————————————————————————————————————————————
                 '读取第一顺序
