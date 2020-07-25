@@ -1581,7 +1581,22 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '存在天然气锅炉或者直燃型溴化锂
             If GLXHLJC = 1 Then
                 '检测此时实际制热功率是否满足热负荷总需求量
-                If TRQGL1ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在天然气锅炉1，且制热负荷不满足需求
+                '天然气锅炉
+                '（1）（2）同时有，则同时往上加
+                If TRQGL1ZRGL > 0 And TRQGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then
+                    For i = 1 To 1000
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value = TRQGLFHL1 + FHTJJD * i / 100
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 53).Value = TRQGLFHL2 + FHTJJD * i / 100
+                        '跳出循环条件
+                        If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
+                            '记录下此时的设备负荷率
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value
+                            Exit For
+                        End If
+                    Next
+                End If
+                '只有（1）
+                If TRQGL1ZRGL > 0 And TRQGL2ZRGL = 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在天然气锅炉1，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value = TRQGLFHL1 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1592,7 +1607,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
-                If TRQGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在天然气锅炉2，且制热负荷不满足需求
+                '只有（2）
+                If TRQGL1ZRGL = 0 And TRQGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在天然气锅炉2，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 53).Value = TRQGLFHL2 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1603,7 +1619,23 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
-                If ZRXHL1ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在直燃型溴化锂1，且制热负荷不满足需求
+                '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                '直燃型溴化锂
+                '（1）（2）同时有，则同时往上加
+                If ZRXHL1ZRGL > 0 And ZRXHL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在直燃型溴化锂1，且制热负荷不满足需求
+                    For i = 1 To 1000
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value = ZRXHLFHL1 + FHTJJD * i / 100
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 93).Value = ZRXHLFHL2 + FHTJJD * i / 100
+                        '跳出循环条件
+                        If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
+                            '记录下此时的设备负荷率
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value
+                            Exit For
+                        End If
+                    Next
+                End If
+                '只有（1）
+                If ZRXHL1ZRGL > 0 And ZRXHL2ZRGL = 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在直燃型溴化锂1，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value = ZRXHLFHL1 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1614,7 +1646,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
-                If ZRXHL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在直燃型溴化锂2，且制热负荷不满足需求
+                '只有（2）
+                If ZRXHL1ZRGL = 0 And ZRXHL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在直燃型溴化锂2，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 93).Value = ZRXHLFHL2 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1631,7 +1664,21 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '存在电采暖锅炉
             If DGLJC = 1 Then
                 '电采暖锅炉供热
-                If DCNGL1ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在电采暖锅炉1，且制热负荷不满足需求
+                '（1）（2）同时有，则同时往上加
+                If DCNGL1ZRGL > 0 And DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在电采暖锅炉1，且制热负荷不满足需求
+                    For i = 1 To 1000
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value = DGLZRFHL1 + FHTJJD * i / 100
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 95).Value = DGLZRFHL2 + FHTJJD * i / 100
+                        '跳出循环条件
+                        If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
+                            '记录下此时的设备负荷率
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 94).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value
+                            Exit For
+                        End If
+                    Next
+                End If
+                '只有（1）
+                If DCNGL1ZRGL > 0 And DCNGL2ZRGL = 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在电采暖锅炉1，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value = DGLZRFHL1 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1642,7 +1689,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
-                If DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在电采暖锅炉2，且制热负荷不满足需求
+                '只有（2）
+                If DCNGL1ZRGL = 0 And DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value < RFHZXQL(b) Then ' 存在电采暖锅炉2，且制热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 95).Value = DGLZRFHL2 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1653,8 +1701,23 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
+                '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                 '电采暖锅炉蓄热（有可能存在电锅炉都用于供热了，没有去蓄热，因此只要检测到有电锅炉并且蓄热不满足，就计算）
-                If DCNGL1ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 1 Then ' 存在电采暖锅炉1，且蓄热负荷不满足需求
+                '（1）（2）同时有，则同时往上加
+                If DCNGL1ZRGL > 0 And DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 1 Then ' 存在电采暖锅炉1，且蓄热负荷不满足需求
+                    For i = 1 To 1000
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value = DGLXRFHL1 + FHTJJD * i / 100
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97).Value = DGLXRFHL2 + FHTJJD * i / 100
+                        '跳出循环条件
+                        If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 Then
+                            '记录下此时的设备负荷率
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 96).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value
+                            Exit For
+                        End If
+                    Next
+                End If
+                '只有（1）
+                If DCNGL1ZRGL > 0 And DCNGL2ZRGL = 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 1 Then ' 存在电采暖锅炉1，且蓄热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value = DGLXRFHL1 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1665,7 +1728,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         End If
                     Next
                 End If
-                If DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 1 Then ' 存在电采暖锅炉2，且蓄热负荷不满足需求
+                '只有（2）
+                If DCNGL1ZRGL = 0 And DCNGL2ZRGL > 0 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 1 Then ' 存在电采暖锅炉2，且蓄热负荷不满足需求
                     For i = 1 To 1000
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97).Value = DGLXRFHL2 + FHTJJD * i / 100
                         '跳出循环条件
@@ -1800,7 +1864,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             For i = 1 To n '工况序号
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
-                    Dim HSSBGL As Double
+                    Dim HSSBGL As Double = 0
                     '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
                     If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "空气源热泵" Then
                         HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
@@ -1825,8 +1889,10 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '定义混水设备负荷率初始值
                     Dim HSSBFHL_CSZ As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value
                     'MsgBox("计算序号：  " & n & "比例初始值：  " & HSSBFHL_CSZ)
+                    '参与混水的设备的专用FHTJJD参数，目的是提高计算速度（风冷螺杆机、空气源热泵、水地源热泵）
+                    Dim FHTJJD_HS As Double = 2 * FHTJJD
                     '循环的次数最大值
-                    Dim JSCS_max As Integer = CType(HSSBFHL_CSZ * 100 / FHTJJD, Integer)
+                    Dim JSCS_max As Integer = CType(HSSBFHL_CSZ * 100 / FHTJJD_HS, Integer)
                     '混水冷负荷、混水热负荷（默认值）
                     Dim HSLFH_a As Double = 0
                     Dim HSRFH_a As Double = 0
@@ -1877,7 +1943,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             '如果实际混水比例比设计的小，则混水设备制热负荷率往上加
                             '将混水设备负荷率减小并写入表格（目前的负荷率大于等于FHTJJD的情况下才继续减小）
                             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value >= FHTJJD / 100 Then
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ + FHTJJD * j / 100
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ + FHTJJD_HS * j / 100
                             Else
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
                             End If
@@ -1885,7 +1951,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             '如果实际混水比例比设计的大，则混水设备制热负荷率往下减
                             '将混水设备负荷率减小并写入表格（目前的负荷率大于等于FHTJJD的情况下才继续减小）
                             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value >= FHTJJD / 100 Then
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ - FHTJJD * j / 100
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ - FHTJJD_HS * j / 100
                             Else
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
                             End If
@@ -10200,8 +10266,13 @@ qqq:
                 Call 锁定工作表()
                 GoTo qqq
             End If
-            '判断每个工况的冷热负荷总需求量和蓄冷蓄热负荷需求量之和是否大于所有设备总制冷制热功率，如果大于，则报错。代码在模块5
-            Call 判断冷热负荷需求量是否大于冷热负荷装机量()
+            '判断每个工况的冷热负荷总需求量和蓄冷蓄热负荷需求量之和是否大于所有设备总制冷制热功率，如果大于，则报错。
+            Dim ZTJC_LRFH As Integer = 判断冷热负荷需求量是否大于冷热负荷装机量(a)
+            If ZTJC_LRFH = 1 Then
+                ZTJC_SHUJU = 1
+                Call 锁定工作表()
+                GoTo qqq
+            End If
         Next
 qqq:
         '返回结果
@@ -10444,7 +10515,7 @@ qqq:
             MsgBox("混水供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & HSGR_ERROR)
         End If
     End Sub
-    Sub 判断冷热负荷需求量是否大于冷热负荷装机量()
+    Function 判断冷热负荷需求量是否大于冷热负荷装机量(a As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -10452,14 +10523,14 @@ qqq:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
         '状态检测
-        Dim ZTJC As Integer
+        Dim ZTJC_LRFH As Integer = 0
         '定义局部变量
         Dim XHLZLPD As Double '溴化锂制冷功率
         Dim ZZLGL As Double '总制冷功率
         Dim XHLZRPD As Double '溴化锂制热功率
         Dim ZZRGL As Double '总制热功率
         'a表示当前正在计算的工况序号
-        Dim a As Integer
+        '————————————————————————————————————————————————————————————————————————————————————————
         '将内燃机余热利用方式带入
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 77).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 77).Value
         '计算制冷装机是否能够满足冷负荷需求量和蓄冷需求量
@@ -10472,14 +10543,154 @@ qqq:
         Else
             XHLZLPD = 0
         End If
+        '顺序1到顺序6设备的制热功率
+        Dim GLGL_1 As Double = 0
+        Dim GLGL_2 As Double = 0
+        Dim GLGL_3 As Double = 0
+        Dim GLGL_4 As Double = 0
+        Dim GLGL_5 As Double = 0
+        Dim GLGL_6 As Double = 0
+        '顺序1
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "离心式冷水机" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "空气源热泵" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "水冷螺杆机" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "水(地)源热泵" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "风冷螺杆机" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "离心式热泵" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 6).Value = "直燃型溴化锂" Then
+            GLGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
+        '顺序2
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "离心式冷水机" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "空气源热泵" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "水冷螺杆机" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "水(地)源热泵" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "风冷螺杆机" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "离心式热泵" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 7).Value = "直燃型溴化锂" Then
+            GLGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
+        '顺序3
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "离心式冷水机" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "空气源热泵" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "水冷螺杆机" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "水(地)源热泵" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "风冷螺杆机" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "离心式热泵" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 8).Value = "直燃型溴化锂" Then
+            GLGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
+        '顺序4
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "离心式冷水机" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "空气源热泵" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "水冷螺杆机" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "水(地)源热泵" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "风冷螺杆机" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "离心式热泵" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 9).Value = "直燃型溴化锂" Then
+            GLGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
+        '顺序5
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "离心式冷水机" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "空气源热泵" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "水冷螺杆机" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "水(地)源热泵" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "风冷螺杆机" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "离心式热泵" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 10).Value = "直燃型溴化锂" Then
+            GLGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
+        '顺序6
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "离心式冷水机" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(50, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "空气源热泵" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(51, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "水冷螺杆机" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(52, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "水(地)源热泵" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(53, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "风冷螺杆机" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(54, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "离心式热泵" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(55, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 11).Value = "直燃型溴化锂" Then
+            GLGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+        End If
         '计算所有设备总制冷功率
-        ZZLGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(58, 7).Value + XHLZLPD + XNGLGL(a)
+        ZZLGL = XHLZLPD + XNGLGL(a) + GLGL_1 + GLGL_2 + GLGL_3 + GLGL_4 + GLGL_5 + GLGL_6
         If LFHZXQL(a) + XNXLGL(a) > ZZLGL Then
             MsgBox("出现了冷负荷总需求量+蓄冷负荷需求量之和大于所有设备总制冷量的情况！" & Chr(10) & "工况序号为：" & a)
-            ZTJC = 1
+            ZTJC_LRFH = 1
             Call 锁定工作表()
-            Exit Sub
+            GoTo qqqqq
         End If
+        '————————————————————————————————————————————————————————————————————————————————————————
         '计算制热装机是否能够满足热负荷需求量和蓄热需求量
         '将制热时内燃机负荷率全部设置为1
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3)).Value = 0
@@ -10490,17 +10701,172 @@ qqq:
         Else
             XHLZRPD = 0
         End If
+        '顺序1到顺序6设备的制热功率
+        Dim GRGL_1 As Double = 0
+        Dim GRGL_2 As Double = 0
+        Dim GRGL_3 As Double = 0
+        Dim GRGL_4 As Double = 0
+        Dim GRGL_5 As Double = 0
+        Dim GRGL_6 As Double = 0
+        '顺序1
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "空气源热泵" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "水(地)源热泵" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "风冷螺杆机" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "离心式热泵" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "天然气锅炉" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "直燃型溴化锂" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 15).Value = "电采暖锅炉" Then
+            GRGL_1 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '顺序2
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "空气源热泵" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "水(地)源热泵" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "风冷螺杆机" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "离心式热泵" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "天然气锅炉" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "直燃型溴化锂" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 16).Value = "电采暖锅炉" Then
+            GRGL_2 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '顺序3
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "空气源热泵" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "水(地)源热泵" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "风冷螺杆机" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "离心式热泵" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "天然气锅炉" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "直燃型溴化锂" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 17).Value = "电采暖锅炉" Then
+            GRGL_3 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '顺序4
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "空气源热泵" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "水(地)源热泵" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "风冷螺杆机" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "离心式热泵" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "天然气锅炉" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "直燃型溴化锂" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 18).Value = "电采暖锅炉" Then
+            GRGL_4 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '顺序5
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "空气源热泵" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "水(地)源热泵" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "风冷螺杆机" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "离心式热泵" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "天然气锅炉" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "直燃型溴化锂" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 19).Value = "电采暖锅炉" Then
+            GRGL_5 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '顺序6
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "空气源热泵" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "水(地)源热泵" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "风冷螺杆机" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "离心式热泵" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(64, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "天然气锅炉" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "直燃型溴化锂" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 20).Value = "电采暖锅炉" Then
+            GRGL_6 = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(67, 7).Value
+        End If
+        '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
+        Dim HSGRGL As Double = 0
+        '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 82).Value = "空气源热泵" Then
+            HSGRGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 82).Value = "水(地)源热泵" Then
+            HSGRGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + a, 82).Value = "风冷螺杆机" Then
+            HSGRGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+        End If
         '计算所有设备总制热功率
-        ZZRGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(69, 7).Value + XHLZRPD + XNGRGL(a)
+        ZZRGL = XHLZRPD + XNGRGL(a) + GRGL_1 + GRGL_2 + GRGL_3 + GRGL_4 + GRGL_5 + GRGL_6 + HSGRGL
         If RFHZXQL(a) + XNXRGL(a) > ZZRGL Then
             MsgBox("出现了热负荷总需求量+蓄热负荷需求量之和大于所有设备总制热量的情况！" & Chr(10) & "工况序号为：" & a)
-            ZTJC = 1
+            ZTJC_LRFH = 1
             Call 锁定工作表()
-            Exit Sub
+            GoTo qqqqq
         End If
+        '————————————————————————————————————————————————————————————————————————————————————————
+qqqqq:
         '清空数据
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B3:CO3").ClearContents
-    End Sub
+        '返回状态监测结果
+        Return ZTJC_LRFH
+    End Function
     Sub 内燃机不可以向外供电时制冷设备运行计算(b As Integer, FHTJJD As Double, JSBC As Integer, HSLFH As Double， D_price As Double, TRQ_price As Double, calculation_mode As Integer)
         On Error Resume Next
         '定义Excel对象
