@@ -120,14 +120,18 @@ Public Class 指定工况计算
                     Exit Sub
                 End If
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '计算模式二混水供热计算前置特殊处理
+            Call mainprogram.计算模式二混水供热前置特殊处理(n, calculation_mode)
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(b)
-                    Dim ans_FHFX = mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， 0, 0, calculation_mode)
-                    Call mainprogram.存在混水供热的工况特殊处理(b, FHTJJD, JSBC)
-                    '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                    Call mainprogram.将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1), 0, 0, calculation_mode)
+                    '混水供热计算模式（正常计算模式时=1）
+                    Dim HSGR_mode As Integer = 1
+                    '进行正常的负荷分析（主要技术指标）计算
+                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， 0, 0, calculation_mode, HSGR_mode)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)
@@ -299,14 +303,18 @@ Public Class 指定工况计算
                     Exit Sub
                 End If
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '计算模式二混水供热计算前置特殊处理
+            Call mainprogram.计算模式二混水供热前置特殊处理(n, calculation_mode)
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(b)
-                    Dim ans_FHFX = mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode)
-                    Call mainprogram.存在混水供热的工况特殊处理(b, FHTJJD, JSBC)
-                    '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                    Call mainprogram.将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1), D_price, TRQ_price, calculation_mode)
+                    '混水供热计算模式（正常计算模式时=1）
+                    Dim HSGR_mode As Integer = 1
+                    '进行正常的负荷分析（主要技术指标）计算
+                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, HSGR_mode)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)

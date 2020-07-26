@@ -146,16 +146,18 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim JSBC As Integer = CInt(25 / FHTJJD)
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
+            '计算模式二混水供热计算前置特殊处理
+            Call 计算模式二混水供热前置特殊处理(n, calculation_mode)
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————
             '先进行一遍正常的负荷分析计算
             '此时的计算循环起点=1，终点=n
             'b表示当前正在计算的工况序号
             For b = 1 To n
+                '混水供热计算模式（正常计算模式时=1）
+                Dim HSGR_mode As Integer = 1
                 '进行正常的负荷分析（主要技术指标）计算
-                Dim ans_FHFX = 负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode)
-                '混水计算预处理
-                Call 存在混水供热的工况特殊处理(b, FHTJJD, JSBC)
-                '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                Call 将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode)
+                Call 负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, HSGR_mode)
                 '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                 Call 制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
                 Call 制热和蓄热空调设备负荷率修正(b, calculation_mode)
@@ -188,11 +190,10 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     Dim a As Integer = XH_ERROR(i)
                     '调用程序进行计算
                     Call 清空指定工况输入输出数据(a)
-                    Dim ans_FHFX = 负荷分析计算程序(a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode_a)
-                    '混水计算预处理
-                    Call 存在混水供热的工况特殊处理(a, FHTJJD, JSBC)
-                    '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                    Call 将内燃机单台负荷率低于百分之30的内燃机关闭(a, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode_a)
+                    '混水供热计算模式（正常计算模式时=1）
+                    Dim HSGR_mode As Integer = 1
+                    '进行正常的负荷分析（主要技术指标）计算
+                    Call 负荷分析计算程序(a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode_a, HSGR_mode)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call 制冷和蓄冷空调设备负荷率修正(a, calculation_mode_a)
                     Call 制热和蓄热空调设备负荷率修正(a, calculation_mode_a)
@@ -249,7 +250,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         '重新锁定工作表
         Call 锁定工作表()
     End Sub
-    Function 负荷分析计算程序(b As Integer, FHTJJD As Double, JSBC As Integer， D_price As Double, TRQ_price As Double, calculation_mode As Integer)
+    Sub 负荷分析计算程序(b As Integer, FHTJJD As Double, JSBC As Integer， D_price As Double, TRQ_price As Double, calculation_mode As Integer, HSGR_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -513,13 +514,15 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 End If
             End If
         End If
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '混水计算特殊处理
+        Call 存在混水供热的工况特殊处理(b, FHTJJD, JSBC, calculation_mode, HSGR_mode)
+        '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
+        Call 将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, HSLFH, HSRFH， D_price, TRQ_price, calculation_mode)
+        '————————————————————————————————————————————————————————————————————————————————————————
         Calculate_Progress.Close()
-        '返回混水冷负荷、混水热负荷计算结果
-        Dim ans(2)
-        ans(0) = HSLFH
-        ans(1) = HSRFH
-        Return ans
-    End Function
+    End Sub
 
     Sub 冷热负荷分段计算()
         On Error Resume Next
@@ -1529,7 +1532,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         '返回状态监测数值
         Return ZTJC_EXCEL
     End Function
-    Sub 存在混水供热的工况特殊处理(b As Integer, FHTJJD As Double, JSBC As Integer)
+    Sub 存在混水供热的工况特殊处理(b As Integer, FHTJJD As Double, JSBC As Integer, calculation_mode As Integer, HSGR_mode As Integer)
         On Error Resume Next
         '定义Excel对象
         Dim ExcelApp As Excel.Application '定义Excel对象
@@ -1539,6 +1542,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         '如果存在混水供热设备，如果此时工况的总制热功率和蓄热功率不满足热负荷的需求（因为存在混水供热设备，因此常规的顺序1至6设备的总装机功率会低于设计值，因此在最大负荷情况下可能会存在不满足的情况）
         '此时可以将参与混水的天然气锅炉、直燃型溴化锂、电采暖锅炉的负荷率突破100%，暂时满足供热和蓄热功率的需求
         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then
+            '计算模式二采用以下计算
+            If calculation_mode = 2 And HSGR_mode = 1 Then
+                '清空已有的混水设备负荷率
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83).Value = Nothing
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = Nothing
+            End If
             '检测存在的设备类型
             Dim GLXHLJC As Integer = 0 '天然气锅炉或者直燃型溴化锂检测，如果存在，则为1，否则为0
             Dim DGLJC As Integer = 0 '电锅炉检测，如果存在，则为1，否则为0
@@ -1743,6 +1752,41 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             End If
         End If
     End Sub
+    Sub 计算模式二混水供热前置特殊处理(n As Integer, calculation_mode As Integer)
+        On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+        '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+        '只有计算模式二进行计算
+        If calculation_mode = 2 Then
+            For i = 1 To n
+                '判断混水供热设备是否存在
+                '如果有混水供热的设备
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
+                    '计算顺序1到顺序6的制热设备装机功率
+                    Dim ZRZJGL As Double = 判断冷热负荷需求量是否大于冷热负荷装机量(i)(3)
+                    '混水设备制热功率
+                    Dim HSGRGL As Double = 判断冷热负荷需求量是否大于冷热负荷装机量(i)(4)
+                    '供热负荷需求功率
+                    Dim GRGL_ALL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value
+                    '蓄热供热功率
+                    Dim XNGR_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
+                    '蓄热功率
+                    Dim XNXR_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value
+                    '此时的热负荷
+                    Dim RFH_now As Double = GRGL_ALL + XNXR_now - XNGR_now
+                    '将混水供热设备负荷率进行设置
+                    If RFH_now > ZRZJGL Then
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = (RFH_now - ZRZJGL) / HSGRGL
+                    Else
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
+                    End If
+                End If
+            Next
+        End If
+    End Sub
     Function 混水供冷供热量计算(b As Integer)
         On Error Resume Next
         '定义Excel对象
@@ -1826,9 +1870,10 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             For i = 1 To XH
                 Dim b As Integer = GKXH(i)
                 Call 清空指定工况输入输出数据(b)
-                Dim ans_FHFX = 负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode)
-                '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                Call 将内燃机单台负荷率低于百分之30的内燃机关闭(b, FHTJJD, JSBC, ans_FHFX(0), ans_FHFX(1)， D_price, TRQ_price, calculation_mode)
+                '混水供热计算模式（正常计算模式时=1）
+                Dim HSGR_mode As Integer = 1
+                '进行正常的负荷分析（主要技术指标）计算
+                Call 负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode， HSGR_mode)
                 '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                 Call 制热和蓄热空调设备负荷率修正(b, calculation_mode)
                 '计算制热季天然气耗量和耗电量综合修正系数
@@ -1884,6 +1929,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     Dim ZRXHLSJGL_CSZ As Double = ZRXHL1ZRGL * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 92).Value + ZRXHL2ZRGL * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 93).Value
                     Dim DCNGLSJGL_CSZ As Double = DCNGL1ZRGL * (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 94).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 96).Value) + DCNGL2ZRGL * (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 95).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 97).Value)
                     '计算混水设备负荷率计算初始值（如果此时有内燃机和溴化锂，则这个初始值会偏大，后续计算会往下减；如果没有内燃机和溴化锂，这个比例基本正确，但是为了防止出错，初始值放大10%，然后往下减）
+                    '如果此时TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ=0,直接结束计算，进入下一个工况
+                    If TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ = 0 Then
+                        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
+                        HSSBSJBL = 0
+                        GoTo aaaaa
+                    End If
                     '(TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ）即为两种混水设备的总输出功率，例如风冷螺杆式热泵+天然气锅炉混水总功率
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = (TRQGLSJGL_CSZ + ZRXHLSJGL_CSZ + DCNGLSJGL_CSZ） * HSGRGLBL / HSSBGL
                     '定义混水设备负荷率初始值
@@ -1893,9 +1944,6 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     Dim FHTJJD_HS As Double = 2 * FHTJJD
                     '循环的次数最大值
                     Dim JSCS_max As Integer = CType(HSSBFHL_CSZ * 100 / FHTJJD_HS, Integer)
-                    '混水冷负荷、混水热负荷（默认值）
-                    Dim HSLFH_a As Double = 0
-                    Dim HSRFH_a As Double = 0
                     'JS = JS + 1
                     For j = 0 To JSCS_max
                         '读取混水设备的制热负荷率
@@ -1903,11 +1951,10 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         '进行一次负荷计算
                         'Dim b As Integer = i '工况序号
                         Call 清空指定工况输入输出数据(i)
-                        Dim ans_FHFX = 负荷分析计算程序(i, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode)
-                        Call 存在混水供热的工况特殊处理(i, FHTJJD, JSBC)
-                        '读取混水冷负荷和热负荷计算结果
-                        HSLFH_a = ans_FHFX(0)
-                        HSRFH_a = ans_FHFX(1)
+                        '混水供热计算模式（混水供热计算时，计算模式时=2）
+                        Dim HSGR_mode As Integer = 2
+                        '进行正常的负荷分析（主要技术指标）计算
+                        Call 负荷分析计算程序(i, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode， HSGR_mode)
                         '计算循环体，计算一次当前工况
                         '读取计算输入量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 109)).Value
@@ -1939,28 +1986,27 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             Exit For
                         End If
                         '根据计算出的实际混水比例，进行计算
-                        If HSSBSJBL < HSGRGLBL Then
+                        If HSSBSJBL = HSGRGLBL Then
+                            Exit For
+                        End If
+                        '调整负荷率
+                        If HSSBSJBL < HSGRGLBL And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value >= 0 Then
                             '如果实际混水比例比设计的小，则混水设备制热负荷率往上加
-                            '将混水设备负荷率减小并写入表格（目前的负荷率大于等于FHTJJD的情况下才继续减小）
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value >= FHTJJD / 100 Then
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ + FHTJJD_HS * j / 100
-                            Else
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
-                            End If
-                        Else
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ + FHTJJD_HS * j / 100
+                            '将混水设备负荷率增加并写入表格（目前的负荷率大于等于FHTJJD的情况下才继续增加）
+                        ElseIf HSSBSJBL > HSGRGLBL And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value > 0 Then
                             '如果实际混水比例比设计的大，则混水设备制热负荷率往下减
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ - FHTJJD_HS * j / 100
                             '将混水设备负荷率减小并写入表格（目前的负荷率大于等于FHTJJD的情况下才继续减小）
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value >= FHTJJD / 100 Then
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = HSSBFHL_CSZ - FHTJJD_HS * j / 100
-                            Else
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
-                            End If
+                        End If
+                        '如果出现负荷率小于0
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value < 0 Then
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value = 0
                         End If
                     Next
+aaaaa:
                     '记录下算出来的混水负荷比例，并显示出来，供用户判断计算是否正确
                     HSBL（i - 1） = ExcelApp.WorksheetFunction.RoundUp(HSSBSJBL, 4)
-                    '将上面计算出的内燃机负荷率中，单台负荷率低于30%的内燃机负荷率修改为0
-                    Call 将内燃机单台负荷率低于百分之30的内燃机关闭(i, FHTJJD, JSBC, HSLFH_a, HSRFH_a， D_price, TRQ_price, calculation_mode)
                     '修正供热和蓄热时的耗电量和天然气耗量修正系数
                     '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call 制热和蓄热空调设备负荷率修正(i, calculation_mode)
@@ -10267,7 +10313,7 @@ qqq:
                 GoTo qqq
             End If
             '判断每个工况的冷热负荷总需求量和蓄冷蓄热负荷需求量之和是否大于所有设备总制冷制热功率，如果大于，则报错。
-            Dim ZTJC_LRFH As Integer = 判断冷热负荷需求量是否大于冷热负荷装机量(a)
+            Dim ZTJC_LRFH As Integer = 判断冷热负荷需求量是否大于冷热负荷装机量(a)(0)
             If ZTJC_LRFH = 1 Then
                 ZTJC_SHUJU = 1
                 Call 锁定工作表()
@@ -10864,8 +10910,15 @@ qqq:
 qqqqq:
         '清空数据
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B3:CO3").ClearContents
+        '返回的结果列表
+        Dim ans(4)
+        ans(0) = ZTJC_LRFH
+        ans(1) = ZZRGL
+        ans(2) = XHLZRPD + GRGL_1 + GRGL_2 + GRGL_3 + GRGL_4 + GRGL_5 + GRGL_6
+        ans(3) = GRGL_1 + GRGL_2 + GRGL_3 + GRGL_4 + GRGL_5 + GRGL_6
+        ans(4) = HSGRGL
         '返回状态监测结果
-        Return ZTJC_LRFH
+        Return ans
     End Function
     Sub 内燃机不可以向外供电时制冷设备运行计算(b As Integer, FHTJJD As Double, JSBC As Integer, HSLFH As Double， D_price As Double, TRQ_price As Double, calculation_mode As Integer)
         On Error Resume Next
@@ -16518,6 +16571,8 @@ qqqqq:
             '3种设备不可能同时存在
             If FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB < 0.1 And FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB > 0 Then
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = 0.1
+            ElseIf FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB < 0 Then
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = 0
             ElseIf FHL_HSGR_FLLGJ + FHL_HSGR_KQYRB + FHL_HSGR_SDYRB > 1 Then
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = 1
             End If
@@ -16858,13 +16913,13 @@ qqqqq:
             '————————————————————————————————————————————————————————————————————————————————————————        
             '计算出的负荷率结果均保留3位小数，增加美观度
             '列号
-            For i = 52 To 69
+            For i = 52 To 70
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
             Next
             '电锅炉和直燃型溴化锂
             '列号
-            For i = 52 To 69
+            For i = 92 To 97
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
             Next
