@@ -175,6 +175,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 Dim ZRXHL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 20).Value '直燃型溴化锂1制热总功率
                 Dim DCNGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 22).Value '电采暖锅炉1制热总功率
                 Dim DCNGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value '电采暖锅炉2制热总功率
+                '将不合理的工况序号显示出了
+                Dim XianShi As String = Nothing
                 For i = 1 To n
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
                     Dim HSSBGL As Double = 0
@@ -190,11 +192,13 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     End If
                     '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
                     If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
-                        MsgBox("输入的<混水供热供冷比例系数>大于装机选择的两种设备的实际比例，计算结果会不正确！")
-                        Call 锁定工作表()
-                        Exit Sub
+                        Dim XXX As String = "(" & i & ")、"
+                        XianShi = XianShi & XXX.ToString & "  "
                     End If
                 Next
+                If XianShi <> Nothing Then
+                    MsgBox("输入的<混水供热供冷比例系数>大于装机选择的两种设备的实际比例，计算结果可能会不正确！工况序号为： " & XianShi)
+                End If
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -10700,6 +10704,64 @@ aaa:
                 End If
             Next
         Next
+        '如果存在混水供热设备，但是顺序1到顺序6同时存在了天然气锅炉、电锅炉、直燃型溴化锂中的不止一项，报错
+        For i = 1 To n '工况序号（行号）
+            '确定是否有某种设备
+            Dim ZTJC_TRQGL As Integer = 0
+            Dim ZTJC_DGL As Integer = 0
+            Dim ZTJC_ZRXXHL As Integer = 0
+            For j = 15 To 20 '第一到第六顺序制热设备（列号）
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then '存在混水供热设备
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, j).Value = "天然气锅炉" Then
+                        ZTJC_TRQGL = 1
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, j).Value = "电采暖锅炉" Then
+                        ZTJC_DGL = 1
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, j).Value = "直燃型溴化锂" Then
+                        ZTJC_ZRXXHL = 1
+                    End If
+                    If ZTJC_TRQGL + ZTJC_DGL + ZTJC_ZRXXHL > 1 Then
+                        MsgBox("存在混水供热设备，顺序1到顺序6供热设备中同时存在天然气锅炉、直燃型溴化锂和电采暖锅炉中的不止一项，暂不支持这种计算，仅可以选择一种设备，请检查并重新选择！")
+                        ZTJC_EQ = 1
+                        Call 锁定工作表()
+                        GoTo qqq
+                    End If
+                End If
+            Next
+        Next
+        '如果存在混水供热设备，但天然气锅炉、电锅炉、直燃型溴化锂装机选择不止一项，则报错
+        For i = 1 To n '工况序号（行号）
+            '确定是否有某种设备
+            Dim ZTJC_TRQGL As Integer = 0
+            Dim ZTJC_DGL As Integer = 0
+            Dim ZTJC_ZRXXHL As Integer = 0
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then '存在混水供热设备
+                '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
+                Dim TRQGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 10).Value '天然气锅炉1制热总功率
+                Dim TRQGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 10).Value '天然气锅炉2制热总功率
+                Dim ZRXHL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 20).Value '直燃型溴化锂1制热总功率
+                Dim ZRXHL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 20).Value '直燃型溴化锂1制热总功率
+                Dim DCNGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 22).Value '电采暖锅炉1制热总功率
+                Dim DCNGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value '电采暖锅炉2制热总功率
+                If TRQGL1ZRGL + TRQGL2ZRGL > 0 Then
+                    ZTJC_TRQGL = 1
+                End If
+                If ZRXHL1ZRGL + ZRXHL2ZRGL > 0 Then
+                    ZTJC_ZRXXHL = 1
+                End If
+                If DCNGL1ZRGL + DCNGL2ZRGL > 0 Then
+                    ZTJC_DGL = 1
+                End If
+                If ZTJC_TRQGL + ZTJC_DGL + ZTJC_ZRXXHL > 1 Then
+                    MsgBox("存在混水供热设备，同时装机方案中存在天然气锅炉、直燃型溴化锂和电采暖锅炉中的不止一项，暂不支持这种计算，仅可以选择一种设备，请检查并重新选择！")
+                    ZTJC_EQ = 1
+                    Call 锁定工作表()
+                    GoTo qqq
+                End If
+            End If
+        Next
+        '————————————————————————————————————————————————————————————————————————————————————————
 qqq:
         '返回结果
         Return ZTJC_EQ
