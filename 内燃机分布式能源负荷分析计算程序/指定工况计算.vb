@@ -122,16 +122,12 @@ Public Class 指定工况计算
             Next
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
-            '计算模式二混水供热计算前置特殊处理
-            Call mainprogram.计算模式二混水供热前置特殊处理(n, calculation_mode)
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(b)
-                    '混水供热计算模式（正常计算模式时=1）
-                    Dim HSGR_mode As Integer = 1
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， 0, 0, calculation_mode, HSGR_mode)
+                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， 0, 0, calculation_mode, 0)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)
@@ -305,16 +301,12 @@ Public Class 指定工况计算
             Next
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
-            '计算模式二混水供热计算前置特殊处理
-            Call mainprogram.计算模式二混水供热前置特殊处理(n, calculation_mode)
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(b)
-                    '混水供热计算模式（正常计算模式时=1）
-                    Dim HSGR_mode As Integer = 1
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, HSGR_mode)
+                    Call mainprogram.负荷分析计算程序(b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, 0)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(b, calculation_mode)
