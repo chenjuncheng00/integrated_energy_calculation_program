@@ -1,6 +1,14 @@
-﻿Public Class 蓄能分配计算设置
+﻿Imports Microsoft.Office.Interop
+Imports Microsoft.Office.Interop.Excel
+Imports System.IO
+Public Class 蓄能分配计算设置
     Private Sub 确定参数_Click(sender As Object, e As EventArgs) Handles 确定参数.Click
         On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————        
         '读取输入的蓄冷平均功率、最大功率
         Dim XLGL_PJ As Double = CType(Me.XLGL_PJ.Text, Double)
         Dim XLGL_MAX As Double = CType(Me.XLGL_MAX.Text, Double)
@@ -65,7 +73,7 @@
         '隐藏窗体
         Me.Hide()
         '进入计算
-        Call mainprogram.蓄能分配计算主程序(XLGL_PJ, XLGL_MAX, XLJS_MS, XRGL_PJ, XRGL_MAX, XRJS_MS)
+        Call mainprogram.蓄能分配计算主程序(ExcelApp, XLGL_PJ, XLGL_MAX, XLJS_MS, XRGL_PJ, XRGL_MAX, XRJS_MS)
         Me.Close()
     End Sub
 

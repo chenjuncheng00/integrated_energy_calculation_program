@@ -1,6 +1,14 @@
-﻿Public Class 计算模式选择
+﻿Imports Microsoft.Office.Interop
+Imports Microsoft.Office.Interop.Excel
+Imports System.IO
+Public Class 计算模式选择
     Private Sub 常规计算模式_Click(sender As Object, e As EventArgs) Handles 常规计算模式.Click
         On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————        
         '实例化一个主计算程序
         Dim mainprogram As New Com内燃机分布式能源负荷分析计算程序
         '读取输入的负荷调节精度
@@ -21,13 +29,18 @@
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(precision, 0, 0, calculation_mode)
+        mainprogram.计算主程序(ExcelApp, precision, 0, 0, calculation_mode)
         '关闭窗口
         Me.Close()
     End Sub
 
     Private Sub 全局寻优计算_Click(sender As Object, e As EventArgs) Handles 全局寻优计算.Click
         On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————        
         '实例化一个主计算程序
         Dim mainprogram As New Com内燃机分布式能源负荷分析计算程序
         '读取输入的负荷调节精度
@@ -69,7 +82,7 @@
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(precision, D_price, TRQ_price, calculation_mode)
+        mainprogram.计算主程序(ExcelApp, precision, D_price, TRQ_price, calculation_mode)
         '关闭窗口
         Me.Close()
     End Sub

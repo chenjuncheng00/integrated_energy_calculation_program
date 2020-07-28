@@ -10,9 +10,9 @@
         mima = CType(Me.TextBox1.Text, String)
         If mima = "cjc19920105" Then
             '解锁工作表
-            Call 内燃机分布式能源负荷分析计算程序.解锁工作表()
+            Call 内燃机分布式能源负荷分析计算程序.解锁工作表(ExcelApp)
             '取消彻底隐藏工作表
-            Call 内燃机分布式能源负荷分析计算程序.取消工作表彻底隐藏()
+            Call 内燃机分布式能源负荷分析计算程序.取消工作表彻底隐藏(ExcelApp)
             ExcelApp.Worksheets("说明&常量设置&数据汇总").Cells(1, 19).Value = 0 '密码输入正确后，将计数器重置为0
             Me.Close()
             MsgBox("已成功进入维护模式，程序可以被编辑！")
@@ -25,8 +25,8 @@
             '提醒
             MsgBox("密码错误，请重新输入！")
             Me.Close()
-            Call 内燃机分布式能源负荷分析计算程序.工作表设置为彻底隐藏()
-            Call 内燃机分布式能源负荷分析计算程序.锁定工作表()
+            Call 内燃机分布式能源负荷分析计算程序.工作表设置为彻底隐藏(ExcelApp)
+            Call 内燃机分布式能源负荷分析计算程序.锁定工作表(ExcelApp)
             '保存表格的改动
             ExcelApp.Application.DisplayAlerts = False
             ExcelApp.ThisWorkbook.Save()
