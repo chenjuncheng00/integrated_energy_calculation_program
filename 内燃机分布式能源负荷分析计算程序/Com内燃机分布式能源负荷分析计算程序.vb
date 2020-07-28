@@ -108,15 +108,6 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 83), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(57, 83)).Value = Nothing
         '读取输入的各工况冷负荷需求量、热负荷需求量、蓄冷量、蓄热量
         If n > 0 Then
-            '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
-            Dim ZTJC_SHUJU As Integer = 读取输入的各种数据并添加报错功能(ExcelApp, n)
-            If ZTJC_SHUJU = 1 Then
-                Call 锁定工作表(ExcelApp)
-                ZTJC_SHUJU = 0
-                Exit Sub
-            End If
-            '————————————————————————————————————————————————————————————————————————————————————————
-            '————————————————————————————————————————————————————————————————————————————————————————
             '让用户输入负荷调节精度
             Dim FHTJJD As Double = precision
             '计算模式
@@ -125,6 +116,15 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim D_price As Double = GDDJ
             '天然气单价
             Dim TRQ_price As Double = TRQDJ
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
+            Dim ZTJC_SHUJU As Integer = 读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
+            If ZTJC_SHUJU = 1 Then
+                Call 锁定工作表(ExcelApp)
+                ZTJC_SHUJU = 0
+                Exit Sub
+            End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
             '针对输入的负荷调节精度，添加报错功能
@@ -260,7 +260,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '计算循环体
             Call 计算循环体(ExcelApp, n)
             '判断各种计算结果是否正确，不正确则报错
-            Call 判断各种计算结果是否正确(ExcelApp, n)
+            Call 判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
@@ -2055,9 +2055,9 @@ aaaaa:
         '根据选择的计算模式类型，只有是模式2的时候才会计算
         If calculation_mode = 2 And (LFH_GL_now > 0 Or LFH_XL_now > 0) Then
             '负荷调整系数（全局寻优时候能否计算到了负荷上限的倍数）
-            Dim TZXS As Double = 1.05
+            Dim TZXS As Double = 1 + 10 * FHTJJD / 100
             '误差系数，允许误差的最大比例
-            Dim WCXS As Double = 1.02
+            Dim WCXS As Double = 1 + 4 * FHTJJD / 100
             '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
             '根据选择的设备类型，获取被选择的设备类型，由于采用全局寻优计算方法，不需要考虑设备选择顺序
             '设置变量判断某一种设备是否被启用，0表示没有启用，1表示启用
@@ -2889,50 +2889,50 @@ aaa:
             '供冷
             If GL_bl > WCXS Then
                 '离心式冷水机
-                FHL1_GL_LXSLSJ_result = FHL1_GL_LXSLSJ_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_LXSLSJ_result = FHL2_GL_LXSLSJ_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_LXSLSJ_result = FHL1_GL_LXSLSJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_LXSLSJ_result = FHL2_GL_LXSLSJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '水冷螺杆机
-                FHL1_GL_SLLGJ_result = FHL1_GL_SLLGJ_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_SLLGJ_result = FHL2_GL_SLLGJ_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_SLLGJ_result = FHL1_GL_SLLGJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_SLLGJ_result = FHL2_GL_SLLGJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '水（地）源热泵
-                FHL1_GL_SDYRB_result = FHL1_GL_SDYRB_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_SDYRB_result = FHL2_GL_SDYRB_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_SDYRB_result = FHL1_GL_SDYRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_SDYRB_result = FHL2_GL_SDYRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '离心式热泵
-                FHL1_GL_LXSRB_result = FHL1_GL_LXSRB_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_LXSRB_result = FHL2_GL_LXSRB_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_LXSRB_result = FHL1_GL_LXSRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_LXSRB_result = FHL2_GL_LXSRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '风冷螺杆机
-                FHL1_GL_FLLGJ_result = FHL1_GL_FLLGJ_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_FLLGJ_result = FHL2_GL_FLLGJ_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_FLLGJ_result = FHL1_GL_FLLGJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_FLLGJ_result = FHL2_GL_FLLGJ_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '空气源热泵
-                FHL1_GL_KQYRB_result = FHL1_GL_KQYRB_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_KQYRB_result = FHL2_GL_KQYRB_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_KQYRB_result = FHL1_GL_KQYRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_KQYRB_result = FHL2_GL_KQYRB_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
                 '直燃型溴化锂
-                FHL1_GL_ZRXXHL_result = FHL1_GL_ZRXXHL_r(COST_min_index) / GL_bl * 1.01
-                FHL2_GL_ZRXXHL_result = FHL2_GL_ZRXXHL_r(COST_min_index) / GL_bl * 1.01
+                FHL1_GL_ZRXXHL_result = FHL1_GL_ZRXXHL_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GL_ZRXXHL_result = FHL2_GL_ZRXXHL_r(COST_min_index) / GL_bl * (1 + 2 * FHTJJD / 100)
             End If
             '蓄冷
             If XL_bl > WCXS Then
                 '离心式冷水机
-                FHL1_XL_LXSLSJ_result = FHL1_XL_LXSLSJ_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_LXSLSJ_result = FHL2_XL_LXSLSJ_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_LXSLSJ_result = FHL1_XL_LXSLSJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_LXSLSJ_result = FHL2_XL_LXSLSJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '水冷螺杆机
-                FHL1_XL_SLLGJ_result = FHL1_XL_SLLGJ_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_SLLGJ_result = FHL2_XL_SLLGJ_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_SLLGJ_result = FHL1_XL_SLLGJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_SLLGJ_result = FHL2_XL_SLLGJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '水（地）源热泵
-                FHL1_XL_SDYRB_result = FHL1_XL_SDYRB_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_SDYRB_result = FHL2_XL_SDYRB_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_SDYRB_result = FHL1_XL_SDYRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_SDYRB_result = FHL2_XL_SDYRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '离心式热泵
-                FHL1_XL_LXSRB_result = FHL1_XL_LXSRB_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_LXSRB_result = FHL2_XL_LXSRB_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_LXSRB_result = FHL1_XL_LXSRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_LXSRB_result = FHL2_XL_LXSRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '风冷螺杆机
-                FHL1_XL_FLLGJ_result = FHL1_XL_FLLGJ_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_FLLGJ_result = FHL2_XL_FLLGJ_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_FLLGJ_result = FHL1_XL_FLLGJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_FLLGJ_result = FHL2_XL_FLLGJ_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '空气源热泵
-                FHL1_XL_KQYRB_result = FHL1_XL_KQYRB_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_KQYRB_result = FHL2_XL_KQYRB_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_KQYRB_result = FHL1_XL_KQYRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_KQYRB_result = FHL2_XL_KQYRB_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
                 '直燃型溴化锂
-                FHL1_XL_ZRXXHL_result = FHL1_XL_ZRXXHL_r(COST_min_index) / XL_bl * 1.01
-                FHL2_XL_ZRXXHL_result = FHL2_XL_ZRXXHL_r(COST_min_index) / XL_bl * 1.01
+                FHL1_XL_ZRXXHL_result = FHL1_XL_ZRXXHL_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XL_ZRXXHL_result = FHL2_XL_ZRXXHL_r(COST_min_index) / XL_bl * (1 + 2 * FHTJJD / 100)
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -5529,9 +5529,9 @@ aaa:
                 ZJRGL_HS = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
             End If
             '负荷调整系数（全局寻优时候能否计算到了负荷上限的倍数）
-            Dim TZXS As Double = 1.05
+            Dim TZXS As Double = 1 + 10 * FHTJJD / 100
             '误差系数，允许误差的最大比例
-            Dim WCXS As Double = 1.02
+            Dim WCXS As Double = 1 + 4 * FHTJJD / 100
             '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
             '根据选择的设备类型，获取被选择的设备类型，由于采用全局寻优计算方法，不需要考虑设备选择顺序
             '设置变量判断某一种设备是否被启用，0表示没有启用，1表示启用
@@ -6431,58 +6431,58 @@ aaa:
             '供热
             If GR_bl > WCXS Then
                 '天然气锅炉
-                FHL1_GR_TRQGL_result = FHL1_GR_TRQGL_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_TRQGL_result = FHL2_GR_TRQGL_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_TRQGL_result = FHL1_GR_TRQGL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_TRQGL_result = FHL2_GR_TRQGL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '电锅炉
-                FHL1_GR_DGL_result = FHL1_GR_DGL_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_DGL_result = FHL2_GR_DGL_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_DGL_result = FHL1_GR_DGL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_DGL_result = FHL2_GR_DGL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '水（地）源热泵
-                FHL1_GR_SDYRB_result = FHL1_GR_SDYRB_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_SDYRB_result = FHL2_GR_SDYRB_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_SDYRB_result = FHL1_GR_SDYRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_SDYRB_result = FHL2_GR_SDYRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '离心式热泵
-                FHL1_GR_LXSRB_result = FHL1_GR_LXSRB_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_LXSRB_result = FHL2_GR_LXSRB_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_LXSRB_result = FHL1_GR_LXSRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_LXSRB_result = FHL2_GR_LXSRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '风冷螺杆机
-                FHL1_GR_FLLGJ_result = FHL1_GR_FLLGJ_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_FLLGJ_result = FHL2_GR_FLLGJ_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_FLLGJ_result = FHL1_GR_FLLGJ_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_FLLGJ_result = FHL2_GR_FLLGJ_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '空气源热泵
-                FHL1_GR_KQYRB_result = FHL1_GR_KQYRB_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_KQYRB_result = FHL2_GR_KQYRB_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_KQYRB_result = FHL1_GR_KQYRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_KQYRB_result = FHL2_GR_KQYRB_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '直燃型溴化锂
-                FHL1_GR_ZRXXHL_result = FHL1_GR_ZRXXHL_r(COST_min_index) / GR_bl * 1.01
-                FHL2_GR_ZRXXHL_result = FHL2_GR_ZRXXHL_r(COST_min_index) / GR_bl * 1.01
+                FHL1_GR_ZRXXHL_result = FHL1_GR_ZRXXHL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_GR_ZRXXHL_result = FHL2_GR_ZRXXHL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
                 '混水设备负荷率（天然气锅炉、直燃型溴化锂）
-                FHL_HS_TRQGL_result = FHL_HS_TRQGL_r(COST_min_index) / GR_bl * 1.01
-                FHL_HS_ZRXXHL_result = FHL_HS_ZRXXHL_r(COST_min_index) / GR_bl * 1.01
+                FHL_HS_TRQGL_result = FHL_HS_TRQGL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
+                FHL_HS_ZRXXHL_result = FHL_HS_ZRXXHL_r(COST_min_index) / GR_bl * (1 + 2 * FHTJJD / 100)
             End If
             '蓄热
             If XR_bl > WCXS Then
                 '天然气锅炉 
-                FHL1_XR_TRQGL_result = FHL1_XR_TRQGL_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_TRQGL_result = FHL2_XR_TRQGL_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_TRQGL_result = FHL1_XR_TRQGL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_TRQGL_result = FHL2_XR_TRQGL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '电锅炉
-                FHL1_XR_DGL_result = FHL1_XR_DGL_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_DGL_result = FHL2_XR_DGL_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_DGL_result = FHL1_XR_DGL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_DGL_result = FHL2_XR_DGL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '水（地）源热泵
-                FHL1_XR_SDYRB_result = FHL1_XR_SDYRB_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_SDYRB_result = FHL2_XR_SDYRB_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_SDYRB_result = FHL1_XR_SDYRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_SDYRB_result = FHL2_XR_SDYRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '离心式热泵
-                FHL1_XR_LXSRB_result = FHL1_XR_LXSRB_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_LXSRB_result = FHL2_XR_LXSRB_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_LXSRB_result = FHL1_XR_LXSRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_LXSRB_result = FHL2_XR_LXSRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '风冷螺杆机
-                FHL1_XR_FLLGJ_result = FHL1_XR_FLLGJ_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_FLLGJ_result = FHL2_XR_FLLGJ_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_FLLGJ_result = FHL1_XR_FLLGJ_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_FLLGJ_result = FHL2_XR_FLLGJ_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '空气源热泵
-                FHL1_XR_KQYRB_result = FHL1_XR_KQYRB_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_KQYRB_result = FHL2_XR_KQYRB_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_KQYRB_result = FHL1_XR_KQYRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_KQYRB_result = FHL2_XR_KQYRB_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
                 '直燃型溴化锂
-                FHL1_XR_ZRXXHL_result = FHL1_XR_ZRXXHL_r(COST_min_index) / XR_bl * 1.01
-                FHL2_XR_ZRXXHL_result = FHL2_XR_ZRXXHL_r(COST_min_index) / XR_bl * 1.01
+                FHL1_XR_ZRXXHL_result = FHL1_XR_ZRXXHL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
+                FHL2_XR_ZRXXHL_result = FHL2_XR_ZRXXHL_r(COST_min_index) / XR_bl * (1 + 2 * FHTJJD / 100)
             End If
             '修正混水设备负荷率（电锅炉）
             Dim GR_XR_bl As Double = (GR_ALL_result + XR_ALL_result) / (RFH_GR_now + RFH_XR_now)
             If GR_XR_bl > WCXS Then
-                FHL_HS_DGL_result = FHL_HS_DGL_r(COST_min_index) / GR_XR_bl * 1.01
+                FHL_HS_DGL_result = FHL_HS_DGL_r(COST_min_index) / GR_XR_bl * (1 + 2 * FHTJJD / 100)
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -10503,7 +10503,7 @@ qqq:
         '返回结果
         Return ZTJC_EQ
     End Function
-    Function 读取输入的各种数据并添加报错功能(ExcelApp As Object, n As Integer)
+    Function 读取输入的各种数据并添加报错功能(ExcelApp As Object, FHTJJD As Double, n As Integer)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————  
         '状态检测
@@ -10537,13 +10537,13 @@ qqq:
                 GoTo qqq
             End If
             '如果某工况输入的蓄能设备供冷/供热量大于本工况冷/热负荷总需求量，报错
-            If XNGLGL(a) > LFHZXQL(a) * 1.02 Then '允许有2%的误差
+            If XNGLGL(a) > LFHZXQL(a) * (1 + 4 * FHTJJD / 100) Then '允许有2%的误差
                 MsgBox("蓄能装置供冷量(kW)不可以大于本工况冷负荷总需求量(kW)，请重新输入！")
                 ZTJC_SHUJU = 1
                 Call 锁定工作表(ExcelApp)
                 GoTo qqq
             End If
-            If XNGRGL(a) > RFHZXQL(a) * 1.02 Then '允许有2%的误差
+            If XNGRGL(a) > RFHZXQL(a) * (1 + 4 * FHTJJD / 100) Then '允许有2%的误差
                 MsgBox("蓄能装置供热量(kW)不可以大于本工况热负荷总需求量(kW)，请重新输入！")
                 ZTJC_SHUJU = 1
                 Call 锁定工作表(ExcelApp)
@@ -10634,7 +10634,7 @@ qqq:
         '返回结果
         Return ZTJC_SHUJU
     End Function
-    Sub 判断各种计算结果是否正确(ExcelApp As Object, n As Integer)
+    Sub 判断各种计算结果是否正确(ExcelApp As Object, FHTJJD As Double, n As Integer)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————  
         '判断供冷计算结果是否都正确，如果出现不正确，则报错
@@ -10728,36 +10728,36 @@ qqq:
                 'MsgBox("内燃机负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
-        '制冷+蓄冷设备（上限设置为1.02，放大一些容错）
+        '制冷+蓄冷设备（上限设置，放大一些容错）
         Dim ZL_XL_FHL_ERROR As String = Nothing
         For i = 1 To n
             For j = 1 To 12
-                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 3 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35 + j).Value > 1.02 Then
+                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 3 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35 + j).Value > (1 + 4 * FHTJJD / 100) Then
                     Dim XH_ZL_XL As String = "(" & i & ")"
                     ZL_XL_FHL_ERROR = ZL_XL_FHL_ERROR & XH_ZL_XL & "  "
                     'MsgBox("制冷设备和蓄冷设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
                 End If
             Next
         Next
-        '纯制冷设备（上限设置为1.02，放大一些容错）
+        '纯制冷设备（上限设置，放大一些容错）
         Dim ZL_FHL_ERROR As String = Nothing
         For i = 1 To n
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 16).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 16).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZL As String = "(" & i & ")"
                 ZL_FHL_ERROR = ZL_FHL_ERROR & XH_ZL & "  "
                 'MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 17).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 17).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZL As String = "(" & i & ")"
                 ZL_FHL_ERROR = ZL_FHL_ERROR & XH_ZL & "  "
                 'MsgBox("制冷设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
-        '制热+蓄热设备（上限设置为1.02，放大一些容错）
+        '制热+蓄热设备（上限设置，放大一些容错）
         Dim ZR_XR_FHL_ERROR As String = Nothing
         For i = 1 To n
             For j = 1 To 8
-                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49 + j).Value > 1.02 Then
+                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49 + j).Value > (1 + 4 * FHTJJD / 100) Then
                     Dim XH_ZR_XR As String = "(" & i & ")"
                     ZR_XR_FHL_ERROR = ZR_XR_FHL_ERROR & XH_ZR_XR & "  "
                     'MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
@@ -10766,50 +10766,50 @@ qqq:
         Next
         For i = 1 To n
             For j = 1 To 2
-                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 57 + j).Value > 1.02 Then
+                If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32 + j).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 57 + j).Value > (1 + 4 * FHTJJD / 100) Then
                     Dim XH_ZR_XR As String = "(" & i & ")"
                     ZR_XR_FHL_ERROR = ZR_XR_FHL_ERROR & XH_ZR_XR & "  "
                     'MsgBox("制热设备和蓄热设备负荷率之和的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
                 End If
             Next
         Next
-        '纯制热设备（上限设置为1.02，放大一些容错）
+        '纯制热设备（上限设置，放大一些容错）
         Dim ZR_FHL_ERROR As String = Nothing
         For i = 1 To n
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 21).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 21).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZR As String = "(" & i & ")"
                 ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
                 'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 22).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZR As String = "(" & i & ")"
                 ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
                 'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 31).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 31).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZR As String = "(" & i & ")"
                 ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
                 'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
-            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 32).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_ZR As String = "(" & i & ")"
                 ZR_FHL_ERROR = ZR_FHL_ERROR & XH_ZR & "  "
                 'MsgBox("制热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
-        '梯级供热设备负荷率计算结果（上限设置为1.02，放大一些容错）
+        '梯级供热设备负荷率计算结果（上限设置，放大一些容错）
         Dim TJGR_ERROR As String = Nothing
         For i = 1 To n
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 81).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 81).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_TJGR As String = "(" & i & ")"
                 TJGR_ERROR = TJGR_ERROR & XH_TJGR & "  "
                 ' MsgBox("梯级供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)
             End If
         Next
-        '混水供热设备负荷率计算结果（上限设置为1.02，放大一些容错）
+        '混水供热设备负荷率计算结果（上限设置，放大一些容错）
         Dim HSGR_ERROR As String = Nothing
         For i = 1 To n
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value > 1.02 Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 83).Value > (1 + 4 * FHTJJD / 100) Then
                 Dim XH_HSGR As String = "(" & i & ")"
                 HSGR_ERROR = HSGR_ERROR & XH_HSGR & "  "
                 'MsgBox("混水供热设备负荷率的计算结果出现了大于1的情况，计算结果不正确，请检查！" & "不正确的工况序号为： " & i)

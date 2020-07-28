@@ -69,15 +69,15 @@ Public Class 指定工况计算
         End If
         '读取输入的各工况冷负荷需求量、热负荷需求量、蓄冷量、蓄热量
         If n > 0 Then
+            '让用户输入负荷调节精度
+            FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
-            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, n)
+            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
             If ZTJC_SHUJU = 1 Then
                 Call mainprogram.锁定工作表(ExcelApp)
                 ZTJC_SHUJU = 0
                 Exit Sub
             End If
-            '让用户输入负荷调节精度
-            FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '针对输入的负荷调节精度，添加报错功能
             If FHTJJD = Nothing Then '输入的调节精度为空的情况
                 MsgBox("输入的负荷调节精度不能为空，请重新输入！")
@@ -144,7 +144,7 @@ Public Class 指定工况计算
             'Call 梯级或者混水供热计算()
         End If
         '判断各种计算结果是否正确，不正确则报错
-        Call mainprogram.判断各种计算结果是否正确(ExcelApp, n)
+        Call mainprogram.判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         '—————————————————————————————————————————————————————————————————————————————————————————
         '在窗体中显示计算已完成
         '实例化一个计算过程显示窗体
@@ -248,15 +248,15 @@ Public Class 指定工况计算
         End If
         '读取输入的各工况冷负荷需求量、热负荷需求量、蓄冷量、蓄热量
         If n > 0 Then
+            '让用户输入负荷调节精度
+            FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
-            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, n)
+            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
             If ZTJC_SHUJU = 1 Then
                 Call mainprogram.锁定工作表(ExcelApp)
                 ZTJC_SHUJU = 0
                 Exit Sub
             End If
-            '让用户输入负荷调节精度
-            FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '针对输入的负荷调节精度，添加报错功能
             If FHTJJD = Nothing Then '输入的调节精度为空的情况
                 MsgBox("输入的负荷调节精度不能为空，请重新输入！")
@@ -323,7 +323,7 @@ Public Class 指定工况计算
             'Call 梯级或者混水供热计算()
         End If
         '判断各种计算结果是否正确，不正确则报错
-        Call mainprogram.判断各种计算结果是否正确(ExcelApp, n)
+        Call mainprogram.判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '在窗体中显示计算已完成
