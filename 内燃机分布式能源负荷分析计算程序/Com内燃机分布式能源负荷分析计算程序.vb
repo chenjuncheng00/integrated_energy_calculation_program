@@ -302,10 +302,6 @@ Public Class Com内燃机分布式能源负荷分析计算程序
     End Sub
     Sub 负荷分析计算程序(ExcelApp As Object, b As Integer, FHTJJD As Double, JSBC As Integer， D_price As Double, TRQ_price As Double, calculation_mode As Integer, HSGRGLBL As Double)
         On Error Resume Next
-        '定义Excel对象
-        'Dim ExcelApp As Excel.Application '定义Excel对象
-        'ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
-        '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
         '实例化一个计算过程显示窗体
         Dim Calculate_Progress As New 计算进度显示
@@ -18670,12 +18666,8 @@ qqqqq:
             Exit Sub
         End Try
     End Sub
-    Sub 获取本地服务器版本信息并验证()
-        'On Error Resume Next
-        '定义Excel对象
-        Dim ExcelApp As Excel.Application '定义Excel对象
-        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
-        '————————————————————————————————————————————————————————————————————————————————————————
+    Sub 获取本地服务器版本信息并验证(ExcelApp As Object)
+        'On Error Resume Next        
         '————————————————————————————————————————————————————————————————————————————————————————  
         '屏蔽ctrl+break
         ExcelApp.Application.EnableCancelKey = XlEnableCancelKey.xlDisabled
@@ -18818,12 +18810,8 @@ qqqqq:
             End If
         End If
     End Sub
-    Sub 获取系统时间并验证()
+    Sub 获取系统时间并验证(ExcelApp As Object)
         On Error Resume Next
-        '定义Excel对象
-        Dim ExcelApp As Excel.Application '定义Excel对象
-        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
-        '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
         '屏蔽ctrl+break
         ExcelApp.Application.EnableCancelKey = XlEnableCancelKey.xlDisabled
@@ -18843,12 +18831,8 @@ qqqqq:
             ExcelApp.Application.DisplayAlerts = True
         End If
     End Sub
-    Sub 程序联网验证()
+    Sub 程序联网验证(ExcelApp As Object)
         On Error Resume Next
-        '定义Excel对象
-        Dim ExcelApp As Excel.Application '定义Excel对象
-        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
-        '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
         '屏蔽ctrl+break
         ExcelApp.Application.EnableCancelKey = XlEnableCancelKey.xlDisabled
