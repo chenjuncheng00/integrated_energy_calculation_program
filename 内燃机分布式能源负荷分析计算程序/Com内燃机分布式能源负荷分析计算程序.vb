@@ -14088,14 +14088,14 @@ qqqqq:
                     Call 清空制冷和蓄冷设备负荷率计算结果(ExcelApp, b)
                     '设置跳出条件
                     '如果有蓄冷
-                    If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                        If ((XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
+                    If XNXLGL(b) > 0 Then
+                        If ((XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
                             '记录下此时内燃机负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
                             Exit For
                         End If
                     Else '如果没有蓄冷
-                        If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
+                        If (XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) Then
                             '记录下此时内燃机负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3)).Value = ZLNRJFHL
                             Exit For
@@ -14141,14 +14141,14 @@ qqqqq:
                         Call 清空制冷和蓄冷设备负荷率计算结果(ExcelApp, b)
                         '设置跳出条件
                         '如果有蓄冷
-                        If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                            If ((XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
+                        If XNXLGL(b) > 0 Then
+                            If ((XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
                                 '记录下此时内燃机(1)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
                                 Exit For
                             End If
                         Else '如果没有蓄冷
-                            If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
+                            If (XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) Then
                                 '记录下此时内燃机(1)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 2).Value = ZLNRJFHL1
                                 Exit For
@@ -14179,14 +14179,14 @@ qqqqq:
                         Call 清空制冷和蓄冷设备负荷率计算结果(ExcelApp, b)
                         '设置跳出条件
                         '如果有蓄冷
-                        If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                            If ((XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
+                        If XNXLGL(b) > 0 Then
+                            If ((XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(39, 24).Value > 0) Then
                                 '记录下此时内燃机(2)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
                                 Exit For
                             End If
                         Else '如果没有蓄冷
-                            If (XNGLGL(b) + XHLZL > LFHZXQL(b) + XNXLGL(b)) Then
+                            If (XNGLGL(b) + XHLZL >= LFHZXQL(b) + XNXLGL(b)) Then
                                 '记录下此时内燃机(2)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 3).Value = ZLNRJFHL2
                                 Exit For
@@ -14416,14 +14416,14 @@ qqqqq:
                     Call 清空制热和蓄热设备负荷率计算结果(ExcelApp, b)
                     '设置跳出条件
                     '如果有蓄热
-                    If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                        If ((XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
+                    If XNXRGL(b) > 0 Then
+                        If ((XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
                             '记录下此时内燃机负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
                             Exit For
                         End If
                     Else '如果没有蓄热
-                        If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
+                        If (XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) Then
                             '记录下此时内燃机负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5)).Value = ZRNRJFHL
                             Exit For
@@ -14470,14 +14470,14 @@ qqqqq:
                         Call 清空制热和蓄热设备负荷率计算结果(ExcelApp, b)
                         '设置跳出条件
                         '如果有蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                            If ((XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
+                        If XNXRGL(b) > 0 Then
+                            If ((XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
                                 '记录下此时内燃机(1)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
                                 Exit For
                             End If
                         Else '如果没有蓄热
-                            If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
+                            If (XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) Then
                                 '记录下此时内燃机(1)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 4).Value = ZRNRJFHL1
                                 Exit For
@@ -14509,14 +14509,14 @@ qqqqq:
                         Call 清空制热和蓄热设备负荷率计算结果(ExcelApp, b)
                         '设置跳出条件
                         '如果有蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(23, 9).Value = "Y" Then
-                            If ((XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
+                        If XNXRGL(b) > 0 Then
+                            If ((XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) And (ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 And ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value > 0)) Then
                                 '记录下此时内燃机(2)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
                                 Exit For
                             End If
                         Else '如果没有蓄热
-                            If (XNGRGL(b) + XHLZR > RFHZXQL(b) + XNXRGL(b)) Then
+                            If (XNGRGL(b) + XHLZR >= RFHZXQL(b) + XNXRGL(b)) Then
                                 '记录下此时内燃机(2)负荷率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 5).Value = ZRNRJFHL2
                                 Exit For
