@@ -226,7 +226,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim QJXY_ERROR_BH As String = Nothing
             '新的列表，用来储存筛选后的，没有重复的工况序号
             Dim XH_ERROR As New List(Of Integer)
-            If len_n > 0 Then
+            If len_n > 0 And calculation_mode = 2 Then
                 '采用模式1进行计算
                 Dim calculation_mode_a As Integer = 1
                 For i = 0 To len_n - 1
@@ -1838,6 +1838,8 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         End If
         '自动计算梯级供热设备（仅计算耗电量，不计算供热量的设备）的负荷率
         If TJGRZTJC > 0 Then
+            '计算循环体
+            Call 计算循环体(ExcelApp, n)
             '让用户手动输入负荷率比例（一级热泵负荷率/二级热泵负荷率），一级热泵跟随二级热泵负荷率的变化而变化，在二级热泵负荷率基础上乘以系数，即为一级热泵负荷率
             'Dim TJGRFHBL = InputBox("请输入梯级供热一级热泵（仅计算耗电量，不计算供热量设备）与二级热泵负荷比例系数，（一级热泵负荷比例÷二级热泵负荷比例）", "请输入梯级供热设备负荷比例系数", 1)
             '逐个工况计算离心式热泵机组（供热+蓄热）的总计负荷比例系数
@@ -2124,6 +2126,9 @@ aaaaa:
         '————————————————————————————————————————————————————————————————————————————————————————        
         '根据选择的计算模式类型，只有是模式2的时候才会计算
         If calculation_mode = 2 And LFH_GL_now + LFH_XL_now > 0 And ZJJC_ALL > 0 Then
+            '屏蔽Excel自动计算
+            '手动计算，关闭excel的自动计算
+            'ExcelApp.Application.Calculation = XlCalculation.xlCalculationManual
             '各个设备可以装机功率
             '离心式冷水机
             '设备（1）装机功率
@@ -3003,8 +3008,14 @@ aaa:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 91).Value = FHL2_GL_ZRXXHL_result
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
+            '计算一次
+            'ExcelApp.Calculate()
             '计算制冷季天然气耗量和耗电量综合修正系数
             Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b， calculation_mode)
+            '重新打开excel自动计算
+            'ExcelApp.Application.Calculation = XlCalculation.xlCalculationAutomatic
+            '计算一次
+            'ExcelApp.Calculate()
         End If
     End Sub
     Function 离心式冷水机供冷和蓄冷分配寻优计算(ExcelApp As Object, b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, LFH_GL_now As Double, LFH_XL_now As Double)
@@ -5600,6 +5611,9 @@ aaa:
         '————————————————————————————————————————————————————————————————————————————————————————        
         '根据选择的计算模式类型，只有是模式2的时候才会计算
         If calculation_mode = 2 And RFH_GR_now + RFH_XR_now > 0 And ZJJC_ALL > 0 Then
+            '屏蔽Excel自动计算
+            '手动计算，关闭excel的自动计算
+            'ExcelApp.Application.Calculation = XlCalculation.xlCalculationManual
             '各个设备可以装机功率
             '天然气锅炉
             '设备（1）装机功率
@@ -6555,8 +6569,14 @@ aaa:
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
+            '计算一次
+            'ExcelApp.Calculate()
             '计算制热季天然气耗量和耗电量综合修正系数
             Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
+            '重新打开excel自动计算
+            'ExcelApp.Application.Calculation = XlCalculation.xlCalculationAutomatic
+            '计算一次
+            'ExcelApp.Calculate()
         End If
     End Sub
     Function 水_地源热泵供热和蓄热分配寻优计算(ExcelApp As Object, b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
