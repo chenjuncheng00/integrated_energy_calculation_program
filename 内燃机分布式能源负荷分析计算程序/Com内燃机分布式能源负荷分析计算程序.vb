@@ -1599,6 +1599,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
                             '记录下此时的设备负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52).Value
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 53).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 53).Value
                             Exit For
                         End If
                     Next
@@ -1638,6 +1639,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
                             '记录下此时的设备负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92).Value
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 93).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 93).Value
                             Exit For
                         End If
                     Next
@@ -1681,6 +1683,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(84, 4).Value >= RFHZXQL(b) Then
                             '记录下此时的设备负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 94).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 94).Value
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 95).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 95).Value
                             Exit For
                         End If
                     Next
@@ -1720,6 +1723,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(82, 24).Value <= 1 Then
                             '记录下此时的设备负荷率
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 96).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 96).Value
+                            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97).Value
                             Exit For
                         End If
                     Next
@@ -1778,7 +1782,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         '返回结果
         Return ans
     End Function
-    Sub 常规计算模式混水供热计算(ExcelApp As Object, FHTJJD As Double, JSBC As Integer, b As Integer, calculation_mode As Integer, HSGRGLBL As Double)
+    Sub 常规计算模式混水供热计算(ExcelApp As Object, FHTJJD As Double, JSBC As Integer, b As Integer, calculation_mode As Integer, XHLZR As Double, HSGRGLBL As Double)
         On Error Resume Next
         '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
         '仅适用于计算模式1（常规计算模式）
@@ -1813,29 +1817,40 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Dim FHL_ZRXXHL1_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92).Value
             Dim FHL_ZRXXHL2_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 93).Value
             '电锅炉供热+蓄热负荷率
-            Dim FHL_DGL1_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 94).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 95).Value
-            Dim FHL_DGL2_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 96).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97).Value
-            '天然气锅炉+电锅炉+直燃型溴化锂装机总功率（默认这三种设备只会存在一种）
-            Dim ZRGL_TRQGL_DGL_ZRXXHL_now As Double = TRQGL1ZRGL * FHL_TRQGL1_now + TRQGL2ZRGL * FHL_TRQGL2_now + ZRXHL1ZRGL * FHL_ZRXXHL1_now + ZRXHL2ZRGL * FHL_ZRXXHL2_now + DCNGL1ZRGL * FHL_DGL1_now + DCNGL2ZRGL * FHL_DGL2_now
-            '当前混水设备制热功率
+            Dim FHL_DGL1_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 94).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 96).Value
+            Dim FHL_DGL2_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 95).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97).Value
+            '天然气锅炉+电锅炉+直燃型溴化锂装机总功率（默认这三种设备只会存在一种）= 参与混水的两种设备的功率之和
+            Dim ZRGL_HS_ALL_now As Double = TRQGL1ZRGL * FHL_TRQGL1_now + TRQGL2ZRGL * FHL_TRQGL2_now + ZRXHL1ZRGL * FHL_ZRXXHL1_now + ZRXHL2ZRGL * FHL_ZRXXHL2_now + DCNGL1ZRGL * FHL_DGL1_now + DCNGL2ZRGL * FHL_DGL2_now
+            '当前混水设备制热功率 = 风冷热泵 + 水（地）源热泵 + 空气源热泵
             Dim GRGL_HS_now As Double
-            '当前混水设备制热负荷率
+            '当前混水设备制热负荷率 = 风冷热泵 + 水（地）源热泵 + 空气源热泵
             Dim FHL_HS_now As Double
             If ZJRGL_HS > 0 Then
                 '默认天然气锅炉、电锅炉、直燃型溴化锂不会同时存在
                 '求出的结果 GRGL_HS_now = 风冷热泵+空气源热泵+水(地)源热泵制热总功率
-                GRGL_HS_now = ZRGL_TRQGL_DGL_ZRXXHL_now * HSGRGLBL / (1 - HSGRGLBL)
+                GRGL_HS_now = ZRGL_HS_ALL_now * HSGRGLBL
                 '混水设备负荷率
                 FHL_HS_now = GRGL_HS_now / ZJRGL_HS
             Else
                 GRGL_HS_now = 0
                 FHL_HS_now = 0
             End If
-            '将计算结果写入Excel
             If FHL_HS_now > 0 Then
+                '将计算结果写入Excel
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 82).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = ExcelApp.WorksheetFunction.RoundUp(FHL_HS_now, 4)
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83).Value = ExcelApp.WorksheetFunction.RoundUp(FHL_HS_now, 4)
+                '将已有的制热设备和蓄热设备运行负荷率重置为0
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+                '根据供热负荷和蓄热负荷的比例，分摊混水供热设备的功率
+                Dim HS_GRGL_now As Double = RFHZXQL(b) / (RFHZXQL(b) + XNXRGL(b)) * GRGL_HS_now
+                '制热计算，常规计算模式
+                Call 设备六种顺序制热计算(ExcelApp, b, FHTJJD, JSBC, XHLZR, HS_GRGL_now, calculation_mode)
+                '蓄热计算，常规计算模式
+                Call 蓄能装置蓄热工况计算(ExcelApp, b, FHTJJD, calculation_mode)
             End If
         End If
     End Sub
@@ -8978,7 +8993,7 @@ aaa:
         '梯级供热计算
         Call 常规计算模式梯级供热计算(ExcelApp, b, calculation_mode, TJGRFHBL)
         '混水供热计算
-        Call 常规计算模式混水供热计算(ExcelApp, FHTJJD, JSBC, b, calculation_mode, HSGRGLBL)
+        Call 常规计算模式混水供热计算(ExcelApp, FHTJJD, JSBC, b, calculation_mode, XHLZR, HSGRGLBL)
     End Sub
 
     Sub 设备六种顺序制热计算(ExcelApp As Object, b As Integer, FHTJJD As Double, JSBC As Integer, XHLZR As Double, HSRFH As Double, calculation_mode As Integer)
