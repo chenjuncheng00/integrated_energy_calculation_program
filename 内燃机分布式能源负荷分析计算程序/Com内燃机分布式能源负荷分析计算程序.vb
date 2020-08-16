@@ -1860,8 +1860,18 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '离心式热泵2装机数量
             Dim LXSRB2_num As Integer = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 18).Value
             '目前离心式热泵1和2的（供热+蓄热）总负荷率
-            Dim LXSRB1_FHL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 60).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 68).Value / LXSRB1_num
-            Dim LXSRB2_FHL As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 61).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 69).Value / LXSRB2_num
+            Dim LXSRB1_FHL As Double = 0
+            Dim LXSRB2_FHL As Double = 0
+            If LXSRB1_num > 0 Then
+                LXSRB1_FHL = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 60).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 68).Value / LXSRB1_num
+            Else
+                LXSRB1_FHL = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 60).Value + 0
+            End If
+            If LXSRB2_num > 0 Then
+                LXSRB2_FHL = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 61).Value + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 69).Value / LXSRB2_num
+            Else
+                LXSRB2_FHL = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 61).Value + 0
+            End If
             '计算离心式热泵供热+蓄热的实际功率
             Dim LXSRBSJGL As Double = LXSRB1ZRGL * LXSRB1_FHL + LXSRB2ZRGL * LXSRB2_FHL
             '一级热泵总负荷率
@@ -18800,7 +18810,8 @@ qqqqq:
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
         '清空梯级供热和混水供热设备负荷率
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83)).Value = Nothing
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = Nothing
     End Sub
     Sub 清空指定工况输入输出数据(ExcelApp As Object, b As Integer)
         On Error Resume Next
@@ -18809,7 +18820,8 @@ qqqqq:
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 76)).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = Nothing
         '清空梯级供热和混水供热设备负荷率
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = Nothing
         '修正系数改为1
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109)).Value = 1
         ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + b, 54)).Value = Nothing
