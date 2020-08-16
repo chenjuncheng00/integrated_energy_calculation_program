@@ -18798,6 +18798,9 @@ qqqqq:
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = 0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 92), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = 0
+        '清空梯级供热和混水供热设备负荷率
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83)).Value = Nothing
     End Sub
     Sub 清空指定工况输入输出数据(ExcelApp As Object, b As Integer)
         On Error Resume Next
@@ -18805,6 +18808,8 @@ qqqqq:
         '清空数据
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 28), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 76)).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 90), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 97)).Value = Nothing
+        '清空梯级供热和混水供热设备负荷率
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83)).Value = Nothing
         '修正系数改为1
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109)).Value = 1
         ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + b, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + b, 54)).Value = Nothing
