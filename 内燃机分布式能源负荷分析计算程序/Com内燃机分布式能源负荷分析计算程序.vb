@@ -1839,13 +1839,14 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             End If
         End If
     End Sub
-    Sub 梯级供热计算(ExcelApp As Object, b As Integer, TJGRFHBL As Double)
+    Sub 常规计算模式梯级供热计算(ExcelApp As Object, b As Integer, calculation_mode As Integer, TJGRFHBL As Double)
         On Error Resume Next
         '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+        '仅适用于计算模式1（常规计算模式）
         '常规计算模式和全局寻优计算模式都采用这个梯级供热计算方法
         '判断是否需要进行梯级供热计算
         '自动计算梯级供热设备（仅计算耗电量，不计算供热量的设备）的负荷率
-        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing And calculation_mode = 1 Then
             '让用户手动输入负荷率比例（一级热泵负荷率/二级热泵负荷率），一级热泵跟随二级热泵负荷率的变化而变化，在二级热泵负荷率基础上乘以系数，即为一级热泵负荷率
             'Dim TJGRFHBL = InputBox("请输入梯级供热一级热泵（仅计算耗电量，不计算供热量设备）与二级热泵负荷比例系数，（一级热泵负荷比例÷二级热泵负荷比例）", "请输入梯级供热设备负荷比例系数", 1)
             '逐个工况计算离心式热泵机组（供热+蓄热）的总计负荷比例系数
@@ -5909,6 +5910,8 @@ zzzzz：
             Dim FHL_HS_DGL As New List(Of Double)
             Dim FHL_HS_TRQGL As New List(Of Double)
             Dim FHL_HS_ZRXXHL As New List(Of Double)
+            '梯级供热设备负荷率
+            Dim FHL_TJGR_LXSRB As New List(Of Double)
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
             '供热和蓄热一起寻优
@@ -6104,7 +6107,7 @@ zzzzz：
                                         End If
                                         '离心式热泵计算
                                         If a_4 >= FH_min_LXSRB And ZJJC_LXSRB = 1 And ZJZGL_LXSRB > 0 Then
-                                            Dim ans_LXSRB = 离心式热泵供热和蓄热分配寻优计算(ExcelApp, b, FHTJJD, a_4, FHFPCS, RFH_GR_now, RFH_XR_now)
+                                            Dim ans_LXSRB = 离心式热泵供热和蓄热分配寻优计算(ExcelApp, b, FHTJJD, a_4, FHFPCS, RFH_GR_now, RFH_XR_now, TJGRFHBL)
                                             HD_ALL_min_LXSRB.AddRange(ans_LXSRB(0))
                                             GR_ALL_LXSRB.AddRange(ans_LXSRB(1))
                                             XR_ALL_LXSRB.AddRange(ans_LXSRB(2))
@@ -6112,6 +6115,7 @@ zzzzz：
                                             FHL1_XR_LXSRB.AddRange(ans_LXSRB(5))
                                             FHL2_GR_LXSRB.AddRange(ans_LXSRB(6))
                                             FHL2_XR_LXSRB.AddRange(ans_LXSRB(7))
+                                            FHL_TJGR_LXSRB.AddRange(ans_LXSRB(8))
                                         End If
                                         '风冷螺杆机计算
                                         If a_5 >= FH_min_FLLGJ And ZJJC_FLLGJ = 1 And ZJZGL_FLLGJ > 0 Then
@@ -6246,6 +6250,7 @@ zzzzz：
                                                 FHL1_XR_LXSRB.AddRange(ans_temp)
                                                 FHL2_GR_LXSRB.AddRange(ans_temp)
                                                 FHL2_XR_LXSRB.AddRange(ans_temp)
+                                                FHL_TJGR_LXSRB.AddRange(ans_temp)
                                             End If
                                         End If
                                         '风冷螺杆机计算结果的列表长度修正
@@ -6394,6 +6399,8 @@ aaa:
             Dim FHL_HS_DGL_r As New List(Of Double)
             Dim FHL_HS_TRQGL_r As New List(Of Double)
             Dim FHL_HS_ZRXXHL_r As New List(Of Double)
+            '梯级供热负荷率
+            Dim FHL_TJGR_LSXRB_r As New List(Of Double)
             '遍历所有结果
             For i = 0 To len_min_result - 1
                 Dim GR_ALL_i As Double = GR_ALL_TRQGL(i) + GR_ALL_DGL(i) + GR_ALL_SDYRB(i) + GR_ALL_LXSRB(i) + GR_ALL_FLLGJ(i) + GR_ALL_KQYRB(i) + GR_ALL_ZRXXHL(i)
@@ -6450,6 +6457,8 @@ aaa:
                     FHL_HS_DGL_r.Add(FHL_HS_DGL(i))
                     FHL_HS_TRQGL_r.Add(FHL_HS_TRQGL(i))
                     FHL_HS_ZRXXHL_r.Add(FHL_HS_ZRXXHL(i))
+                    '梯级供热负荷率
+                    FHL_TJGR_LSXRB_r.Add(FHL_TJGR_LXSRB(i))
                 End If
             Next
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -6515,6 +6524,8 @@ aaa:
             Dim FHL_HS_DGL_result As Double = FHL_HS_DGL_r(COST_min_index)
             Dim FHL_HS_TRQGL_result As Double = FHL_HS_TRQGL_r(COST_min_index)
             Dim FHL_HS_ZRXXHL_result As Double = FHL_HS_ZRXXHL_r(COST_min_index)
+            '梯级供热负荷率
+            Dim FHL_TJGR_LXSRB_result As Double = FHL_TJGR_LSXRB_r(COST_min_index)
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
             '针对计算出的结果进行放缩，防止出现大的误差
@@ -6576,6 +6587,10 @@ aaa:
             Dim GR_XR_bl As Double = (GR_ALL_result + XR_ALL_result) / (RFH_GR_now + RFH_XR_now)
             If GR_XR_bl > WCXS Then
                 FHL_HS_DGL_result = FHL_HS_DGL_r(COST_min_index) / GR_XR_bl * (1 + 2 * FHTJJD / 100)
+            End If
+            '修正梯级供热设备负荷率
+            If GR_XR_bl > WCXS Then
+                FHL_TJGR_LXSRB_result = FHL_TJGR_LSXRB_r(COST_min_index) / GR_XR_bl * (1 + 2 * FHTJJD / 100)
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -6646,10 +6661,11 @@ aaa:
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = FHL_HS_DGL_result + FHL_HS_TRQGL_result + FHL_HS_ZRXXHL_result
             End If
+            '梯级供热设备负荷率
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = FHL_TJGR_LXSRB_result
+            End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            '————————————————————————————————————————————————————————————————————————————————————————
-            '梯级供热计算
-            Call 梯级供热计算(ExcelApp, b, TJGRFHBL)
             '————————————————————————————————————————————————————————————————————————————————————————
             '计算制热季天然气耗量和耗电量综合修正系数
             Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
@@ -6750,7 +6766,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 离心式热泵供热和蓄热分配寻优计算(ExcelApp As Object, b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double)
+    Function 离心式热泵供热和蓄热分配寻优计算(ExcelApp As Object, b As Integer, FHTJJD As Double, ZFH As Double, FHFPCS As Integer, RFH_GR_now As Double, RFH_XR_now As Double, TJGRFHBL As Double)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————
         'ZFH：供热和蓄热负荷之和
@@ -6769,6 +6785,7 @@ aaa:
         Dim FHL1_XR As New List(Of Double)
         Dim FHL2_GR As New List(Of Double)
         Dim FHL2_XR As New List(Of Double)
+        Dim FHL_TJGR As New List(Of Double)
         Dim GR_out As New List(Of Double) '供热总输出
         Dim XR_out As New List(Of Double) '蓄热总输出
         Dim ZGR_out As New List(Of Double) '总的供热+蓄热出力
@@ -6784,13 +6801,14 @@ aaa:
                 'c_1表示当前分配蓄热的负荷
                 Dim c_1 As Double = RFH_max - b_1
                 '求计算结果
-                Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, FHTJJD, b_1, c_1)
+                Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, b, FHTJJD, b_1, c_1, TJGRFHBL)
                 '计算结果加入列表
                 HD_ALL.Add(ans_temp(0))
                 FHL1_GR.Add(ans_temp(1))
                 FHL1_XR.Add(ans_temp(2))
                 FHL2_GR.Add(ans_temp(3))
                 FHL2_XR.Add(ans_temp(4))
+                FHL_TJGR.Add(ans_temp(5))
                 GR_out.Add(b_1)
                 XR_out.Add(c_1)
                 ZGR_out.Add(RFH_max)
@@ -6798,26 +6816,28 @@ aaa:
         ElseIf RFH_GR_now > 0 And RFH_XR_now = 0 Then
             '如果没有蓄热负荷，则直接计算
             '求计算结果
-            Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, FHTJJD, RFH_max, 0)
+            Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, b, FHTJJD, RFH_max, 0, TJGRFHBL)
             '计算结果加入列表
             HD_ALL.Add(ans_temp(0))
             FHL1_GR.Add(ans_temp(1))
             FHL1_XR.Add(ans_temp(2))
             FHL2_GR.Add(ans_temp(3))
             FHL2_XR.Add(ans_temp(4))
+            FHL_TJGR.Add(ans_temp(5))
             GR_out.Add(RFH_max)
             XR_out.Add(0)
             ZGR_out.Add(RFH_max)
         ElseIf RFH_GR_now = 0 And RFH_XR_now > 0 Then
             '如果没有供热负荷，则直接计算
             '求计算结果
-            Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, FHTJJD, 0, RFH_max)
+            Dim ans_temp = 离心式热泵供热和蓄热计算(ExcelApp, b, FHTJJD, 0, RFH_max, TJGRFHBL)
             '计算结果加入列表
             HD_ALL.Add(ans_temp(0))
             FHL1_GR.Add(ans_temp(1))
             FHL1_XR.Add(ans_temp(2))
             FHL2_GR.Add(ans_temp(3))
             FHL2_XR.Add(ans_temp(4))
+            FHL_TJGR.Add(ans_temp(5))
             GR_out.Add(0)
             XR_out.Add(RFH_max)
             ZGR_out.Add(RFH_max)
@@ -6828,12 +6848,13 @@ aaa:
             FHL1_XR.Add(0)
             FHL2_GR.Add(0)
             FHL2_XR.Add(0)
+            FHL_TJGR.Add(0)
             GR_out.Add(0)
             XR_out.Add(0)
             ZGR_out.Add(0)
         End If
         '将计算出的所有列表返回(蓄热设备负荷率已经转换成了台数，不需要再次转换)
-        Dim ans(8)
+        Dim ans(9)
         ans(0) = HD_ALL
         ans(1) = GR_out
         ans(2) = XR_out
@@ -6842,6 +6863,7 @@ aaa:
         ans(5) = FHL1_XR
         ans(6) = FHL2_GR
         ans(7) = FHL2_XR
+        ans(8) = FHL_TJGR
         '返回结果
         Return ans
     End Function
@@ -7547,7 +7569,7 @@ aaa:
         '返回结果
         Return ans
     End Function
-    Function 离心式热泵供热和蓄热计算(ExcelApp As Object, FHTJJD As Double, RFH_GR As Double, RFH_XR As Double)
+    Function 离心式热泵供热和蓄热计算(ExcelApp As Object, b As Integer, FHTJJD As Double, RFH_GR As Double, RFH_XR As Double, TJGRFHBL As Double)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————
         '设备可以允许运行的负荷率下限
@@ -7582,10 +7604,89 @@ aaa:
         Dim FJHD2_ED As Double = NUM2 * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 18).Value
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
+        '全局寻优计算模式时的梯级供热计算
+        '与空气换热的设备供热时本体耗电修正系数
+        Dim BTHDXS_GR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(8, 7).Value
+        '与空气换热的设备蓄热时本体耗电修正系数
+        Dim BTHDXS_XR_air As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(12, 7).Value
+        ''与水换热的设备供热时本体耗电修正系数
+        'Dim BTHDXS_GR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(7, 7).Value
+        ''与水换热的设备蓄热时本体耗电修正系数
+        'Dim BTHDXS_XR_water As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(11, 7).Value
+        '参与梯级的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
+        Dim GRGL_TJ As Double = 0
+        '参与梯级供热的设备的本体耗电功率和辅机设备耗电功率
+        Dim BTHD_TJ As Double = 0
+        Dim FJHD_TJ As Double = 0
+        '梯级设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为梯级设备的装机总功率
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "空气源热泵" Then
+            '制热功率
+            GRGL_TJ = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value + RCXS_a
+            '设备（1）装机数量
+            Dim NUM1_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 16).Value
+            '设备（1）100%负荷时本体耗电功率
+            Dim BTHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 16).Value
+            '设备（1）100%负荷时辅机耗电功率
+            Dim FJHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 16).Value
+            '设备（2）装机数量
+            Dim NUM2_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 16).Value
+            '设备（2）100%负荷时本体耗电功率
+            Dim BTHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 16).Value
+            '设备（2）100%负荷时辅机耗电功率
+            Dim FJHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 16).Value
+            '本体耗电功率
+            BTHD_TJ = (BTHD1_TJ + BTHD2_TJ) * BTHDXS_GR_air
+            '辅机耗电功率
+            FJHD_TJ = (FJHD1_TJ + FJHD2_TJ) * FJHDDXS
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "水(地)源热泵" Then
+            '制热功率
+            GRGL_TJ = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value + RCXS_a
+            '设备（1）装机数量
+            Dim NUM1_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 14).Value
+            '设备（1）100%负荷时本体耗电功率
+            Dim BTHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 14).Value
+            '设备（1）100%负荷时辅机耗电功率
+            Dim FJHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 14).Value
+            '设备（2）装机数量
+            Dim NUM2_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 14).Value
+            '设备（2）100%负荷时本体耗电功率
+            Dim BTHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 14).Value
+            '设备（2）100%负荷时辅机耗电功率
+            Dim FJHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 14).Value
+            '本体耗电功率
+            BTHD_TJ = (BTHD1_TJ + BTHD2_TJ) * BTHDXS_GR_water
+            '辅机耗电功率
+            FJHD_TJ = (FJHD1_TJ + FJHD2_TJ) * FJHDDXS
+        End If
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "风冷螺杆机" Then
+            '制热功率
+            GRGL_TJ = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value + RCXS_a
+            '设备（1）装机数量
+            Dim NUM1_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 12).Value
+            '设备（1）100%负荷时本体耗电功率
+            Dim BTHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(51, 12).Value
+            '设备（1）100%负荷时辅机耗电功率
+            Dim FJHD1_TJ As Double = NUM1_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 12).Value
+            '设备（2）装机数量
+            Dim NUM2_TJ As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 12).Value
+            '设备（2）100%负荷时本体耗电功率
+            Dim BTHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(70, 12).Value
+            '设备（2）100%负荷时辅机耗电功率
+            Dim FJHD2_TJ As Double = NUM2_TJ * ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 12).Value
+            '本体耗电功率
+            BTHD_TJ = (BTHD1_TJ + BTHD2_TJ) * BTHDXS_GR_air
+            '辅机耗电功率
+            FJHD_TJ = (FJHD1_TJ + FJHD2_TJ) * FJHDDXS
+        End If
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
         '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
         Dim HD_ALL As New List(Of Double）
         Dim FHL1 As New List(Of Double）
         Dim FHL2 As New List(Of Double）
+        '列表，储存梯级供热设备负荷率
+        Dim FHL_TJGR As New List(Of Double)
         '穷举法求各种可能的组合的总耗电功率
         For a1 = FHL1_min To 1 Step FHTJJD / 100 'a1表示设备(1)负荷率
             For a2 = FHL2_min To 1 Step FHTJJD / 100 'a1表示设备(2)负荷率
@@ -7598,9 +7699,6 @@ aaa:
                 '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
                 Dim FJHD1_now As Double = FJHDDXS * a1 * FJHD1_ED
                 Dim FJHD2_now As Double = FJHDDXS * a2 * FJHD2_ED
-                '计算此时的总耗电功率
-                Dim ZHD As Double = BTHD1_now + BTHD2_now + FJHD1_now + FJHD2_now
-                '计算此时的总出力
                 '计算此时的总出力
                 Dim RGL1_out_now As Double
                 If ZJRGL1 <= RCXS_a Then
@@ -7614,13 +7712,44 @@ aaa:
                 Else
                     RGL2_out_now = a2 * ZJRGL2
                 End If
+                '————————————————————————————————————————————————————————————————————————————————————————
+                '此时实际的设备本体耗电
+                Dim BTHD_TJ_now As Double = 0
+                '此时实际的辅机耗电
+                Dim FJHD_TJ_now As Double = 0
+                '梯级设备负荷率
+                Dim FHL_TJ_now As Double = 0
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing And TJGRFHBL > 0 Then
+                    '梯级设备负荷率
+                    FHL_TJ_now = TJGRFHBL * (a1 * (ZJRGL1 - RCXS_a) + a2 * (ZJRGL2 - RCXS_a)) / ((ZJRGL1 - RCXS_a) + (ZJRGL2 - RCXS_a))
+                    '设备本体耗电修正系数
+                    Dim XZXS_TJ As Double = 1
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "空气源热泵" Then
+                        XZXS_TJ = 空气源热泵制热COP曲线(FHL_TJ_now)
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "水(地)源热泵" Then
+                        XZXS_TJ = 水_地源热泵制热COP曲线(FHL_TJ_now)
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "风冷螺杆机" Then
+                        XZXS_TJ = 风冷螺杆式热泵制热COP曲线(FHL_TJ_now)
+                    End If
+                    '此时实际的设备本体耗电
+                    BTHD_TJ_now = BTHD_TJ * FHL_TJ_now / XZXS_TJ
+                    '此时实际的辅机耗电
+                    FJHD_TJ_now = FJHD_TJ * FHL_TJ_now
+                End If
+                '————————————————————————————————————————————————————————————————————————————————————————
+                '计算此时的总出力
                 Dim RGL_out_all As Double = RGL1_out_now + RGL2_out_now
+                '计算此时的总耗电功率
+                Dim ZHD As Double = BTHD1_now + BTHD2_now + FJHD1_now + FJHD2_now + BTHD_TJ_now + FJHD_TJ_now
                 '如果达到了热负荷需求，则跳出内层循环
                 If RGL_out_all >= RFH_GR + RFH_XR Then
                     '计算结果加入列表
                     HD_ALL.Add(ZHD)
                     FHL1.Add(a1)
                     FHL2.Add(a2)
+                    FHL_TJGR.Add(FHL_TJ_now)
                     '跳出循环
                     Exit For
                 ElseIf a1 = 1 And a2 = 1 Then
@@ -7629,6 +7758,7 @@ aaa:
                     HD_ALL.Add(ZHD)
                     FHL1.Add(a1)
                     FHL2.Add(a2)
+                    FHL_TJGR.Add(FHL_TJ_now)
                     '跳出循环
                     Exit For
                 End If
@@ -7640,6 +7770,8 @@ aaa:
         '求此时设备（1）和设备（2）的负荷率
         Dim FHL1_result As Double
         Dim FHL2_result As Double
+        '求此时梯级供热设备负荷率
+        Dim FHL_TJGR_result As Double
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配，蓄热负荷率转换为台数
         Dim FHL1_GR_result As Double
         Dim FHL1_XR_result As Double
@@ -7651,6 +7783,8 @@ aaa:
         '求此时设备（1）和设备（2）的负荷率
         FHL1_result = FHL1(HD_index_min)
         FHL2_result = FHL2(HD_index_min)
+        '求此时梯级供热设备负荷率
+        FHL_TJGR_result = FHL_TJGR(HD_index_min)
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配，蓄热负荷率转换为台数
         '负荷率的换算还要考虑RXCS的因素
         Dim RCZHXS_1 As Double
@@ -7691,12 +7825,13 @@ aaa:
         '    FHL2_XR_result = 0
         'End Try
         '返回结果存到数组
-        Dim ans(5) As Double
+        Dim ans(6) As Double
         ans(0) = HD_ALL_min
         ans(1) = FHL1_GR_result
         ans(2) = FHL1_XR_result
         ans(3) = FHL2_GR_result
         ans(4) = FHL2_XR_result
+        ans(5) = FHL_TJGR_result
         '返回结果
         Return ans
     End Function
@@ -8841,7 +8976,7 @@ aaa:
         '蓄热计算，常规计算模式
         Call 蓄能装置蓄热工况计算(ExcelApp, b, FHTJJD, calculation_mode)
         '梯级供热计算
-        Call 梯级供热计算(ExcelApp, b, TJGRFHBL)
+        Call 常规计算模式梯级供热计算(ExcelApp, b, calculation_mode, TJGRFHBL)
         '混水供热计算
         Call 常规计算模式混水供热计算(ExcelApp, FHTJJD, JSBC, b, calculation_mode, HSGRGLBL)
     End Sub
