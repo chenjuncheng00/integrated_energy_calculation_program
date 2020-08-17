@@ -584,7 +584,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         Call 锁定工作表(ExcelApp)
     End Sub
 
-    Sub 蓄能分配计算主程序(ExcelApp As Object, XLGL_PJ As Double, XLGL_MAX As Double, XLJS_MS As Integer, XRGL_PJ As Double, XRGL_MAX As Double, XRJS_MS As Integer)
+    Sub 蓄能分配计算主程序(ExcelApp As Object, XLGL_PJ As Double, XLGL_MAX As Double, XLJS_MS As Integer, XRGL_PJ As Double, XRGL_MAX As Double, XRJS_MS As Integer, QT1_SJD As Boolean, QT2_SJD As Boolean)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————
         Dim ZTJC_EXCEL As Integer = Excel版本号验证(ExcelApp)
@@ -613,7 +613,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 22), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 23)).Value = Nothing
             '申明局部变量和数组
             Dim RQXH(10000) As Integer '日期序号
-            Dim GKXSS(10000) As Integer '每个工况的小时数
+            Dim GKXSS(10000) As Double '每个工况的小时数
             Dim RQXHJS(10000) As Integer '定义数组，用于日期序号计数,每次日期序号发生变化时，最后一个不变的日期序号的工况序号储存在数组中
             Dim c As Integer 'RQXHJS数组的元素数量，有多少种不同的日期序号
             '将第一个工况的内燃机余热利用方式带入计算，内燃机负荷率设置为1
@@ -621,28 +621,28 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 77).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 77).Value
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = 1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value = 1
-            Dim XHLZLa = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(172, 4).Value * ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(19, 7).Value
+            Dim XHLZLa As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(172, 4).Value * ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(19, 7).Value
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = Nothing
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 3).Value = Nothing
             '制热时烟气热水型溴化锂功率计算
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value = 1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value = 1
-            Dim XHLZRa = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(173, 4).Value * ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(20, 7).Value
+            Dim XHLZRa As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(173, 4).Value * ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(20, 7).Value
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 4).Value = Nothing
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 5).Value = Nothing
             '制冷装机总功率（不包括蓄冷装置）
-            Dim ZLZJGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(58, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(57, 7).Value + XHLZLa
+            Dim ZLZJGL As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(58, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(57, 7).Value + XHLZLa
             '制热装机总功率（不包括蓄热装置）
-            Dim ZRZJGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(69, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(68, 7).Value + XHLZRa
+            Dim ZRZJGL As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(69, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(68, 7).Value + XHLZRa
             '蓄冷装机总功率（不包括蓄冷装置、烟气热水型溴化锂、直燃性溴化锂）
-            Dim XLZJGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(58, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(57, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
+            Dim XLZJGL As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(58, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(57, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value
             '蓄热装机总功率（不包括蓄热装置、烟气热水型溴化锂、直燃性溴化锂、天然气锅炉）
-            Dim XRZJGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(69, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(68, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
+            Dim XRZJGL As Double = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(69, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(68, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value - ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value
             '如果存在梯级供热的情况，则修正制热装机功率（梯级供热设置只计算耗电量，不计算供热量）
-            Dim TJGRZTJC = 0 '梯级供热状态监测
-            Dim FLLGJJC_TJGR = 0 '梯级供热使用风冷螺杆机状态监测
-            Dim KQYRBJC_TJGR = 0 '梯级供热使用空气源热泵状态监测
-            Dim SYRBJC_TJGR = 0 '梯级供热使用水源热泵状态监测
+            Dim TJGRZTJC As Double = 0 '梯级供热状态监测
+            Dim FLLGJJC_TJGR As Double = 0 '梯级供热使用风冷螺杆机状态监测
+            Dim KQYRBJC_TJGR As Double = 0 '梯级供热使用空气源热泵状态监测
+            Dim SYRBJC_TJGR As Double = 0 '梯级供热使用水源热泵状态监测
             '统计一个有多少个制热负荷段
             Dim JS_RFH As Integer = 0
             For i = 1 To n
@@ -765,38 +765,44 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
             '确定每个不同的日期序号的个数
             For a = 1 To c 'RQXHJS数组最多只有c个元素
-                Dim GKXHmin = RQXHJS(a - 1) + 1, GKXHmax = RQXHJS(a) '每个日期序号相同的一组，对应的工况序号上限和下限
+                '每个日期序号相同的一组，对应的工况序号上限和下限
+                Dim GKXHmin As Integer = RQXHJS(a - 1) + 1
+                Dim GKXHmax As Integer = RQXHJS(a)
                 '判断这一组日期序号代表制冷还是制热
                 If RQXH(RQXHJS(a)) = 1 Or RQXH(RQXHJS(a)) = 2 Then '制冷工况；RXHCJS(a):日期序号发生变化前的最后一个工况序号；RQXH()：对应的日期序号
-                    Dim XLZL = 0, GLZL = 0 '蓄冷总量，供冷总量
-                    '先计算所有的谷电时间段最多可以蓄冷多少kWh
-                    Dim GDXLZL = 0 '谷电蓄冷总量
-                    Dim GDXSS_L = 0 '冷工况谷电小时数
+                    Dim SYXLGL As Double = 0 '剩余蓄冷功率
+                    Dim XLZL As Double = 0 '蓄冷总量
+                    Dim GLZL As Double = 0 '供冷总量
+                    '先计算所有的（谷1、谷2、其它1、其它2）最多可以蓄冷多少kWh
+                    Dim GD1_GD2_QT1_QT2_XLZL As Double = 0 '（谷1、谷2、其它1、其它2）蓄冷总量
+                    Dim GD1_GD2_QT1_QT2_XSS_L As Double = 0 '冷工况（谷1、谷2、其它1、其它2）小时数
                     For i = GKXHmin To GKXHmax '遍历所有的冷负荷段
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            GDXLZL = GDXLZL + GKXSS(i) * PJXLGL '所有为谷电时间段的小时数乘以输入的最大蓄冷功率
-                            GDXSS_L = GDXSS_L + GKXSS(i) '冷负荷段的谷电总小时数
+                        '蓄冷时间段为：谷1、谷2、其它1、其它2
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            GD1_GD2_QT1_QT2_XLZL = GD1_GD2_QT1_QT2_XLZL + GKXSS(i) * PJXLGL '所有为（谷电、时间段1、时间段2）的小时数乘以输入的最大蓄冷功率
+                            GD1_GD2_QT1_QT2_XSS_L = GD1_GD2_QT1_QT2_XSS_L + GKXSS(i) '冷负荷段的（谷电、时间段1、时间段2）总小时数
                         End If
                     Next
-                    Dim SYXLGL = GDXLZL '剩余蓄冷功率
+                    SYXLGL = SYXLGL + GD1_GD2_QT1_QT2_XLZL '剩余蓄冷功率
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
-                        '将用电负荷段为谷1或者谷2的工况，蓄冷功率设置为输入的PJXLGL，同时也要满足装机需求（蓄冷功率+制冷功率不可以大于设备总制冷功率）
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            '先寻找蓄冷功率+制冷功率大于设备总制冷功率的情况（谷电时内燃机关闭，需要减去溴化锂制冷量）
+                        '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄冷功率设置为输入的PJXLGL，同时也要满足装机需求（蓄冷功率+制冷功率不可以大于设备总制冷功率）
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            '先寻找蓄冷功率+制冷功率大于设备总制冷功率的情况（谷1、谷2、其它1、其它2时内燃机关闭，需要减去溴化锂制冷量）
                             If LFHZXQL(i) + PJXLGL > ZLZJGL - XHLZLa And SYXLGL > 0 Then
-                                '谷电时内燃机关闭，需要减去溴化锂制冷量，同时再缩小一点，以免出错
+                                '（谷1、谷2、其它1、其它2）时内燃机关闭，需要减去溴化锂制冷量，同时再缩小一点，以免出错
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = ExcelApp.Application.WorksheetFunction.RoundDown((ZLZJGL - XHLZLa - LFHZXQL(i)), 2)
                                 '统计蓄冷量
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > 0 Then
                                     XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
                             ElseIf LFHZXQL(i) + PJXLGL <= ZLZJGL - XHLZLa And SYXLGL > 0 Then
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = PJXLGL '等于平均蓄冷功率
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > 0 Then
                                     XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
                             End If
                             '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
@@ -808,34 +814,34 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
                                 XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
                                 '重新计算剩余蓄冷总量
-                                SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                             End If
                         End If
                     Next
                     '如果还有剩余的蓄冷功率，统计现在有多少个工况点设备装机量没有被完全利用
-                    Dim GDXSS_L_2 = 0
+                    Dim GD1_GD2_QT1_QT2_XSS_L_2 As Double = 0
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            Dim XLGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
                             If LFHZXQL(i) + XLGL_now < ZLZJGL - XHLZLa And SYXLGL > 0 And XLGL_now = PJXLGL Then '如果目前的蓄冷功率不等于平均蓄冷功率
-                                GDXSS_L_2 = GDXSS_L_2 + GKXSS(i)
+                                GD1_GD2_QT1_QT2_XSS_L_2 = GD1_GD2_QT1_QT2_XSS_L_2 + GKXSS(i)
                             End If
                         End If
                     Next
-                    Dim GDXLGL_L_2 = SYXLGL / GDXSS_L_2 '平均蓄冷功率2
+                    Dim GD1_GD2_QT1_QT2_XLGL_L_2 As Double = SYXLGL / GD1_GD2_QT1_QT2_XSS_L_2 '平均蓄冷功率2
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
-                        '将用电负荷段为谷1或者谷2的工况，蓄冷功率设置为输入的GDXLGL_L_2，同时也要满足装机需求（蓄冷功率+制冷功率不可以大于设备总制冷功率）
-                        Dim XLGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
+                        '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄冷功率设置为输入的GD1_GD2_QT1_QT2_XLGL_L_2，同时也要满足装机需求（蓄冷功率+制冷功率不可以大于设备总制冷功率）
+                        Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
                             If SYXLGL > 0 And LFHZXQL(i) + XLGL_now < ZLZJGL - XHLZLa And XLGL_now = PJXLGL Then '如果剩余蓄冷功率大于0，且装机功率没有被完全利用
-                                If ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) >= GDXLGL_L_2 Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + GDXLGL_L_2
-                                    XLZL = XLZL + GDXLGL_L_2 * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                If ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) >= GD1_GD2_QT1_QT2_XLGL_L_2 Then
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + GD1_GD2_QT1_QT2_XLGL_L_2
+                                    XLZL = XLZL + GD1_GD2_QT1_QT2_XLGL_L_2 * GKXSS(i) '统计全部蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now))
                                     XLZL = XLZL + ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
                             End If
                             '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
@@ -847,23 +853,23 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
                                 XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
                                 '重新计算剩余蓄冷总量
-                                SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                             End If
                         End If
                     Next
                     '如果此时还有剩余没使用的蓄冷功率，则继续蓄冷
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            Dim XLGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
                             If SYXLGL > 0 And LFHZXQL(i) + XLGL_now <= ZLZJGL - XHLZLa Then '如果剩余蓄冷功率大于0，且装机功率没有被完全利用
                                 If ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) >= SYXLGL / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + SYXLGL / GKXSS(i)
                                     XLZL = XLZL + SYXLGL / GKXSS(i) * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now))
                                     XLZL = XLZL + ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) * GKXSS(i) '统计全部蓄冷量
-                                    SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                    SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
                             End If
                             '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
@@ -875,13 +881,14 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
                                 XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
                                 '重新计算剩余蓄冷总量
-                                SYXLGL = GDXLZL - XLZL '剩下还需要满足的蓄冷量
+                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                             End If
                         End If
                     Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     For i = GKXHmin To GKXHmax '第二步，计算进行削峰需要的供冷功率                     
-                        '即使是谷段，如果冷负荷大于了装机，也要进行削峰
+                        '即使是（谷1、谷2、其它1、其它2），如果冷负荷大于了装机，也要进行削峰
                         If LFHZXQL(i) > ZLZJGL Then '冷负荷总需求量大于制冷装机量
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = (LFHZXQL(i) - ZLZJGL)
                             GLZL = GLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value * GKXSS(i) '统计全部供冷量
@@ -893,7 +900,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     Next
                     'For i = GKXHmin To GKXHmax '第二步，计算进行削峰需要的供冷功率                     
                     '    '高峰时间段不进行削峰，高峰段默认全部负荷都优先进行蓄冷供冷
-                    '    '即使是谷段，如果冷负荷大于了装机，也要进行削峰
+                    '    '即使是（谷1、谷2、其它1、其它2），如果冷负荷大于了装机，也要进行削峰
                     '    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰1" And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰2" Then
                     '        If LFHZXQL(i) > ZLZJGL Then '冷负荷总需求量大于制冷装机量
                     '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = (LFHZXQL(i) - ZLZJGL)
@@ -901,8 +908,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '        End If
                     '    End If
                     'Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计高峰段有多少个小时
-                    Dim ZLSL_GF As Integer = 0
+                    Dim ZLSL_GF As Double = 0
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If LFHZXQL(i) > 0 Then
@@ -910,12 +918,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGLGL_GF '高峰段每小时平均供冷功率
+                    Dim PJGLGL_GF As Double '高峰段每小时平均供冷功率
                     PJGLGL_GF = (XLZL - GLZL) / ZLSL_GF '剩余的几个小时，平均每个小时可以供冷的功率
                     For i = GKXHmin To GKXHmax '第三步，计算高峰段的供冷功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If LFHZXQL(i) > 0 And PJGLGL_GF > 0 Then '冷负荷大于0才进行计算,平均功率大于0才计算
-                                Dim XFGLGL_GF = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
+                                Dim XFGLGL_GF As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
                                 If PJGLGL_GF >= LFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
@@ -944,7 +952,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If XLZL - GLZL > 0 And LFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value Then
                                 '记录目前已经有的蓄冷供冷量
-                                Dim XLGLGL_now_GF = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
+                                Dim XLGLGL_now_GF As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
                                 If (LFHZXQL(i) - XLGLGL_now_GF) >= (XLZL - GLZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XLGLGL_now_GF + (XLZL - GLZL) / GKXSS(i)
                                     GLZL = GLZL + (XLZL - GLZL) / GKXSS(i) * GKXSS(i)
@@ -978,8 +986,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '        End If
                     '    End If
                     'Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计峰段有多少个小时
-                    Dim ZLSL_F As Integer = 0
+                    Dim ZLSL_F As Double = 0
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If LFHZXQL(i) > 0 Then
@@ -987,12 +996,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGLGL_F '峰段每小时平均供冷功率
+                    Dim PJGLGL_F As Double '峰段每小时平均供冷功率
                     PJGLGL_F = (XLZL - GLZL) / ZLSL_F '剩余的几个小时，平均每个小时可以供冷的功率
                     For i = GKXHmin To GKXHmax '第四步，计算峰段的供冷功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If LFHZXQL(i) > 0 And PJGLGL_F > 0 Then '冷负荷大于0才进行计算,平均功率大于0才计算
-                                Dim XFGLGL_F = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
+                                Dim XFGLGL_F As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
                                 If PJGLGL_F >= LFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
@@ -1021,7 +1030,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If XLZL - GLZL > 0 And LFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value Then
                                 '记录目前已经有的蓄冷供冷量
-                                Dim XLGLGL_now_F = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
+                                Dim XLGLGL_now_F As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
                                 If (LFHZXQL(i) - XLGLGL_now_F) >= (XLZL - GLZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XLGLGL_now_F + (XLZL - GLZL) / GKXSS(i)
                                     GLZL = GLZL + (XLZL - GLZL) / GKXSS(i) * GKXSS(i)
@@ -1041,8 +1050,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '如果蓄冷量还有剩余，用于平段供冷
-                    Dim ZLSL_P As Integer = 0
+                    Dim ZLSL_P As Double = 0
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If LFHZXQL(i) > 0 Then
@@ -1050,12 +1060,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGLGL_P '平段每小时平均供冷功率
+                    Dim PJGLGL_P As Double '平段每小时平均供冷功率
                     PJGLGL_P = (XLZL - GLZL) / ZLSL_P '剩余的几个小时，平均每个小时可以供冷的功率
                     For i = GKXHmin To GKXHmax '第五步，计算平段的供冷功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If LFHZXQL(i) > 0 And PJGLGL_P > 0 Then '冷负荷大于0才进行计算,平均功率大于0时，才进行计算
-                                Dim XFGLGL_P = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
+                                Dim XFGLGL_P As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value '削峰供冷功率
                                 If PJGLGL_P >= LFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
@@ -1084,7 +1094,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If XLZL - GLZL > 0 And LFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value Then
                                 '记录目前已经有的蓄冷供冷量
-                                Dim XLGLGL_now_P = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
+                                Dim XLGLGL_now_P As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
                                 If (LFHZXQL(i) - XLGLGL_now_P) >= (XLZL - GLZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XLGLGL_now_P + (XLZL - GLZL) / GKXSS(i)
                                     GLZL = GLZL + (XLZL - GLZL) / GKXSS(i) * GKXSS(i)
@@ -1114,30 +1124,33 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 '————————————————————————————————————————————————————————————————————————————————————————————————————————
                 '判断这一组日期序号代表制热还是制热
                 If RQXH(RQXHJS(a)) = 3 Or RQXH(RQXHJS(a)) = 4 Then '制热工况；RXHCJS(a):日期序号发生变化前的最后一个工况序号；RQXH()：对应的日期序号
-                    Dim XRZL = 0, GRZL = 0 '蓄热总量，供热总量
-                    '先计算所有的谷电时间段最多可以蓄热多少kWh
-                    Dim GDXRZL = 0 '谷电蓄热总量
+                    Dim SYXRGL As Double = 0 '剩余蓄热功率
+                    Dim XRZL As Double = 0 '蓄热总量
+                    Dim GRZL As Double = 0 '供热总量
+                    '先计算所有的（谷1、谷2、其它1、其它2）时间段最多可以蓄热多少kWh
+                    Dim GD1_GD2_QT1_QT2_XRZL As Double = 0 '（谷1、谷2、其它1、其它2）蓄热总量
                     For i = GKXHmin To GKXHmax '遍历所有的热负荷段
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            GDXRZL = GDXRZL + GKXSS(i) * PJXRGL '所有为谷电时间段的小时数乘以输入的最大蓄热功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            GD1_GD2_QT1_QT2_XRZL = GD1_GD2_QT1_QT2_XRZL + GKXSS(i) * PJXRGL '所有为（谷1、谷2、其它1、其它2）时间段的小时数乘以输入的最大蓄热功率
                         End If
                     Next
-                    Dim SYXRGL = GDXRZL '剩余蓄热功率
+                    SYXRGL = SYXRGL + GD1_GD2_QT1_QT2_XRZL '剩余蓄热功率
                     '——————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
-                        '将用电负荷段为谷1或者谷2的工况，蓄热功率设置为输入的PJXRGL
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            If RFHZXQL(i) + PJXRGL > ZRZJGL - XHLZRa And SYXRGL > 0 Then '寻找蓄热功率+制热功率大于设备总制热功率的情况（谷电时内燃机关闭，需要减去溴化锂制热量）
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ExcelApp.Application.WorksheetFunction.RoundDown((ZRZJGL - XHLZRa - RFHZXQL(i)), 2) '谷电时内燃机关闭，需要减去溴化锂制热量，同时再缩小一点，以免出错
+                        '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄热功率设置为输入的PJXRGL
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            If RFHZXQL(i) + PJXRGL > ZRZJGL - XHLZRa And SYXRGL > 0 Then '寻找蓄热功率+制热功率大于设备总制热功率的情况（谷1、谷2、其它1、其它2时内燃机关闭，需要减去溴化锂制热量）
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ExcelApp.Application.WorksheetFunction.RoundDown((ZRZJGL - XHLZRa - RFHZXQL(i)), 2) '（谷1、谷2、其它1、其它2）时内燃机关闭，需要减去溴化锂制热量，同时再缩小一点，以免出错
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > 0 Then
                                     XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
                             ElseIf RFHZXQL(i) + PJXRGL <= ZRZJGL - XHLZRa And SYXRGL > 0 Then
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = PJXRGL '等于平均蓄热功率
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > 0 Then
                                     XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
                             End If
                             '判断计算出的蓄热功率是否大于输入的最大蓄热功率
@@ -1149,34 +1162,34 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
                                 XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
                                 '重新计算剩余蓄热总量
-                                SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                             End If
                         End If
                     Next
                     '如果还有剩余的蓄热功率，统计现在有多少个工况点设备装机量没有被完全利用
-                    Dim GDXSS_R_2 = 0
+                    Dim GD1_GD2_QT1_QT2_XSS_R_2 As Double = 0
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            Dim XRGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
                             If RFHZXQL(i) + XRGL_now < ZRZJGL - XHLZRa And SYXRGL > 0 And XRGL_now = PJXRGL Then '如果目前的蓄热功率不等于平均蓄热功率
-                                GDXSS_R_2 = GDXSS_R_2 + GKXSS(i)
+                                GD1_GD2_QT1_QT2_XSS_R_2 = GD1_GD2_QT1_QT2_XSS_R_2 + GKXSS(i)
                             End If
                         End If
                     Next
-                    Dim GDXRGL_R_2 = SYXRGL / GDXSS_R_2 '平均蓄热功率2
+                    Dim GD1_GD2_QT1_QT2_XRGL_R_2 As Double = SYXRGL / GD1_GD2_QT1_QT2_XSS_R_2 '平均蓄热功率2
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
-                        '将用电负荷段为谷1或者谷2的工况，蓄热功率设置为输入的GDXRGL_R_2，同时也要满足装机需求（蓄热功率+制热功率不可以大于设备总制热功率）
-                        Dim XRGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
+                        '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄热功率设置为输入的GD1_GD2_QT1_QT2_XRGL_R_2，同时也要满足装机需求（蓄热功率+制热功率不可以大于设备总制热功率）
+                        Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
                             If SYXRGL > 0 And RFHZXQL(i) + XRGL_now < ZRZJGL - XHLZRa And XRGL_now = PJXRGL Then '如果剩余蓄热功率大于0，且装机功率没有被完全利用
-                                If ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) >= GDXRGL_R_2 Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + GDXRGL_R_2
-                                    XRZL = XRZL + GDXRGL_R_2 * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                If ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) >= GD1_GD2_QT1_QT2_XRGL_R_2 Then
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + GD1_GD2_QT1_QT2_XRGL_R_2
+                                    XRZL = XRZL + GD1_GD2_QT1_QT2_XRGL_R_2 * GKXSS(i) '统计全部蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now))
                                     XRZL = XRZL + ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
                             End If
                             '判断计算出的蓄热功率是否大于输入的最大蓄热功率
@@ -1188,23 +1201,23 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
                                 XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
                                 '重新计算剩余蓄热总量
-                                SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                             End If
                         End If
                     Next
                     '如果此时还有剩余没使用的蓄热功率，则继续蓄热
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Then
-                            Dim XRGL_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
                             If SYXRGL > 0 And RFHZXQL(i) + XRGL_now <= ZRZJGL - XHLZRa Then
                                 If ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) >= SYXRGL / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + SYXRGL / GKXSS(i)
                                     XRZL = XRZL + SYXRGL / GKXSS(i) * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now))
                                     XRZL = XRZL + ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) * GKXSS(i) '统计全部蓄热量
-                                    SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                    SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
                             End If
                             '判断计算出的蓄热功率是否大于输入的最大蓄热功率
@@ -1216,13 +1229,14 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                                 '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
                                 XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
                                 '重新计算剩余蓄热总量
-                                SYXRGL = GDXRZL - XRZL '剩下还需要满足的蓄热量
+                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                             End If
                         End If
                     Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     For i = GKXHmin To GKXHmax '第二步，计算进行削峰需要的供热功率
-                        '即使是谷段，如果冷负荷大于了装机，也要进行削峰
+                        '即使是（谷1、谷2、其它1、其它2），如果冷负荷大于了装机，也要进行削峰
                         If RFHZXQL(i) > ZRZJGL Then '热负荷总需求量大于制热装机量
                             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i) - ZRZJGL
                             GRZL = GRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i) '统计全部供热量
@@ -1242,8 +1256,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '        End If
                     '    End If
                     'Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计有多少个高峰段
-                    Dim ZRSL_GF As Integer = 0 '制热时间段高峰段小时数
+                    Dim ZRSL_GF As Double = 0 '制热时间段高峰段小时数
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If RFHZXQL(i) > 0 Then
@@ -1251,12 +1266,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGRGL_GF '平均供热功率
+                    Dim PJGRGL_GF As Double '平均供热功率
                     PJGRGL_GF = (XRZL - GRZL) / ZRSL_GF '剩余的几个工况，平均每个工况可以供热的功率
                     For i = GKXHmin To GKXHmax '第三步，计算高峰段的供热功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If RFHZXQL(i) > 0 And PJGRGL_GF > 0 Then
-                                Dim XFGRGL_GF = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削峰供热功率
+                                Dim XFGRGL_GF As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削峰供热功率
                                 If PJGRGL_GF >= RFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
@@ -1285,7 +1300,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
                             If XRZL - GRZL > 0 And RFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value Then
                                 '记录目前已经有的蓄热供热量
-                                Dim XRGRGL_now_GF = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
+                                Dim XRGRGL_now_GF As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
                                 If (RFHZXQL(i) - XRGRGL_now_GF) >= (XRZL - GRZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XRGRGL_now_GF + (XRZL - GRZL) / GKXSS(i)
                                     GRZL = GRZL + (XRZL - GRZL) / GKXSS(i) * GKXSS(i)
@@ -1317,8 +1332,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '        GRZL = GRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i) '统计全部供热量
                     '    End If
                     'Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计有多少个峰段
-                    Dim ZRSL_F As Integer = 0 '制热时间段峰段小时数
+                    Dim ZRSL_F As Double = 0 '制热时间段峰段小时数
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If RFHZXQL(i) > 0 Then
@@ -1326,12 +1342,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGRGL_F '平均供热功率
+                    Dim PJGRGL_F As Double '平均供热功率
                     PJGRGL_F = (XRZL - GRZL) / ZRSL_F '剩余的几个工况，平均每个工况可以供热的功率
                     For i = GKXHmin To GKXHmax '第四步，计算峰段的供热功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If RFHZXQL(i) > 0 And PJGRGL_F > 0 Then
-                                Dim XFGRGL_F = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削峰供热功率
+                                Dim XFGRGL_F As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削峰供热功率
                                 If PJGRGL_F >= RFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
@@ -1360,7 +1376,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "峰2" Then
                             If XRZL - GRZL > 0 And RFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value Then
                                 '记录目前已经有的蓄热供热量
-                                Dim XRGRGL_now_F = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
+                                Dim XRGRGL_now_F As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
                                 If (RFHZXQL(i) - XRGRGL_now_F) >= (XRZL - GRZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XRGRGL_now_F + (XRZL - GRZL) / GKXSS(i)
                                     GRZL = GRZL + (XRZL - GRZL) / GKXSS(i) * GKXSS(i)
@@ -1380,8 +1396,9 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '如果蓄热量还有剩余，用于平段蓄热
-                    Dim ZRSL_P As Integer = 0 '制热时间段平段小时数
+                    Dim ZRSL_P As Double = 0 '制热时间段平段小时数
                     For i = GKXHmin To GKXHmax
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If RFHZXQL(i) > 0 Then
@@ -1389,12 +1406,12 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                             End If
                         End If
                     Next
-                    Dim PJGRGL_P '平均供热功率
+                    Dim PJGRGL_P As Double '平均供热功率
                     PJGRGL_P = (XRZL - GRZL) / ZRSL_P '剩余的几个工况，平均每个工况可以供热的功率
                     For i = GKXHmin To GKXHmax '第四步，计算平段的供热功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If RFHZXQL(i) > 0 And PJGRGL_P > 0 Then
-                                Dim XFGRGL_P = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削平供热功率
+                                Dim XFGRGL_P As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value '削平供热功率
                                 If PJGRGL_P >= RFHZXQL(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
@@ -1423,7 +1440,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "平2" Then
                             If XRZL - GRZL > 0 And RFHZXQL(i) > ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value Then
                                 '记录目前已经有的蓄热供热量
-                                Dim XRGRGL_now_P = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
+                                Dim XRGRGL_now_P As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
                                 If (RFHZXQL(i) - XRGRGL_now_P) >= (XRZL - GRZL) / GKXSS(i) Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XRGRGL_now_P + (XRZL - GRZL) / GKXSS(i)
                                     GRZL = GRZL + (XRZL - GRZL) / GKXSS(i) * GKXSS(i)
@@ -1470,31 +1487,31 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '计算出来的值只保留最大3位小数
             For i = 1 To n
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value > 0 Then
-                    Dim Temp = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
+                    Dim Temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = Math.Round(Temp, 3)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > 0 Then
-                    Dim Temp = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value
+                    Dim Temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = Math.Round(Temp, 3)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value > 0 Then
-                    Dim Temp = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
+                    Dim Temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = Math.Round(Temp, 3)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > 0 Then
-                    Dim Temp = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value
+                    Dim Temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = Math.Round(Temp, 3)
                 End If
             Next
             '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-            '检查计算结果，谷电时间段蓄冷功率不可以大于蓄冷装机总功率（蓄冷只用电设备）
+            '检查计算结果，（谷1、谷2、其它1、其它2）时间段蓄冷功率不可以大于蓄冷装机总功率（蓄冷只用电设备）
             For i = 1 To n
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > XLZJGL Then
                     MsgBox("计算出的逐工况蓄冷功率中，存在大于蓄冷装机总功率的情况（蓄冷时只是用耗电设备），请检查！")
                     Exit For
                 End If
             Next
-            '检查计算结果，谷电时间段蓄热功率不可以大于蓄冷装机总功率（蓄热只用电设备）
+            '检查计算结果，（谷1、谷2、其它1、其它2）时间段蓄热功率不可以大于蓄冷装机总功率（蓄热只用电设备）
             For i = 1 To n
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > XRZJGL Then
                     MsgBox("计算出的逐工况蓄热功率中，存在大于蓄热装机总功率的情况（蓄热时只是用耗电设备），请检查！")

@@ -40,13 +40,17 @@ Partial Class 蓄能分配计算设置
         Me.清空数据 = New System.Windows.Forms.Button()
         Me.XL_MAX_CHECK = New System.Windows.Forms.CheckBox()
         Me.XR_MAX_CHECK = New System.Windows.Forms.CheckBox()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.QT1_SJD = New System.Windows.Forms.CheckBox()
+        Me.QT2_SJD = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label1.Location = New System.Drawing.Point(118, 37)
+        Me.Label1.Location = New System.Drawing.Point(134, 37)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(302, 28)
         Me.Label1.TabIndex = 3
@@ -56,7 +60,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label2.Location = New System.Drawing.Point(118, 271)
+        Me.Label2.Location = New System.Drawing.Point(134, 271)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(302, 28)
         Me.Label2.TabIndex = 5
@@ -66,7 +70,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label10.AutoSize = True
         Me.Label10.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.Location = New System.Drawing.Point(445, 96)
+        Me.Label10.Location = New System.Drawing.Point(461, 96)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(58, 32)
         Me.Label10.TabIndex = 16
@@ -74,7 +78,7 @@ Partial Class 蓄能分配计算设置
         '
         'XLGL_PJ
         '
-        Me.XLGL_PJ.Location = New System.Drawing.Point(259, 94)
+        Me.XLGL_PJ.Location = New System.Drawing.Point(275, 94)
         Me.XLGL_PJ.Name = "XLGL_PJ"
         Me.XLGL_PJ.Size = New System.Drawing.Size(170, 35)
         Me.XLGL_PJ.TabIndex = 15
@@ -84,7 +88,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label9.Location = New System.Drawing.Point(48, 98)
+        Me.Label9.Location = New System.Drawing.Point(64, 98)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(215, 28)
         Me.Label9.TabIndex = 14
@@ -94,7 +98,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label4.Location = New System.Drawing.Point(48, 209)
+        Me.Label4.Location = New System.Drawing.Point(64, 209)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(215, 28)
         Me.Label4.TabIndex = 17
@@ -102,7 +106,7 @@ Partial Class 蓄能分配计算设置
         '
         'XLGL_MAX
         '
-        Me.XLGL_MAX.Location = New System.Drawing.Point(259, 205)
+        Me.XLGL_MAX.Location = New System.Drawing.Point(275, 205)
         Me.XLGL_MAX.Name = "XLGL_MAX"
         Me.XLGL_MAX.Size = New System.Drawing.Size(170, 35)
         Me.XLGL_MAX.TabIndex = 18
@@ -112,7 +116,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(445, 207)
+        Me.Label5.Location = New System.Drawing.Point(461, 207)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(58, 32)
         Me.Label5.TabIndex = 19
@@ -122,7 +126,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(445, 449)
+        Me.Label3.Location = New System.Drawing.Point(461, 449)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(58, 32)
         Me.Label3.TabIndex = 25
@@ -130,7 +134,7 @@ Partial Class 蓄能分配计算设置
         '
         'XRGL_MAX
         '
-        Me.XRGL_MAX.Location = New System.Drawing.Point(259, 447)
+        Me.XRGL_MAX.Location = New System.Drawing.Point(275, 447)
         Me.XRGL_MAX.Name = "XRGL_MAX"
         Me.XRGL_MAX.Size = New System.Drawing.Size(170, 35)
         Me.XRGL_MAX.TabIndex = 24
@@ -140,7 +144,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label6.Location = New System.Drawing.Point(48, 450)
+        Me.Label6.Location = New System.Drawing.Point(64, 450)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(215, 28)
         Me.Label6.TabIndex = 23
@@ -150,7 +154,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label7.AutoSize = True
         Me.Label7.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(445, 329)
+        Me.Label7.Location = New System.Drawing.Point(461, 329)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(58, 32)
         Me.Label7.TabIndex = 22
@@ -158,7 +162,7 @@ Partial Class 蓄能分配计算设置
         '
         'XRGL_PJ
         '
-        Me.XRGL_PJ.Location = New System.Drawing.Point(259, 327)
+        Me.XRGL_PJ.Location = New System.Drawing.Point(275, 327)
         Me.XRGL_PJ.Name = "XRGL_PJ"
         Me.XRGL_PJ.Size = New System.Drawing.Size(170, 35)
         Me.XRGL_PJ.TabIndex = 21
@@ -168,7 +172,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.Label8.AutoSize = True
         Me.Label8.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label8.Location = New System.Drawing.Point(48, 331)
+        Me.Label8.Location = New System.Drawing.Point(64, 331)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(215, 28)
         Me.Label8.TabIndex = 20
@@ -177,7 +181,7 @@ Partial Class 蓄能分配计算设置
         '确定参数
         '
         Me.确定参数.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.确定参数.Location = New System.Drawing.Point(53, 520)
+        Me.确定参数.Location = New System.Drawing.Point(72, 729)
         Me.确定参数.Name = "确定参数"
         Me.确定参数.Size = New System.Drawing.Size(190, 84)
         Me.确定参数.TabIndex = 26
@@ -187,7 +191,7 @@ Partial Class 蓄能分配计算设置
         '清空数据
         '
         Me.清空数据.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.清空数据.Location = New System.Drawing.Point(313, 520)
+        Me.清空数据.Location = New System.Drawing.Point(326, 729)
         Me.清空数据.Name = "清空数据"
         Me.清空数据.Size = New System.Drawing.Size(190, 84)
         Me.清空数据.TabIndex = 27
@@ -198,7 +202,7 @@ Partial Class 蓄能分配计算设置
         '
         Me.XL_MAX_CHECK.AutoSize = True
         Me.XL_MAX_CHECK.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.XL_MAX_CHECK.Location = New System.Drawing.Point(53, 153)
+        Me.XL_MAX_CHECK.Location = New System.Drawing.Point(69, 153)
         Me.XL_MAX_CHECK.Name = "XL_MAX_CHECK"
         Me.XL_MAX_CHECK.Size = New System.Drawing.Size(421, 32)
         Me.XL_MAX_CHECK.TabIndex = 28
@@ -209,18 +213,64 @@ Partial Class 蓄能分配计算设置
         '
         Me.XR_MAX_CHECK.AutoSize = True
         Me.XR_MAX_CHECK.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.XR_MAX_CHECK.Location = New System.Drawing.Point(63, 389)
+        Me.XR_MAX_CHECK.Location = New System.Drawing.Point(79, 389)
         Me.XR_MAX_CHECK.Name = "XR_MAX_CHECK"
         Me.XR_MAX_CHECK.Size = New System.Drawing.Size(421, 32)
         Me.XR_MAX_CHECK.TabIndex = 29
         Me.XR_MAX_CHECK.Text = "蓄热功率分配计算最大值限制"
         Me.XR_MAX_CHECK.UseVisualStyleBackColor = True
         '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label11.Location = New System.Drawing.Point(44, 511)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(508, 28)
+        Me.Label11.TabIndex = 30
+        Me.Label11.Text = "除了""谷1""和""谷2""两个用电时间段之外"
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label12.Location = New System.Drawing.Point(35, 565)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(520, 28)
+        Me.Label12.TabIndex = 31
+        Me.Label12.Text = "选择2个额外需要蓄冷蓄热的用电时间段"
+        '
+        'QT1_SJD
+        '
+        Me.QT1_SJD.AutoSize = True
+        Me.QT1_SJD.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.QT1_SJD.Location = New System.Drawing.Point(55, 617)
+        Me.QT1_SJD.Name = "QT1_SJD"
+        Me.QT1_SJD.Size = New System.Drawing.Size(478, 32)
+        Me.QT1_SJD.TabIndex = 34
+        Me.QT1_SJD.Text = """其它1""用电时间段进行蓄冷和蓄热"
+        Me.QT1_SJD.UseVisualStyleBackColor = True
+        '
+        'QT2_SJD
+        '
+        Me.QT2_SJD.AutoSize = True
+        Me.QT2_SJD.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.QT2_SJD.Location = New System.Drawing.Point(55, 670)
+        Me.QT2_SJD.Name = "QT2_SJD"
+        Me.QT2_SJD.Size = New System.Drawing.Size(478, 32)
+        Me.QT2_SJD.TabIndex = 38
+        Me.QT2_SJD.Text = """其它2""用电时间段进行蓄冷和蓄热"
+        Me.QT2_SJD.UseVisualStyleBackColor = True
+        '
         '蓄能分配计算设置
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(554, 650)
+        Me.ClientSize = New System.Drawing.Size(584, 838)
+        Me.Controls.Add(Me.QT2_SJD)
+        Me.Controls.Add(Me.QT1_SJD)
+        Me.Controls.Add(Me.Label12)
+        Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.XR_MAX_CHECK)
         Me.Controls.Add(Me.XL_MAX_CHECK)
         Me.Controls.Add(Me.清空数据)
@@ -264,4 +314,8 @@ Partial Class 蓄能分配计算设置
     Friend WithEvents 清空数据 As System.Windows.Forms.Button
     Friend WithEvents XL_MAX_CHECK As System.Windows.Forms.CheckBox
     Friend WithEvents XR_MAX_CHECK As System.Windows.Forms.CheckBox
+    Friend WithEvents Label11 As System.Windows.Forms.Label
+    Friend WithEvents Label12 As System.Windows.Forms.Label
+    Friend WithEvents QT1_SJD As System.Windows.Forms.CheckBox
+    Friend WithEvents QT2_SJD As System.Windows.Forms.CheckBox
 End Class
