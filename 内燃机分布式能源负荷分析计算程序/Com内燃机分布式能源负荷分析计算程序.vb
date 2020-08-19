@@ -312,6 +312,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(27, 9).Value = "Y" Then
             '在窗体显示目前的计算进度，显示目前在计算第几个工况
             Calculate_Progress.Show()
+            Calculate_Progress.TopMost = True
             Calculate_Progress.Label1.Text = "计算进行中，目前正在计算的工况序号为：" & b
             System.Windows.Forms.Application.DoEvents()
             '————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -468,6 +469,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(27, 9).Value <> "Y" Then
             '在窗体显示目前的计算进度，显示目前在计算第几个工况
             Calculate_Progress.Show()
+            Calculate_Progress.TopMost = True
             Calculate_Progress.Label1.Text = "计算进行中，目前正在计算的工况序号为：" & b
             System.Windows.Forms.Application.DoEvents()
             '————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -19424,6 +19426,8 @@ qqqqq:
     '定义和申明各种全局变量和数组
     '全局寻优计算出现错误的工况序号，加入列表
     Public QJXYJS_ERROR As New List(Of Integer)
+    '常规计算模式，出现计算错误的工况序号，加入列表
+    Public CGJSMS_ERROR As New List(Of Integer)
     '定义数组，用于储存输入的各个工况冷热负荷需求量(kW)
     Public LFHZXQL(10000) As Double '冷负荷总需求量
     Public RFHZXQL(10000) As Double '热负荷总需求量
