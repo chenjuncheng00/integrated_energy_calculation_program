@@ -220,41 +220,108 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '————————————————————————————————————————————————————————————————————————————————————————
             '全局寻优计算出现错误的工况序号列表长度
             '针对计算出错的工况，采用常规模式重新进行计算
-            Dim len_n As Integer = QJXYJS_ERROR.Count
+            Dim len_qjxy As Integer = QJXYJS_ERROR.Count
             Dim QJXY_ERROR_BH As String = Nothing
-            '新的列表，用来储存筛选后的，没有重复的工况序号
-            Dim XH_ERROR As New List(Of Integer)
-            If len_n > 0 And calculation_mode = 2 Then
+            '新的列表，用来储存筛选后的，没有重复的全局寻优计算模式出现错误的工况序号
+            Dim XH_QJXY_ERROR As New List(Of Integer)
+            If len_qjxy > 0 And calculation_mode = 2 Then
                 '采用模式1进行计算
-                Dim calculation_mode_a As Integer = 1
-                For i = 0 To len_n - 1
+                'Dim calculation_mode_a As Integer = 1
+                calculation_mode = 1
+                For i = 0 To len_qjxy - 1
                     If QJXYJS_ERROR(i) > QJXYJS_ERROR(i - 1) Then
                         Dim XH As String = "(" & QJXYJS_ERROR(i) & ")" & "  "
                         QJXY_ERROR_BH = QJXY_ERROR_BH & XH
                         '加入新的列表
-                        XH_ERROR.Add(QJXYJS_ERROR(i))
+                        XH_QJXY_ERROR.Add(QJXYJS_ERROR(i))
                     End If
                 Next
                 MsgBox("全局寻优计算存在计算错误的工况，程序会自动采用常规模型重算错误工况！" & "工况序号为： " & QJXY_ERROR_BH)
-                For i = 0 To XH_ERROR.Count - 1
+                '重新开始计算
+                For i = 0 To XH_QJXY_ERROR.Count - 1
                     '错误的工况序号
-                    Dim a As Integer = XH_ERROR(i)
+                    Dim a As Integer = XH_QJXY_ERROR(i)
                     '调用程序进行计算
                     Call 清空指定工况输入输出数据(ExcelApp, a)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode_a, TJGRFHBL, HSGRGLBL)
+                    Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                    Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, a, calculation_mode_a)
-                    Call 制热和蓄热空调设备负荷率修正(ExcelApp, a, calculation_mode_a)
+                    Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, a, calculation_mode)
+                    Call 制热和蓄热空调设备负荷率修正(ExcelApp, a, calculation_mode)
                     '计算制冷季和制热季天然气耗量和耗电量综合修正系数
-                    Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode_a)
-                    Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode_a)
+                    Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode)
+                    Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode)
                 Next
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
+            '常规计算模式，出现计算错误的工况序号，加入列表
+            Dim CGJSMS_ERROR As New List(Of Integer)
+            '计算错误，调到这里重算
+cgjsms_again:
+            'FHTJJD参数最低是0.1
+            If calculation_mode = 1 And FHTJJD > 0.1 And CGJSMS_ERROR.Count > 0 Then
+                '针对寻找出来的计算错误的工况序号，减小FHTJJD参数，重新进行计算
+                Dim len_cgjs As Integer = CGJSMS_ERROR.Count
+                Dim CGJS_ERROR_BH As String = Nothing
+                '新的列表，用来储存筛选后的，没有重复的常规计算模式出现错误的工况序号
+                Dim XH_CGJS_ERROR As New List(Of Integer)
+                If len_cgjs > 0 Then
+                    For i = 0 To len_cgjs - 1
+                        If CGJSMS_ERROR(i) > CGJSMS_ERROR(i - 1) Then
+                            Dim XH As String = "(" & CGJSMS_ERROR(i) & ")" & "  "
+                            CGJS_ERROR_BH = CGJS_ERROR_BH & XH
+                            '加入新的列表
+                            XH_CGJS_ERROR.Add(CGJSMS_ERROR(i))
+                        End If
+                    Next
+                    MsgBox("常规计算模式存在计算错误的工况，程序会自动修改<负荷调节精度>参数重新计算！" & "工况序号为： " & CGJS_ERROR_BH)
+                    '修改FHTJJD和JSBC参数
+                    If FHTJJD > 0.5 Then
+                        FHTJJD = 0.5
+                    ElseIf FHTJJD <= 0.5 And FHTJJD > 0.25 Then
+                        FHTJJD = 0.25
+                    Else
+                        FHTJJD = 0.1
+                    End If
+                    JSBC = CInt(25 / FHTJJD)
+                    '重新开始计算
+                    For i = 0 To XH_CGJS_ERROR.Count - 1
+                        '错误的工况序号
+                        Dim a As Integer = XH_CGJS_ERROR(i)
+                        '调用程序进行计算
+                        Call 清空指定工况输入输出数据(ExcelApp, a)
+                        '进行正常的负荷分析（主要技术指标）计算
+                        Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                        '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
+                        Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, a, calculation_mode)
+                        Call 制热和蓄热空调设备负荷率修正(ExcelApp, a, calculation_mode)
+                        '计算制冷季和制热季天然气耗量和耗电量综合修正系数
+                        Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode)
+                        Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, a, calculation_mode)
+                    Next
+                End If
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
             '计算循环体
             Call 计算循环体(ExcelApp, n)
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '寻找计算结果出现错误的工况序号，加入列表
+            If calculation_mode = 1 And FHTJJD > 0.1 Then
+                '清空列表
+                CGJSMS_ERROR.Clear()
+                '寻找计算结果出现错误的工况序号，加入列表
+                For i = 1 To n
+                    If ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 18).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 35).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 49).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 61).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 62).Value = "不正确" Or ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 63).Value = "不正确" Then
+                        CGJSMS_ERROR.Add(i)
+                    End If
+                Next
+                If CGJSMS_ERROR.Count > 0 Then
+                    '跳至标签处重算
+                    GoTo cgjsms_again
+                End If
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
             '判断各种计算结果是否正确，不正确则报错
             Call 判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         End If
@@ -19426,8 +19493,6 @@ qqqqq:
     '定义和申明各种全局变量和数组
     '全局寻优计算出现错误的工况序号，加入列表
     Public QJXYJS_ERROR As New List(Of Integer)
-    '常规计算模式，出现计算错误的工况序号，加入列表
-    Public CGJSMS_ERROR As New List(Of Integer)
     '定义数组，用于储存输入的各个工况冷热负荷需求量(kW)
     Public LFHZXQL(10000) As Double '冷负荷总需求量
     Public RFHZXQL(10000) As Double '热负荷总需求量

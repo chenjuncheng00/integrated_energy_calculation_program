@@ -18,7 +18,7 @@ Public Class 指定工况计算
         Dim JSBC As Integer
         Dim FHTJJD As Double
         '工况序号
-        Dim GKXH(5) As Integer
+        Dim GKXH(6) As Integer
         '计算模式设置为1
         Dim calculation_mode As Integer = 1
         '————————————————————————————————————————————————————————————————————————————————————————
@@ -127,11 +127,14 @@ Public Class 指定工况计算
             Dim HSGRZTJC = 0 '混水供热状态监测
             For i = 1 To 5
                 b = GKXH(i)
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
-                    TJGRZTJC = TJGRZTJC + 1
-                End If
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then '如果有混水供热的设备
-                    HSGRZTJC = HSGRZTJC + 1
+                '忽略为0的工况
+                If b > 0 Then
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
+                        TJGRZTJC = TJGRZTJC + 1
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then '如果有混水供热的设备
+                        HSGRZTJC = HSGRZTJC + 1
+                    End If
                 End If
             Next
             '输入体积供热比例
@@ -155,22 +158,26 @@ Public Class 指定工况计算
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
                 For i = 1 To n
+                    b = GKXH(i)
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
                     Dim HSSBGL As Double = 0
-                    '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "空气源热泵" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
-                    End If
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "水(地)源热泵" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
-                    End If
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "风冷螺杆机" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
-                    End If
-                    '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
-                    If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
-                        Dim XXX As String = "(" & i & ")、"
-                        XianShi = XianShi & XXX.ToString & "  "
+                    '忽略为0的工况
+                    If b > 0 Then
+                        '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+                        End If
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+                        End If
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+                        End If
+                        '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
+                        If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
+                            Dim XXX As String = "(" & b & ")、"
+                            XianShi = XianShi & XXX.ToString & "  "
+                        End If
                     End If
                 Next
                 If XianShi <> Nothing Then
@@ -237,7 +244,7 @@ Public Class 指定工况计算
         Dim JSBC As Integer
         Dim FHTJJD As Double
         '工况序号
-        Dim GKXH(5) As Integer
+        Dim GKXH(6) As Integer
         '输入的购电单价和天然气单价参数
         Dim D_price As Double = CType(Me.GDDJ.Text, Double)
         Dim TRQ_price As Double = CType(TRQDJ.Text, Double)
@@ -362,11 +369,14 @@ Public Class 指定工况计算
             Dim HSGRZTJC = 0 '混水供热状态监测
             For i = 1 To 5
                 b = GKXH(i)
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
-                    TJGRZTJC = TJGRZTJC + 1
-                End If
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then '如果有混水供热的设备
-                    HSGRZTJC = HSGRZTJC + 1
+                '忽略为0的工况
+                If b > 0 Then
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
+                        TJGRZTJC = TJGRZTJC + 1
+                    End If
+                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then '如果有混水供热的设备
+                        HSGRZTJC = HSGRZTJC + 1
+                    End If
                 End If
             Next
             '输入体积供热比例
@@ -390,22 +400,26 @@ Public Class 指定工况计算
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
                 For i = 1 To n
+                    b = GKXH(i)
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
                     Dim HSSBGL As Double = 0
-                    '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "空气源热泵" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
-                    End If
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "水(地)源热泵" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
-                    End If
-                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "风冷螺杆机" Then
-                        HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
-                    End If
-                    '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
-                    If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
-                        Dim XXX As String = "(" & i & ")、"
-                        XianShi = XianShi & XXX.ToString & "  "
+                    '忽略为0的工况
+                    If b > 0 Then
+                        '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+                        End If
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+                        End If
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+                        End If
+                        '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
+                        If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
+                            Dim XXX As String = "(" & b & ")、"
+                            XianShi = XianShi & XXX.ToString & "  "
+                        End If
                     End If
                 Next
                 If XianShi <> Nothing Then
