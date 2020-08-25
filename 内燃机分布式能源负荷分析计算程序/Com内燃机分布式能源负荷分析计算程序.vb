@@ -6621,16 +6621,16 @@ zzzz:
         Dim RFH_ALL As Double = RFH_GR_now + RFH_XR_now
         '混水设备供热功率
         '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
-        Dim ZJRGL_HS As Double = 0
+        Dim ZJRGL_HS_ALL As Double = 0
         '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
-            ZJRGL_HS = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+            ZJRGL_HS_ALL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
         End If
         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
-            ZJRGL_HS = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+            ZJRGL_HS_ALL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
         End If
         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
-            ZJRGL_HS = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+            ZJRGL_HS_ALL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
         End If
         '负荷调整系数（全局寻优时候能否计算到了负荷上限的倍数）
         Dim TZXS As Double = 1 + 10 * FHTJJD / 100
@@ -6978,9 +6978,9 @@ zzzzz：
             '————————————————————————————————————————————————————————————————————————————————————————        
             '供热和蓄热一起寻优
             '混水设备供热
-            Dim ZJRGL_HS_ALL_a_1 As Double
-            Dim ZJRGL_HS_ALL_a_2 As Double
-            'Dim ZJRGL_HS_ALL_a_7 As Double
+            Dim ZJRGL_HS_a_1 As Double
+            Dim ZJRGL_HS_a_2 As Double
+            'Dim ZJRGL_HS_a_7 As Double
             '寻优先后顺序：天然气锅炉、电锅炉、水（地）源热泵、离心式热泵、风冷螺杆机、空气源热泵、直燃型溴化锂
             '穷举计算
             '各种设备已经计算的次数计数（如果设备不存在或者装机量为0，才参与计算）
@@ -6998,16 +6998,16 @@ zzzzz：
                 End If
                 '混水供热设备（目的是可以正常进行内部循环进行计算）
                 If ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
-                    ZJRGL_HS_ALL_a_1 = ZJRGL_HS
+                    ZJRGL_HS_a_1 = ZJRGL_HS_ALL
                 Else
-                    If ZJRGL_HS > 0 Then
-                        ZJRGL_HS_ALL_a_1 = a_1 * HSGRGLBL / (1 - HSGRGLBL)
+                    If ZJRGL_HS_ALL > 0 Then
+                        ZJRGL_HS_a_1 = a_1 * HSGRGLBL / (1 - HSGRGLBL)
                     Else
-                        ZJRGL_HS_ALL_a_1 = 0
+                        ZJRGL_HS_a_1 = 0
                     End If
                 End If
                 '根据装机量判断是否直接进入下一次循环
-                If a_1 + ZJZGL_DGL + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_1 < RFH_ALL Then
+                If a_1 + ZJZGL_DGL + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_a_1 < RFH_ALL Then
                     GoTo aaa
                 End If
                 '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7026,23 +7026,23 @@ zzzzz：
                     If ZJJC_DGL = 0 Or ZJZGL_DGL = 0 Then
                         '如果天然气锅炉不存在
                         If ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
-                            ZJRGL_HS_ALL_a_2 = ZJRGL_HS
+                            ZJRGL_HS_a_2 = ZJRGL_HS_ALL
                         Else
-                            If ZJRGL_HS > 0 Then
-                                ZJRGL_HS_ALL_a_2 = a_1 * HSGRGLBL / (1 - HSGRGLBL)
+                            If ZJRGL_HS_ALL > 0 Then
+                                ZJRGL_HS_a_2 = a_1 * HSGRGLBL / (1 - HSGRGLBL)
                             Else
-                                ZJRGL_HS_ALL_a_2 = 0
+                                ZJRGL_HS_a_2 = 0
                             End If
                         End If
                     Else
-                        If ZJRGL_HS > 0 Then
-                            ZJRGL_HS_ALL_a_2 = a_2 * HSGRGLBL / (1 - HSGRGLBL)
+                        If ZJRGL_HS_ALL > 0 Then
+                            ZJRGL_HS_a_2 = a_2 * HSGRGLBL / (1 - HSGRGLBL)
                         Else
-                            ZJRGL_HS_ALL_a_2 = 0
+                            ZJRGL_HS_a_2 = 0
                         End If
                     End If
                     '根据装机量判断是否直接进入下一次循环
-                    If a_1 + a_2 + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_2 < RFH_ALL Then
+                    If a_1 + a_2 + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_a_2 < RFH_ALL Then
                         GoTo bbb
                     End If
                     '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7057,7 +7057,7 @@ zzzzz：
                             JS_end_SDYRB = JS_end_SDYRB + 1
                         End If
                         '根据装机量判断是否直接进入下一次循环
-                        If a_1 + a_2 + a_3 + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_2 < RFH_ALL Then
+                        If a_1 + a_2 + a_3 + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_a_2 < RFH_ALL Then
                             GoTo ccc
                         End If
                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7072,7 +7072,7 @@ zzzzz：
                                 JS_end_LXSRB = JS_end_LXSRB + 1
                             End If
                             '根据装机量判断是否直接进入下一次循环
-                            If a_1 + a_2 + a_3 + a_4 + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_2 < RFH_ALL Then
+                            If a_1 + a_2 + a_3 + a_4 + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_a_2 < RFH_ALL Then
                                 GoTo ddd
                             End If
                             '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7087,7 +7087,7 @@ zzzzz：
                                     JS_end_FLLGJ = JS_end_FLLGJ + 1
                                 End If
                                 '根据装机量判断是否直接进入下一次循环
-                                If a_1 + a_2 + a_3 + a_4 + a_5 + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_2 < RFH_ALL Then
+                                If a_1 + a_2 + a_3 + a_4 + a_5 + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_a_2 < RFH_ALL Then
                                     GoTo eee
                                 End If
                                 '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7102,7 +7102,7 @@ zzzzz：
                                         JS_end_KQYRB = JS_end_KQYRB + 1
                                     End If
                                     '根据装机量判断是否直接进入下一次循环
-                                    If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + ZJZGL_ZRXXHL + ZJRGL_HS_ALL_a_2 < RFH_ALL Then
+                                    If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + ZJZGL_ZRXXHL + ZJRGL_HS_a_2 < RFH_ALL Then
                                         GoTo fff
                                     End If
                                     '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -7117,23 +7117,23 @@ zzzzz：
                                             JS_end_ZRXXHL = JS_end_ZRXXHL + 1
                                         End If
                                         '当前混水设备热功率
-                                        Dim ZJRGL_HS_ALL_now As Double
-                                        If ZJRGL_HS > 0 Then
+                                        Dim GRGL_HS_now As Double
+                                        If ZJRGL_HS_ALL > 0 Then
                                             '默认天然气锅炉、电锅炉、直燃型溴化锂不会同时存在
-                                            ZJRGL_HS_ALL_now = (a_1 + a_2 + a_7) * HSGRGLBL / (1 - HSGRGLBL)
+                                            GRGL_HS_now = (a_1 + a_2 + a_7) * HSGRGLBL / (1 - HSGRGLBL)
                                         Else
-                                            ZJRGL_HS_ALL_now = 0
+                                            GRGL_HS_now = 0
                                         End If
                                         '根据装机量判断是否直接进入下一次循环
-                                        If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + a_7 + ZJRGL_HS_ALL_now < RFH_ALL Then
+                                        If a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + a_7 + GRGL_HS_now < RFH_ALL Then
                                             GoTo ggg
-                                        ElseIf a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + a_7 + ZJRGL_HS_ALL_now > RFH_ALL * TZXS Then
+                                        ElseIf a_1 + a_2 + a_3 + a_4 + a_5 + a_6 + a_7 + GRGL_HS_now > RFH_ALL * TZXS Then
                                             GoTo ggg
                                         End If
                                         '————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                                         '天然气锅炉计算
                                         If a_1 >= FH_min_TRQGL And ZJJC_TRQGL = 1 And ZJZGL_TRQGL > 0 Then
-                                            Dim ans_TRQGL = 天然气锅炉供热寻优计算(ExcelApp, b, FHTJJD, a_1 + ZJRGL_HS_ALL_now, FHFPCS, RFH_GR_now, RFH_XR_now, D_price, TRQ_price, HSGRGLBL, NUM1_TRQGL, NUM2_TRQGL, ZJRGL1_TRQGL, ZJRGL2_TRQGL, BTHQ1_ED_TRQGL, BTHQ2_ED_TRQGL, FJHD1_ED_TRQGL, FJHD2_ED_TRQGL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
+                                            Dim ans_TRQGL = 天然气锅炉供热寻优计算(ExcelApp, b, FHTJJD, a_1 + GRGL_HS_now, FHFPCS, RFH_GR_now, RFH_XR_now, D_price, TRQ_price, HSGRGLBL, NUM1_TRQGL, NUM2_TRQGL, ZJRGL1_TRQGL, ZJRGL2_TRQGL, BTHQ1_ED_TRQGL, BTHQ2_ED_TRQGL, FJHD1_ED_TRQGL, FJHD2_ED_TRQGL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
                                             HD_ALL_TRQGL.AddRange(ans_TRQGL(0))
                                             GR_ALL_TRQGL.AddRange(ans_TRQGL(1))
                                             XR_ALL_TRQGL.AddRange(ans_TRQGL(2))
@@ -7146,7 +7146,7 @@ zzzzz：
                                         End If
                                         '电锅炉计算
                                         If a_2 >= FH_min_DGL And ZJJC_DGL = 1 And ZJZGL_DGL > 0 Then
-                                            Dim ans_DGL = 电锅炉供热和蓄热分配寻优计算(ExcelApp, b, FHTJJD, a_2 + ZJRGL_HS_ALL_now, FHFPCS, RFH_GR_now, RFH_XR_now, HSGRGLBL, NUM1_DGL, NUM2_DGL, ZJRGL1_DGL, ZJRGL2_DGL, BTHD1_ED_DGL, BTHD2_ED_DGL, FJHD1_ED_DGL, FJHD2_ED_DGL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
+                                            Dim ans_DGL = 电锅炉供热和蓄热分配寻优计算(ExcelApp, b, FHTJJD, a_2 + GRGL_HS_now, FHFPCS, RFH_GR_now, RFH_XR_now, HSGRGLBL, NUM1_DGL, NUM2_DGL, ZJRGL1_DGL, ZJRGL2_DGL, BTHD1_ED_DGL, BTHD2_ED_DGL, FJHD1_ED_DGL, FJHD2_ED_DGL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
                                             HD_ALL_min_DGL.AddRange(ans_DGL(0))
                                             GR_ALL_DGL.AddRange(ans_DGL(1))
                                             XR_ALL_DGL.AddRange(ans_DGL(2))
@@ -7203,7 +7203,7 @@ zzzzz：
                                         End If
                                         '直燃型溴化锂计算
                                         If a_7 >= FH_min_ZRXXHL And ZJJC_ZRXXHL = 1 And ZJZGL_ZRXXHL > 0 Then
-                                            Dim ans_ZRXXHL = 直燃型溴化锂供热寻优计算(ExcelApp, b, FHTJJD, a_7 + ZJRGL_HS_ALL_now, FHFPCS, RFH_GR_now, RFH_XR_now, D_price, TRQ_price, HSGRGLBL, NUM1_ZRXXHL, NUM2_ZRXXHL, ZJRGL1_ZRXXHL, ZJRGL2_ZRXXHL, BTHQ1_ED_ZRXXHL, BTHQ2_ED_ZRXXHL, FJHD1_ED_ZRXXHL, FJHD2_ED_ZRXXHL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
+                                            Dim ans_ZRXXHL = 直燃型溴化锂供热寻优计算(ExcelApp, b, FHTJJD, a_7 + GRGL_HS_now, FHFPCS, RFH_GR_now, RFH_XR_now, D_price, TRQ_price, HSGRGLBL, NUM1_ZRXXHL, NUM2_ZRXXHL, ZJRGL1_ZRXXHL, ZJRGL2_ZRXXHL, BTHQ1_ED_ZRXXHL, BTHQ2_ED_ZRXXHL, FJHD1_ED_ZRXXHL, FJHD2_ED_ZRXXHL, NUM1_KQYRB, NUM2_KQYRB, ZJRGL1_KQYRB, ZJRGL2_KQYRB, BTHD1_ED_KQYRB, BTHD2_ED_KQYRB, FJHD1_ED_KQYRB, FJHD2_ED_KQYRB, NUM1_SDYRB, NUM2_SDYRB, ZJRGL1_SDYRB, ZJRGL2_SDYRB, BTHD1_ED_SDYRB, BTHD2_ED_SDYRB, FJHD1_ED_SDYRB, FJHD2_ED_SDYRB, NUM1_FLLGJ, NUM2_FLLGJ, ZJRGL1_FLLGJ, ZJRGL2_FLLGJ, BTHD1_ED_FLLGJ, BTHD2_ED_FLLGJ, FJHD1_ED_FLLGJ, FJHD2_ED_FLLGJ, TRQHLXZXS_QT, BTHDXS_GR_air, BTHDXS_XR_air, BTHDXS_GR_water, BTHDXS_XR_water, FJHDXS)
                                             HD_ALL_ZRXXHL.AddRange(ans_ZRXXHL(0))
                                             GR_ALL_ZRXXHL.AddRange(ans_ZRXXHL(1))
                                             XR_ALL_ZRXXHL.AddRange(ans_ZRXXHL(2))
