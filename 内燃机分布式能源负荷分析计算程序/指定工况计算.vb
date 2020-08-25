@@ -149,12 +149,26 @@ Public Class 指定工况计算
                 '让用户手动输入混水设备制热功率，占总热功率（总热功率指的是，几种混水向外供热的设备总供热功率的合计）的比例
                 HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
-                Dim TRQGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 10).Value '天然气锅炉1制热总功率
-                Dim TRQGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 10).Value '天然气锅炉2制热总功率
-                Dim ZRXHL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 20).Value '直燃型溴化锂1制热总功率
-                Dim ZRXHL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 20).Value '直燃型溴化锂1制热总功率
-                Dim DCNGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 22).Value '电采暖锅炉1制热总功率
-                Dim DCNGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value '电采暖锅炉2制热总功率
+                '读取采暖季装机方案及参数
+                Dim ans_ZJFA_R = mainprogram.读取采暖季装机方案参数(ExcelApp)
+                '天然气锅炉装机功率（总和）
+                Dim TRQGL1ZRGL As Double = ans_ZJFA_R(12)
+                Dim TRQGL2ZRGL As Double = ans_ZJFA_R(13)
+                '电锅炉装机功率（总和）
+                Dim DCNGL1ZRGL As Double = ans_ZJFA_R(20)
+                Dim DCNGL2ZRGL As Double = ans_ZJFA_R(21)
+                '风冷螺杆机（总和）
+                Dim ZJRGL1_FLLGJ As Double = ans_ZJFA_R(28)
+                Dim ZJRGL2_FLLGJ As Double = ans_ZJFA_R(29)
+                '水地源热泵（总和）
+                Dim ZJRGL1_SDYRB As Double = ans_ZJFA_R(36)
+                Dim ZJRGL2_SDYRB As Double = ans_ZJFA_R(37)
+                '空气源热泵（总和）
+                Dim ZJRGL1_KQYRB As Double = ans_ZJFA_R(52)
+                Dim ZJRGL2_KQYRB As Double = ans_ZJFA_R(53)
+                '直燃型溴化锂装机功率（总和）
+                Dim ZRXHL1ZRGL As Double = ans_ZJFA_R(60)
+                Dim ZRXHL2ZRGL As Double = ans_ZJFA_R(61)
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
                 For i = 1 To n
@@ -164,14 +178,14 @@ Public Class 指定工况计算
                     '忽略为0的工况
                     If b > 0 Then
                         '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "空气源热泵" Then
+                            HSSBGL = ZJRGL1_KQYRB + ZJRGL2_KQYRB
                         End If
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "水(地)源热泵" Then
+                            HSSBGL = ZJRGL1_SDYRB + ZJRGL2_SDYRB
                         End If
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "风冷螺杆机" Then
+                            HSSBGL = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
                         End If
                         '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
                         If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
@@ -195,8 +209,8 @@ Public Class 指定工况计算
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     '只有全局寻优计算模式才修正
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
+                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
                 End If
             Next
             '计算循环体
@@ -391,12 +405,26 @@ Public Class 指定工况计算
                 '让用户手动输入混水设备制热功率，占总热功率（总热功率指的是，几种混水向外供热的设备总供热功率的合计）的比例
                 HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
-                Dim TRQGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 10).Value '天然气锅炉1制热总功率
-                Dim TRQGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 10).Value '天然气锅炉2制热总功率
-                Dim ZRXHL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(55, 20).Value '直燃型溴化锂1制热总功率
-                Dim ZRXHL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(74, 20).Value '直燃型溴化锂1制热总功率
-                Dim DCNGL1ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 22).Value '电采暖锅炉1制热总功率
-                Dim DCNGL2ZRGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value '电采暖锅炉2制热总功率
+                '读取采暖季装机方案及参数
+                Dim ans_ZJFA_R = mainprogram.读取采暖季装机方案参数(ExcelApp)
+                '天然气锅炉装机功率（总和）
+                Dim TRQGL1ZRGL As Double = ans_ZJFA_R(12)
+                Dim TRQGL2ZRGL As Double = ans_ZJFA_R(13)
+                '电锅炉装机功率（总和）
+                Dim DCNGL1ZRGL As Double = ans_ZJFA_R(20)
+                Dim DCNGL2ZRGL As Double = ans_ZJFA_R(21)
+                '风冷螺杆机（总和）
+                Dim ZJRGL1_FLLGJ As Double = ans_ZJFA_R(28)
+                Dim ZJRGL2_FLLGJ As Double = ans_ZJFA_R(29)
+                '水地源热泵（总和）
+                Dim ZJRGL1_SDYRB As Double = ans_ZJFA_R(36)
+                Dim ZJRGL2_SDYRB As Double = ans_ZJFA_R(37)
+                '空气源热泵（总和）
+                Dim ZJRGL1_KQYRB As Double = ans_ZJFA_R(52)
+                Dim ZJRGL2_KQYRB As Double = ans_ZJFA_R(53)
+                '直燃型溴化锂装机功率（总和）
+                Dim ZRXHL1ZRGL As Double = ans_ZJFA_R(60)
+                Dim ZRXHL2ZRGL As Double = ans_ZJFA_R(61)
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
                 For i = 1 To n
@@ -406,14 +434,14 @@ Public Class 指定工况计算
                     '忽略为0的工况
                     If b > 0 Then
                         '混水设备功率=风冷热泵+水（地）源热泵+空气源热泵（一般情况下，一个项目只会有这3种设备中的一种）,此处为混水设备的装机总功率
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(61, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "空气源热泵" Then
+                            HSSBGL = ZJRGL1_KQYRB + ZJRGL2_KQYRB
                         End If
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(62, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "水(地)源热泵" Then
+                            HSSBGL = ZJRGL1_SDYRB + ZJRGL2_SDYRB
                         End If
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
-                            HSSBGL = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(63, 7).Value
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value = "风冷螺杆机" Then
+                            HSSBGL = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
                         End If
                         '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
                         If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
@@ -437,8 +465,8 @@ Public Class 指定工况计算
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     '只有全局寻优计算模式才修正
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, calculation_mode)
+                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
                 End If
             Next
             '计算循环体
