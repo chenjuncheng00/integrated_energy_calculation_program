@@ -1020,7 +1020,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
                                 ElseIf PJGLGL_GF + XFGLGL_GF <= LFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = ExcelApp.WorksheetFunction.RoundUp(PJGLGL_GF + XFGLGL_GF, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = Math.Round(PJGLGL_GF + XFGLGL_GF, 2)
                                     GLZL = GLZL + PJGLGL_GF * GKXSS(i) '统计全部供冷量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else '冷负荷需求量介于两者之间
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XFGLGL_GF + LFHZXQL(i) - XFGLGL_GF
@@ -1098,7 +1098,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
                                 ElseIf PJGLGL_F + XFGLGL_F <= LFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = ExcelApp.WorksheetFunction.RoundUp(PJGLGL_F + XFGLGL_F, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = Math.Round(PJGLGL_F + XFGLGL_F, 2)
                                     GLZL = GLZL + PJGLGL_F * GKXSS(i) '统计全部供冷量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else '冷负荷需求量介于两者之间
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XFGLGL_F + LFHZXQL(i) - XFGLGL_F
@@ -1162,7 +1162,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
                                     GLZL = GLZL + LFHZXQL(i) * GKXSS(i) '统计全部供冷量
                                 ElseIf PJGLGL_P + XFGLGL_P <= LFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = ExcelApp.WorksheetFunction.RoundUp(PJGLGL_P + XFGLGL_P, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = Math.Round(PJGLGL_P + XFGLGL_P, 2)
                                     GLZL = GLZL + PJGLGL_P * GKXSS(i) '统计全部供冷量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else '冷负荷需求量介于两者之间
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XFGLGL_P + LFHZXQL(i) - XFGLGL_P
@@ -1368,7 +1368,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
                                 ElseIf PJGRGL_GF + XFGRGL_GF <= RFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = ExcelApp.WorksheetFunction.RoundUp(PJGRGL_GF + XFGRGL_GF, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = Math.Round(PJGRGL_GF + XFGRGL_GF, 2)
                                     GRZL = GRZL + PJGRGL_GF * GKXSS(i) '统计全部供热量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XFGRGL_GF + RFHZXQL(i) - XFGRGL_GF
@@ -1444,7 +1444,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
                                 ElseIf PJGRGL_F + XFGRGL_F <= RFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = ExcelApp.WorksheetFunction.RoundUp(PJGRGL_F + XFGRGL_F, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = Math.Round(PJGRGL_F + XFGRGL_F, 2)
                                     GRZL = GRZL + PJGRGL_F * GKXSS(i) '统计全部供热量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XFGRGL_F + RFHZXQL(i) - XFGRGL_F
@@ -1508,7 +1508,7 @@ cgjsms_again:
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
                                     GRZL = GRZL + RFHZXQL(i) * GKXSS(i) '统计全部供热量
                                 ElseIf PJGRGL_P + XFGRGL_P <= RFHZXQL(i) Then
-                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = ExcelApp.WorksheetFunction.RoundUp(PJGRGL_P + XFGRGL_P, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = Math.Round(PJGRGL_P + XFGRGL_P, 2)
                                     GRZL = GRZL + PJGRGL_P * GKXSS(i) '统计全部供热量，仅仅加上新增的部分（不含第二步计算的削峰量）
                                 Else
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XFGRGL_P + RFHZXQL(i) - XFGRGL_P
@@ -2491,8 +2491,8 @@ cgjsms_again:
             If FHL_HS_now > 0 Then
                 '将计算结果写入Excel
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 82).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = ExcelApp.WorksheetFunction.RoundUp(FHL_HS_now, 4)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83).Value = ExcelApp.WorksheetFunction.RoundUp(FHL_HS_now, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = Math.Round(FHL_HS_now, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83).Value = Math.Round(FHL_HS_now, 4)
                 '将已有的制热设备和蓄热设备运行负荷率重置为0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 70)).Value = 0
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 52), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 70)).Value = 0
@@ -2550,8 +2550,8 @@ cgjsms_again:
             If YJRBZFHL > 0 And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 80).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value
                 '将一级热泵负荷率写入表格
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = ExcelApp.WorksheetFunction.RoundUp(YJRBZFHL, 4)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 81).Value = ExcelApp.WorksheetFunction.RoundUp(YJRBZFHL, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = Math.Round(YJRBZFHL, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 81).Value = Math.Round(YJRBZFHL, 4)
             End If
         End If
     End Sub
@@ -2601,7 +2601,7 @@ cgjsms_again:
                 Dim LXSRBSJGL = LXSRB1ZRGL * (ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 29).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 56).Value) + LXSRB2ZRGL * (ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 30).Value + ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Cells(7 + i, 57).Value)
                 YJRBZFHL(i) = （LXSRBSJGL / LXSRBGRZGL） * TJGRFHBL
                 If YJRBZFHL(i) > 0 And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 80).Value <> Nothing Then
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 81).Value = ExcelApp.WorksheetFunction.RoundUp(YJRBZFHL(i), 4) '将一级热泵负荷率写入表格
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 81).Value = Math.Round(YJRBZFHL(i), 4) '将一级热泵负荷率写入表格
                 End If
             Next
             '如果存在梯级供热，在进行一遍负荷分析计算
@@ -2756,7 +2756,7 @@ cgjsms_again:
                     Next
 aaaaa:
                     '记录下算出来的混水负荷比例，并显示出来，供用户判断计算是否正确
-                    HSBL（i - 1） = ExcelApp.WorksheetFunction.RoundUp(HSSBSJBL, 4)
+                    HSBL（i - 1） = Math.Round(HSSBSJBL, 4)
                     '修正供热和蓄热时的耗电量和天然气耗量修正系数
                     '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call 制热和蓄热空调设备负荷率修正(ExcelApp, i, calculation_mode)
@@ -18631,6 +18631,9 @@ ppp:
             '制冷天然气消耗修正
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 107).Value = 1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 107).Value = 1
+            '内燃机及其余热利用系数
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 101)).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 101)).Value = 1
         End If
     End Sub
     Sub 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp As Object, b As Integer, FHTJJD As Double, calculation_mode As Integer)
@@ -20101,6 +20104,9 @@ ppp:
             '制热天然气消耗修正
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109).Value = 1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 109).Value = 1
+            '内燃机及其余热利用系数
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 102), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 105)).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 102), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 105)).Value = 1
         End If
     End Sub
     Sub 制冷和蓄冷空调设备负荷率修正(ExcelApp As Object, b As Integer, calculation_mode As Integer)
@@ -21463,7 +21469,7 @@ ppp:
                     '内燃机供电功率剩余1（蓄冷设备全部启动后，内燃机发电功率剩余量）
                     NRJ30pGDGLSY = NRJGDGL30p - XLGLFJHDGL
                     '制冷设备负荷第一段=蓄冷设备100%制冷量，内燃机达不到单台30%负荷，不能开启，无溴化锂制冷
-                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa, 2)
+                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = Math.Round(XLGLGLa, 2)
                     '判断此时的单台内燃机30%负荷供电全部用于蓄冷设备和第一顺序制冷，是否能完全消纳掉
                     '单台内燃机30%负荷供电量如果不能完全消纳
                     If NRJGDGL30p > XLGLFJHDGL + D1SXZLGL / D1SXZLCOP Then
@@ -21471,30 +21477,30 @@ ppp:
                         '内燃机供电功率剩余1（蓄冷设备和第一顺序空调设备全部启动后，内燃机发电功率剩余量），给第二顺序设备使用
                         NRJ30pGDGLSY = NRJGDGL30p - XLGLFJHDGL - D1SXZLGL / D1SXZLCOP
                         '制冷设备负荷第二段=蓄冷100%供冷功率+第一顺序空调设备100%制冷量，内燃机达不到单台30%负荷，不能开启，无溴化锂制冷
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + D1SXZLGL, 2)
                         '第一顺序制冷设备制冷功率剩余量=0
                         D1SXZLGLSY = 0
                         '为了计算快捷，假定单台内燃机30%负荷供电量的剩余量能够被第二顺序空调设备完全消纳
                         '制冷设备负荷第三段=单台溴化锂30%制冷量+蓄冷100%供冷功率+第一顺序空调设备100%制冷量+剩余的发电量*第二顺序COP
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa30p + XLGLGLa + D1SXZLGL + NRJ30pGDGLSY * D2SXZLCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XHLZLa30p + XLGLGLa + D1SXZLGL + NRJ30pGDGLSY * D2SXZLCOP, 2)
                         D2SXZLGLSY = D2SXZLGL - NRJ30pGDGLSY * D2SXZLCOP
                         NRJ30pGDGLSY = 0
                         '判断蓄冷设备100%+第一顺序制冷设备100%+第二顺序制冷设备100%运行时的耗电量，与内燃机100%运行的供电量的大小
                         '如果蓄冷设备100%+第一顺序制冷设备100%+第二顺序制冷设备100%运行时能够完全消纳内燃机供电量
                         If NRJGDGL <= XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） Then
                             '制冷设备负荷第四段=全部溴化锂100%供冷量+蓄冷100%供冷功率+第一顺序空调设备100%供冷+第二顺序空调设备100%可以用掉内燃机发电量时的制冷量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + (NRJGDGL - XLGLFJHDGL - D1SXZLGL / D1SXZLCOP) * D2SXZLCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + (NRJGDGL - XLGLFJHDGL - D1SXZLGL / D1SXZLCOP) * D2SXZLCOP, 2)
                             '制冷设备负荷第五段=全部溴化锂100%供冷量+蓄冷100%供冷功率+第一和第二顺序空调设备100%制冷量，后面的以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                         End If
                         '如果蓄冷设备100%+第一顺序制冷设备100%+第二顺序制冷设备100%运行时不能完全消纳内燃机供电量
                         If NRJGDGL > XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） Then
                             '制冷设备负荷第四段=蓄冷100%供冷功率+第一和第二顺序空调设备100%制冷量+第一和第二顺序设备恰好100%负荷运行时的溴化锂制冷量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
                             NRJGDGLSY = NRJGDGL - XLGLFJHDGL - （（D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP）） '内燃机供电功率剩余量
                             D1SXZLGLSY = 0
                             D2SXZLGLSY = 0
@@ -21502,32 +21508,32 @@ ppp:
                             '如果蓄冷设备100%+第一顺序制冷设备100%+第二顺序制冷设备100%+第三顺序制冷设备100%运行时能完全消纳内燃机供电量
                             If NRJGDGL <= XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP） Then
                                 '制冷设备负荷第五段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一和第二顺序空调设备100%制冷量+内燃机发电量恰好100%时第三顺序空调制冷量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
                                 '制冷设备负荷第六段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一、第二和第三顺序空调设备100%制冷量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                             End If
                             '如果蓄冷设备100%+第一顺序制冷设备100%+第二顺序制冷设备100%+第三顺序制冷设备100%运行时不能完全消纳内燃机供电量
                             If NRJGDGL > XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP） Then
                                 '制冷设备负荷第五段=蓄冷100%供冷功率+第一和第二和第三顺序空调设备100%制冷量+第一和第二和第三顺序设备恰好100%负荷运行时的溴化锂制冷量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
                                 NRJGDGLSY = NRJGDGL - XLGLFJHDGL - （（D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） '剩余的内燃机供电功率
                                 '为了计算简便，假定内燃机100%全部供电量都能够被第四顺序制冷设备消纳掉
                                 '制冷设备负荷第六段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一和第二和第三顺序空调设备100%制冷量+内燃机发电量恰好100%时第四顺序空调制冷量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
                                 '制冷设备负荷第七段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一、第二、第三和第四顺序空调设备100%制冷量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XHLZLa + XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                             End If
                         End If
                     End If
                     '单台内燃机30%负荷供电量如果能够被蓄冷装置和第一顺序空调设备完全消纳
                     If NRJGDGL30p <= XLGLFJHDGL + D1SXZLGL / D1SXZLCOP Then
                         '制冷设备负荷第二段=蓄冷100%供冷功率+单台溴化锂30%制冷量+单台内燃机30%发电量*第一顺序制冷设备COP
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa30p + NRJGDGL30p * D1SXZLCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + XHLZLa30p + NRJGDGL30p * D1SXZLCOP, 2)
                         '第一顺序制冷设备制冷功率剩余量
                         D1SXZLGLSY = D1SXZLGL - NRJGDGL30p * D1SXZLCOP
                         '单台内燃机30%负荷供电功率剩余1=0
@@ -21536,28 +21542,28 @@ ppp:
                         '全部内燃机100%负荷供电功率能够被第一顺序制冷设备和蓄冷设备100%供冷全部消纳
                         If NRJGDGL <= XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) Then
                             '制冷设备负荷第三段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一顺序空调设备100%可以用掉内燃机发电量时的制冷量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + NRJGDGL * D1SXZLCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + XHLZLa + NRJGDGL * D1SXZLCOP, 2)
                             '制冷设备负荷第四段=蓄冷100%供冷功率+全部溴化锂100%供冷量+第一顺序空调设备100%制冷量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL, 2)
                             D1SXZLGLSY = 0
                             NRJGDGLSY = 0
                             '制冷设备负荷第五段=全部溴化锂100%供冷量+第一顺序空调设备100%制冷量+第二顺序空调设备100%制冷量，以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                         End If
                         '全部内燃机100%负荷供电功率不能被第一顺序制冷设备全部消纳
                         If NRJGDGL > XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) Then
                             '制冷设备负荷第三段=蓄冷100%供冷功率+第一顺序空调设备100%制冷量+第一顺序设备恰好100%负荷运行时的溴化锂制冷量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + (XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) / NRJGDGL) * XHLZLa, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + (XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) / NRJGDGL) * XHLZLa, 2)
                             NRJGDGLSY = NRJGDGL - (D1SXZLGL / D1SXZLCOP)
                             D1SXZLGLSY = 0
                             '全部内燃机100%负荷供电功率不能被蓄冷100%供冷功率+第一和第二顺序制冷设备全部消纳
                             If NRJGDGL > XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） Then
                                 '制冷设备负荷第四段=蓄冷100%供冷功率+第一和第二顺序空调设备100%制冷量+第一和第二顺序设备恰好100%负荷运行时的溴化锂制冷量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
                                 NRJGDGLSY = NRJGDGL - XLGLFJHDGL - （（D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP））
                                 D1SXZLGLSY = 0
                                 D2SXZLGLSY = 0
@@ -21565,37 +21571,37 @@ ppp:
                                 '如果内燃机100%供电量能够被蓄冷100%供冷功率+第一和第二和第三顺序设备全部消纳
                                 If NRJGDGL <= XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP） Then
                                     '制冷设备负荷第五段=全部溴化锂100%供冷量+第一和第二顺序空调设备100%制冷量+内燃机发电量恰好100%时第三顺序空调制冷量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
                                     '制冷设备负荷第六段=全部溴化锂100%供冷量+第一、第二和第三顺序空调设备100%制冷量，后面的以此类推
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                                 End If
                                 '如果内燃机100%供电量不能够被第一和第二和第三顺序设备全部消纳
                                 If NRJGDGL > XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP） Then
                                     '制冷设备负荷第五段=第一和第二和第三顺序空调设备100%制冷量+第一和第二和第三顺序设备恰好100%负荷运行时的溴化锂制冷量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + (（XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） / (NRJGDGL)) * XHLZLa, 2)
                                     NRJGDGLSY = NRJGDGL - XLGLFJHDGL - （（D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） + （D3SXZLGL / D3SXZLCOP）） '剩余的内燃机供电功率
                                     '为了计算简便，假定内燃机100%全部供电量都能够被第四顺序制冷设备消纳掉
                                     '制冷设备负荷第六段=全部溴化锂100%供冷量+第一和第二和第三顺序空调设备100%制冷量+内燃机发电量恰好100%时第四顺序空调制冷量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
                                     '制冷设备负荷第七段=全部溴化锂100%供冷量+第一、第二、第三和第四顺序空调设备100%制冷量，后面的以此类推
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                                 End If
                             End If
                             '全部内燃机100%负荷供电功率能被第一和第二顺序制冷设备全部消纳
                             If NRJGDGL <= XLGLFJHDGL + （D1SXZLGL / D1SXZLCOP） + （D2SXZLGL / D2SXZLCOP） Then
                                 '制冷设备负荷第四段=全部溴化锂100%供冷量+第一顺序空调设备100%制冷量+内燃机发电量恰好100%时第二顺序空调制冷量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + NRJGDGLSY * D2SXZLCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + NRJGDGLSY * D2SXZLCOP, 2)
                                 '制冷设备负荷第五段=全部溴化锂100%供冷量+第一和第二顺序空调设备100%制冷量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                             End If
                         End If
                     End If
@@ -21603,65 +21609,65 @@ ppp:
                 '单台内燃机30%负荷供电量如果能被蓄能装置供冷完全消纳
                 If NRJGDGL30p <= XLGLFJHDGL Then
                     '制冷设备负荷第一段=蓄冷设备100%制冷量，内燃机恰好为单台30%负荷时溴化锂制冷功率
-                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa30p, 2)
+                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = Math.Round(XLGLGLa + XHLZLa30p, 2)
                     '判断内燃机100%发电功率能否被蓄冷和第一顺序制冷设备消纳
                     '如果内燃机100%发电功率能被蓄冷和第一顺序制冷设备消纳
                     If NRJGDGL <= XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) Then
                         '制冷设备负荷第二段=蓄冷设备100%制冷量+溴化锂100%制冷功率+内燃机恰好为100%负荷时第一顺序制冷功率
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + NRJGDGL * D1SXZLCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + XHLZLa + NRJGDGL * D1SXZLCOP, 2)
                         D1SXZLGLSY = D1SXZLGL - NRJGDGL * D1SXZLCOP '第一顺序制冷功率剩余
                         NRJGDGLSY = 0 '内燃机功率剩余
                         '制冷设备负荷第三段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷功率，后面的以此类推
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                     End If
                     '如果内燃机100%发电功率不能被蓄冷和第一顺序制冷设备消纳
                     If NRJGDGL > XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) Then
                         '制冷设备负荷第二段=蓄冷设备100%制冷量+第一顺序制冷功率+此时溴化锂供冷功率
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
                         NRJGDGLSY = NRJGDGL - XLGLFJHDGL - (D1SXZLGL / D1SXZLCOP) '内燃机供电功率剩余量
                         '如果内燃机100%发电功率能够被蓄冷+第一顺序+第二顺序设备消纳
                         If NRJGDGL <= XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) Then
                             '制冷设备负荷第三段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷+内燃机恰好为100%负荷时第二顺序制冷功率
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + NRJGDGLSY * D2SXZLCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + NRJGDGLSY * D2SXZLCOP, 2)
                             '制冷设备负荷第四段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷功率+第二顺序，后面的以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                         End If
                         '如果内燃机100%发电功率不能够被蓄冷+第一顺序+第二顺序设备消纳
                         If NRJGDGL > XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) Then
                             '制冷设备负荷第三段=蓄冷设备100%制冷量+第一顺序制冷+第二顺序制冷+此时溴化锂供冷功率
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
                             NRJGDGLSY = NRJGDGL - XLGLFJHDGL - (D1SXZLGL / D1SXZLCOP) - (D2SXZLGL / D2SXZLCOP) '内燃机供电功率剩余量
                             '如果内燃机100%发电功率能够被蓄冷+第一顺序+第二顺序+第三顺序设备消纳
                             If NRJGDGL <= XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + (D3SXZLGL / D3SXZLCOP) Then
                                 '制冷设备负荷第四段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷+第二顺序制冷+内燃机恰好为100%负荷时第三顺序制冷功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + NRJGDGLSY * D3SXZLCOP, 2)
                                 '制冷设备负荷第五段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷功率+第二顺序+第三顺序，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                             End If
                             '如果内燃机100%发电功率不能够被蓄冷+第一顺序+第二顺序+第三顺序设备消纳
                             If NRJGDGL > XLGLFJHDGL + (D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + (D3SXZLGL / D3SXZLCOP) Then
                                 '制冷设备负荷第四段=蓄冷设备100%制冷量+第一顺序制冷+第二顺序制冷+第三顺序+此时溴化锂供冷功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + (D3SXZLGL / D3SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + XHLZLa * ((D1SXZLGL / D1SXZLCOP) + (D2SXZLGL / D2SXZLCOP) + (D3SXZLGL / D3SXZLCOP) + XLGLFJHDGL) / NRJGDGL, 2)
                                 NRJGDGLSY = NRJGDGL - XLGLFJHDGL - (D1SXZLGL / D1SXZLCOP) - (D2SXZLGL / D2SXZLCOP) '内燃机供电功率剩余量
                                 '为了计算方便，假定内燃机100%供电量能够被第四顺序设备设备消纳
                                 '制冷设备负荷第五段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷+第二顺序制冷+第三顺序制冷+内燃机恰好为100%负荷时第四顺序制冷功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + NRJGDGLSY * D4SXZLCOP, 2)
                                 '制冷设备负荷第六段=蓄冷设备100%制冷量+溴化锂100%制冷功率+第一顺序制冷功率+第二顺序+第三顺序+第四顺序，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
                             End If
                         End If
                     End If
@@ -21669,26 +21675,26 @@ ppp:
             End If
             '如果内燃机可以向外供电
             If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(27, 9).Value = "Y" Then
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa30p, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = Math.Round(XLGLGLa, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + XHLZLa30p, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + XHLZLa, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(88, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(89, 4).Value = Math.Round(XLGLGLa + XHLZLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
             End If
         End If
         '如果没有内燃机装机量，采用以下计算
         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(47, 7).Value = 0 Then
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(81, 4).Value = Math.Round(XLGLGLa, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(82, 4).Value = Math.Round(XLGLGLa + D1SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(83, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(84, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(85, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(86, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(87, 4).Value = Math.Round(XLGLGLa + D1SXZLGL + D2SXZLGL + D3SXZLGL + D4SXZLGL + D5SXZLGL + D6SXZLGL, 2)
         End If
         '将重复的值删除
         For i = 8 To 1 Step -1 '从下向上查找，把紧挨着的重复的值去掉
@@ -22036,7 +22042,7 @@ ppp:
                     '内燃机供电功率剩余1（蓄热设备全部启动后，内燃机发电功率剩余量）
                     NRJ30pGDGLSY = NRJGDGL30p - XRGRFJHDGL
                     '制热设备负荷第一段=蓄热设备100%制热量，内燃机达不到单台30%负荷，不能开启，无溴化锂制热
-                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa, 2)
+                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = Math.Round(XRGRGLa, 2)
                     '判断此时的单台内燃机30%负荷供电全部用于蓄热设备和第一顺序制热，是否能完全消纳掉
                     '单台内燃机30%负荷供电量如果不能完全消纳
                     If NRJGDGL30p > XRGRFJHDGL + D1SXZRGL / D1SXZRCOP Then
@@ -22044,30 +22050,30 @@ ppp:
                         '内燃机供电功率剩余1（蓄热设备和第一顺序空调设备全部启动后，内燃机发电功率剩余量），给第二顺序设备使用
                         NRJ30pGDGLSY = NRJGDGL30p - XRGRFJHDGL - D1SXZRGL / D1SXZRCOP
                         '制热设备负荷第二段=蓄热100%供热功率+第一顺序空调设备100%制热量，内燃机达不到单台30%负荷，不能开启，无溴化锂制热
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + D1SXZRGL, 2)
                         '第一顺序制热设备制热功率剩余量=0
                         D1SXZRGLSY = 0
                         '为了计算快捷，假定单台内燃机30%负荷供电量的剩余量能够被第二顺序空调设备完全消纳
                         '制热设备负荷第三段=单台溴化锂30%制热量+蓄热100%供热功率+第一顺序空调设备100%制热量+剩余的发电量*第二顺序COP
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa30p + XRGRGLa + D1SXZRGL + NRJ30pGDGLSY * D2SXZRCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XHLZRa30p + XRGRGLa + D1SXZRGL + NRJ30pGDGLSY * D2SXZRCOP, 2)
                         D2SXZRGLSY = D2SXZRGL - NRJ30pGDGLSY * D2SXZRCOP
                         NRJ30pGDGLSY = 0
                         '判断蓄热设备100%+第一顺序制热设备100%+第二顺序制热设备100%运行时的耗电量，与内燃机100%运行的供电量的大小
                         '如果蓄热设备100%+第一顺序制热设备100%+第二顺序制热设备100%运行时能够完全消纳内燃机供电量
                         If NRJGDGL <= XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） Then
                             '制热设备负荷第四段=全部溴化锂100%供热量+蓄热100%供热功率+第一顺序空调设备100%供热+第二顺序空调设备100%可以用掉内燃机发电量时的制热量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + (NRJGDGL - XRGRFJHDGL - D1SXZRGL / D1SXZRCOP) * D2SXZRCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + (NRJGDGL - XRGRFJHDGL - D1SXZRGL / D1SXZRCOP) * D2SXZRCOP, 2)
                             '制热设备负荷第五段=全部溴化锂100%供热量+蓄热100%供热功率+第一和第二顺序空调设备100%制热量，后面的以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                         End If
                         '如果蓄热设备100%+第一顺序制热设备100%+第二顺序制热设备100%运行时不能完全消纳内燃机供电量
                         If NRJGDGL > XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） Then
                             '制热设备负荷第四段=蓄热100%供热功率+第一和第二顺序空调设备100%制热量+第一和第二顺序设备恰好100%负荷运行时的溴化锂制热量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
                             NRJGDGLSY = NRJGDGL - XRGRFJHDGL - （（D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP）） '内燃机供电功率剩余量
                             D1SXZRGLSY = 0
                             D2SXZRGLSY = 0
@@ -22075,32 +22081,32 @@ ppp:
                             '如果蓄热设备100%+第一顺序制热设备100%+第二顺序制热设备100%+第三顺序制热设备100%运行时能完全消纳内燃机供电量
                             If NRJGDGL <= XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP） Then
                                 '制热设备负荷第五段=蓄热100%供热功率+全部溴化锂100%供热量+第一和第二顺序空调设备100%制热量+内燃机发电量恰好100%时第三顺序空调制热量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
                                 '制热设备负荷第六段=蓄热100%供热功率+全部溴化锂100%供热量+第一、第二和第三顺序空调设备100%制热量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                             End If
                             '如果蓄热设备100%+第一顺序制热设备100%+第二顺序制热设备100%+第三顺序制热设备100%运行时不能完全消纳内燃机供电量
                             If NRJGDGL > XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP） Then
                                 '制热设备负荷第五段=蓄热100%供热功率+第一和第二和第三顺序空调设备100%制热量+第一和第二和第三顺序设备恰好100%负荷运行时的溴化锂制热量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
                                 NRJGDGLSY = NRJGDGL - XRGRFJHDGL - （（D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） '剩余的内燃机供电功率
                                 '为了计算简便，假定内燃机100%全部供电量都能够被第四顺序制热设备消纳掉
                                 '制热设备负荷第六段=蓄热100%供热功率+全部溴化锂100%供热量+第一和第二和第三顺序空调设备100%制热量+内燃机发电量恰好100%时第四顺序空调制热量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
                                 '制热设备负荷第七段=蓄热100%供热功率+全部溴化锂100%供热量+第一、第二、第三和第四顺序空调设备100%制热量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XHLZRa + XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                             End If
                         End If
                     End If
                     '单台内燃机30%负荷供电量如果能够被蓄热装置和第一顺序空调设备完全消纳
                     If NRJGDGL30p <= XRGRFJHDGL + D1SXZRGL / D1SXZRCOP Then
                         '制热设备负荷第二段=蓄热100%供热功率+单台溴化锂30%制热量+单台内燃机30%发电量*第一顺序制热设备COP
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa30p + NRJGDGL30p * D1SXZRCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + XHLZRa30p + NRJGDGL30p * D1SXZRCOP, 2)
                         '第一顺序制热设备制热功率剩余量
                         D1SXZRGLSY = D1SXZRGL - NRJGDGL30p * D1SXZRCOP
                         '单台内燃机30%负荷供电功率剩余1=0
@@ -22109,28 +22115,28 @@ ppp:
                         '全部内燃机100%负荷供电功率能够被第一顺序制热设备和蓄热设备100%供热全部消纳
                         If NRJGDGL <= XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) Then
                             '制热设备负荷第三段=蓄热100%供热功率+全部溴化锂100%供热量+第一顺序空调设备100%可以用掉内燃机发电量时的制热量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + NRJGDGL * D1SXZRCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + XHLZRa + NRJGDGL * D1SXZRCOP, 2)
                             '制热设备负荷第四段=蓄热100%供热功率+全部溴化锂100%供热量+第一顺序空调设备100%制热量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL, 2)
                             D1SXZRGLSY = 0
                             NRJGDGLSY = 0
                             '制热设备负荷第五段=全部溴化锂100%供热量+第一顺序空调设备100%制热量+第二顺序空调设备100%制热量，以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                         End If
                         '全部内燃机100%负荷供电功率不能被第一顺序制热设备全部消纳
                         If NRJGDGL > XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) Then
                             '制热设备负荷第三段=蓄热100%供热功率+第一顺序空调设备100%制热量+第一顺序设备恰好100%负荷运行时的溴化锂制热量
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + (XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) / NRJGDGL) * XHLZRa, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + (XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) / NRJGDGL) * XHLZRa, 2)
                             NRJGDGLSY = NRJGDGL - (D1SXZRGL / D1SXZRCOP)
                             D1SXZRGLSY = 0
                             '全部内燃机100%负荷供电功率不能被蓄热100%供热功率+第一和第二顺序制热设备全部消纳
                             If NRJGDGL > XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） Then
                                 '制热设备负荷第四段=蓄热100%供热功率+第一和第二顺序空调设备100%制热量+第一和第二顺序设备恰好100%负荷运行时的溴化锂制热量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
                                 NRJGDGLSY = NRJGDGL - XRGRFJHDGL - （（D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP））
                                 D1SXZRGLSY = 0
                                 D2SXZRGLSY = 0
@@ -22138,37 +22144,37 @@ ppp:
                                 '如果内燃机100%供电量能够被蓄热100%供热功率+第一和第二和第三顺序设备全部消纳
                                 If NRJGDGL <= XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP） Then
                                     '制热设备负荷第五段=全部溴化锂100%供热量+第一和第二顺序空调设备100%制热量+内燃机发电量恰好100%时第三顺序空调制热量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
                                     '制热设备负荷第六段=全部溴化锂100%供热量+第一、第二和第三顺序空调设备100%制热量，后面的以此类推
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                                 End If
                                 '如果内燃机100%供电量不能够被第一和第二和第三顺序设备全部消纳
                                 If NRJGDGL > XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP） Then
                                     '制热设备负荷第五段=第一和第二和第三顺序空调设备100%制热量+第一和第二和第三顺序设备恰好100%负荷运行时的溴化锂制热量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + (（XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） / (NRJGDGL)) * XHLZRa, 2)
                                     NRJGDGLSY = NRJGDGL - XRGRFJHDGL - （（D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） + （D3SXZRGL / D3SXZRCOP）） '剩余的内燃机供电功率
                                     '为了计算简便，假定内燃机100%全部供电量都能够被第四顺序制热设备消纳掉
                                     '制热设备负荷第六段=全部溴化锂100%供热量+第一和第二和第三顺序空调设备100%制热量+内燃机发电量恰好100%时第四顺序空调制热量
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
                                     '制热设备负荷第七段=全部溴化锂100%供热量+第一、第二、第三和第四顺序空调设备100%制热量，后面的以此类推
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                                 End If
                             End If
                             '全部内燃机100%负荷供电功率能被第一和第二顺序制热设备全部消纳
                             If NRJGDGL <= XRGRFJHDGL + （D1SXZRGL / D1SXZRCOP） + （D2SXZRGL / D2SXZRCOP） Then
                                 '制热设备负荷第四段=全部溴化锂100%供热量+第一顺序空调设备100%制热量+内燃机发电量恰好100%时第二顺序空调制热量
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + NRJGDGLSY * D2SXZRCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + NRJGDGLSY * D2SXZRCOP, 2)
                                 '制热设备负荷第五段=全部溴化锂100%供热量+第一和第二顺序空调设备100%制热量，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                             End If
                         End If
                     End If
@@ -22176,65 +22182,65 @@ ppp:
                 '单台内燃机30%负荷供电量如果能被蓄能装置供热完全消纳
                 If NRJGDGL30p <= XRGRFJHDGL Then
                     '制热设备负荷第一段=蓄热设备100%制热量，内燃机恰好为单台30%负荷时溴化锂制热功率
-                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa30p, 2)
+                    ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = Math.Round(XRGRGLa + XHLZRa30p, 2)
                     '判断内燃机100%发电功率能否被蓄热和第一顺序制热设备消纳
                     '如果内燃机100%发电功率能被蓄热和第一顺序制热设备消纳
                     If NRJGDGL <= XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) Then
                         '制热设备负荷第二段=蓄热设备100%制热量+溴化锂100%制热功率+内燃机恰好为100%负荷时第一顺序制热功率
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + NRJGDGL * D1SXZRCOP, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + XHLZRa + NRJGDGL * D1SXZRCOP, 2)
                         D1SXZRGLSY = D1SXZRGL - NRJGDGL * D1SXZRCOP '第一顺序制热功率剩余
                         NRJGDGLSY = 0 '内燃机功率剩余
                         '制热设备负荷第三段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热功率，后面的以此类推
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                     End If
                     '如果内燃机100%发电功率不能被蓄热和第一顺序制热设备消纳
                     If NRJGDGL > XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) Then
                         '制热设备负荷第二段=蓄热设备100%制热量+第一顺序制热功率+此时溴化锂供热功率
-                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
+                        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
                         NRJGDGLSY = NRJGDGL - XRGRFJHDGL - (D1SXZRGL / D1SXZRCOP) '内燃机供电功率剩余量
                         '如果内燃机100%发电功率能够被蓄热+第一顺序+第二顺序设备消纳
                         If NRJGDGL <= XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) Then
                             '制热设备负荷第三段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热+内燃机恰好为100%负荷时第二顺序制热功率
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + NRJGDGLSY * D2SXZRCOP, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + NRJGDGLSY * D2SXZRCOP, 2)
                             '制热设备负荷第四段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热功率+第二顺序，后面的以此类推
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                         End If
                         '如果内燃机100%发电功率不能够被蓄热+第一顺序+第二顺序设备消纳
                         If NRJGDGL > XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) Then
                             '制热设备负荷第三段=蓄热设备100%制热量+第一顺序制热+第二顺序制热+此时溴化锂供热功率
-                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
+                            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
                             NRJGDGLSY = NRJGDGL - XRGRFJHDGL - (D1SXZRGL / D1SXZRCOP) - (D2SXZRGL / D2SXZRCOP) '内燃机供电功率剩余量
                             '如果内燃机100%发电功率能够被蓄热+第一顺序+第二顺序+第三顺序设备消纳
                             If NRJGDGL <= XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + (D3SXZRGL / D3SXZRCOP) Then
                                 '制热设备负荷第四段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热+第二顺序制热+内燃机恰好为100%负荷时第三顺序制热功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + NRJGDGLSY * D3SXZRCOP, 2)
                                 '制热设备负荷第五段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热功率+第二顺序+第三顺序，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                             End If
                             '如果内燃机100%发电功率不能够被蓄热+第一顺序+第二顺序+第三顺序设备消纳
                             If NRJGDGL > XRGRFJHDGL + (D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + (D3SXZRGL / D3SXZRCOP) Then
                                 '制热设备负荷第四段=蓄热设备100%制热量+第一顺序制热+第二顺序制热+第三顺序+此时溴化锂供热功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + (D3SXZRGL / D3SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + XHLZRa * ((D1SXZRGL / D1SXZRCOP) + (D2SXZRGL / D2SXZRCOP) + (D3SXZRGL / D3SXZRCOP) + XRGRFJHDGL) / NRJGDGL, 2)
                                 NRJGDGLSY = NRJGDGL - XRGRFJHDGL - (D1SXZRGL / D1SXZRCOP) - (D2SXZRGL / D2SXZRCOP) '内燃机供电功率剩余量
                                 '为了计算方便，假定内燃机100%供电量能够被第四顺序设备设备消纳
                                 '制热设备负荷第五段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热+第二顺序制热+第三顺序制热+内燃机恰好为100%负荷时第四顺序制热功率
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + NRJGDGLSY * D4SXZRCOP, 2)
                                 '制热设备负荷第六段=蓄热设备100%制热量+溴化锂100%制热功率+第一顺序制热功率+第二顺序+第三顺序+第四顺序，后面的以此类推
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
                             End If
                         End If
                     End If
@@ -22242,26 +22248,26 @@ ppp:
             End If
             '如果内燃机可以向外供电
             If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(27, 9).Value = "Y" Then
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa30p, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = Math.Round(XRGRGLa, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + XHLZRa30p, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + XHLZRa, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(99, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+                ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(100, 4).Value = Math.Round(XRGRGLa + XHLZRa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
             End If
         End If
         '如果没有内燃机装机量，采用以下计算
         If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(47, 7).Value = 0 Then
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
-            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = ExcelApp.WorksheetFunction.RoundUp(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(92, 4).Value = Math.Round(XRGRGLa, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(93, 4).Value = Math.Round(XRGRGLa + D1SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(94, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(95, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(96, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(97, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL, 2)
+            ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(98, 4).Value = Math.Round(XRGRGLa + D1SXZRGL + D2SXZRGL + D3SXZRGL + D4SXZRGL + D5SXZRGL + D6SXZRGL, 2)
         End If
         '将重复的值删除
         For i = 8 To 1 Step -1 '从下向上查找，把紧挨着的重复的值去掉
