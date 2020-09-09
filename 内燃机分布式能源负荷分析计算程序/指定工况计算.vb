@@ -204,7 +204,7 @@ Public Class 指定工况计算
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， 0, 0, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， 0, 0， 0, 0， 0, 0， 0, 0， 0, 0， 0, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
@@ -460,7 +460,7 @@ Public Class 指定工况计算
                 If b > 0 Then '忽略为0的工况
                     Call mainprogram.清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)

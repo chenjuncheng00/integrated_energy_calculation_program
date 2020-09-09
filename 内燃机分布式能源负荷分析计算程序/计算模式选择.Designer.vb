@@ -34,12 +34,39 @@ Partial Class 计算模式选择
         Me.FHTJJD_shuru = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.GDDJ = New System.Windows.Forms.TextBox()
+        Me.GDDJ_GF1 = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.TRQDJ = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.Label18 = New System.Windows.Forms.Label()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.Label21 = New System.Windows.Forms.Label()
+        Me.Label22 = New System.Windows.Forms.Label()
+        Me.Label23 = New System.Windows.Forms.Label()
+        Me.Label24 = New System.Windows.Forms.Label()
+        Me.Label25 = New System.Windows.Forms.Label()
+        Me.Label26 = New System.Windows.Forms.Label()
+        Me.Label27 = New System.Windows.Forms.Label()
+        Me.GDDJ_GF2 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_F1 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_F2 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_P1 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_P2 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_QT1 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_QT2 = New System.Windows.Forms.TextBox()
+        Me.Label28 = New System.Windows.Forms.Label()
+        Me.Label29 = New System.Windows.Forms.Label()
+        Me.GDDJ_G1 = New System.Windows.Forms.TextBox()
+        Me.GDDJ_G2 = New System.Windows.Forms.TextBox()
+        Me.Label30 = New System.Windows.Forms.Label()
+        Me.Label31 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -83,7 +110,7 @@ Partial Class 计算模式选择
         '常规计算模式
         '
         Me.常规计算模式.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.常规计算模式.Location = New System.Drawing.Point(35, 653)
+        Me.常规计算模式.Location = New System.Drawing.Point(37, 1084)
         Me.常规计算模式.Name = "常规计算模式"
         Me.常规计算模式.Size = New System.Drawing.Size(284, 100)
         Me.常规计算模式.TabIndex = 4
@@ -93,7 +120,7 @@ Partial Class 计算模式选择
         '全局寻优计算
         '
         Me.全局寻优计算.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.全局寻优计算.Location = New System.Drawing.Point(429, 653)
+        Me.全局寻优计算.Location = New System.Drawing.Point(431, 1084)
         Me.全局寻优计算.Name = "全局寻优计算"
         Me.全局寻优计算.Size = New System.Drawing.Size(284, 100)
         Me.全局寻优计算.TabIndex = 5
@@ -151,25 +178,25 @@ Partial Class 计算模式选择
         '
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label9.Location = New System.Drawing.Point(137, 515)
+        Me.Label9.Location = New System.Drawing.Point(89, 517)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(157, 28)
+        Me.Label9.Size = New System.Drawing.Size(260, 28)
         Me.Label9.TabIndex = 11
-        Me.Label9.Text = "购电单价："
+        Me.Label9.Text = "购电单价(高峰1)："
         '
-        'GDDJ
+        'GDDJ_GF1
         '
-        Me.GDDJ.Location = New System.Drawing.Point(305, 512)
-        Me.GDDJ.Name = "GDDJ"
-        Me.GDDJ.Size = New System.Drawing.Size(170, 35)
-        Me.GDDJ.TabIndex = 12
-        Me.GDDJ.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.GDDJ_GF1.Location = New System.Drawing.Point(364, 514)
+        Me.GDDJ_GF1.Name = "GDDJ_GF1"
+        Me.GDDJ_GF1.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_GF1.TabIndex = 12
+        Me.GDDJ_GF1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label10
         '
         Me.Label10.AutoSize = True
         Me.Label10.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.Location = New System.Drawing.Point(490, 514)
+        Me.Label10.Location = New System.Drawing.Point(552, 516)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(111, 32)
         Me.Label10.TabIndex = 13
@@ -179,7 +206,7 @@ Partial Class 计算模式选择
         '
         Me.Label11.AutoSize = True
         Me.Label11.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label11.Location = New System.Drawing.Point(108, 578)
+        Me.Label11.Location = New System.Drawing.Point(109, 1028)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(186, 28)
         Me.Label11.TabIndex = 14
@@ -187,7 +214,7 @@ Partial Class 计算模式选择
         '
         'TRQDJ
         '
-        Me.TRQDJ.Location = New System.Drawing.Point(305, 578)
+        Me.TRQDJ.Location = New System.Drawing.Point(364, 1025)
         Me.TRQDJ.Name = "TRQDJ"
         Me.TRQDJ.Size = New System.Drawing.Size(170, 35)
         Me.TRQDJ.TabIndex = 15
@@ -197,7 +224,7 @@ Partial Class 计算模式选择
         '
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(497, 578)
+        Me.Label12.Location = New System.Drawing.Point(555, 1026)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(108, 32)
         Me.Label12.TabIndex = 16
@@ -213,17 +240,296 @@ Partial Class 计算模式选择
         Me.Label13.TabIndex = 17
         Me.Label13.Text = "全局寻优计算模式需要输入购电单价和天然气单价"
         '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label14.Location = New System.Drawing.Point(89, 567)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(260, 28)
+        Me.Label14.TabIndex = 18
+        Me.Label14.Text = "购电单价(高峰2)："
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label15.Location = New System.Drawing.Point(89, 616)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(231, 28)
+        Me.Label15.TabIndex = 19
+        Me.Label15.Text = "购电单价(峰1)："
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label16.Location = New System.Drawing.Point(89, 668)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(231, 28)
+        Me.Label16.TabIndex = 20
+        Me.Label16.Text = "购电单价(峰2)："
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label17.Location = New System.Drawing.Point(89, 768)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(231, 28)
+        Me.Label17.TabIndex = 22
+        Me.Label17.Text = "购电单价(平2)："
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label18.Location = New System.Drawing.Point(89, 718)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(231, 28)
+        Me.Label18.TabIndex = 21
+        Me.Label18.Text = "购电单价(平1)："
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label19.Location = New System.Drawing.Point(89, 924)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(260, 28)
+        Me.Label19.TabIndex = 23
+        Me.Label19.Text = "购电单价(其它1)："
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label20.Location = New System.Drawing.Point(89, 974)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(260, 28)
+        Me.Label20.TabIndex = 24
+        Me.Label20.Text = "购电单价(其它2)："
+        '
+        'Label21
+        '
+        Me.Label21.AutoSize = True
+        Me.Label21.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label21.Location = New System.Drawing.Point(552, 563)
+        Me.Label21.Name = "Label21"
+        Me.Label21.Size = New System.Drawing.Size(111, 32)
+        Me.Label21.TabIndex = 25
+        Me.Label21.Text = "元/kWh"
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label22.Location = New System.Drawing.Point(552, 614)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(111, 32)
+        Me.Label22.TabIndex = 26
+        Me.Label22.Text = "元/kWh"
+        '
+        'Label23
+        '
+        Me.Label23.AutoSize = True
+        Me.Label23.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label23.Location = New System.Drawing.Point(552, 664)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(111, 32)
+        Me.Label23.TabIndex = 27
+        Me.Label23.Text = "元/kWh"
+        '
+        'Label24
+        '
+        Me.Label24.AutoSize = True
+        Me.Label24.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label24.Location = New System.Drawing.Point(552, 716)
+        Me.Label24.Name = "Label24"
+        Me.Label24.Size = New System.Drawing.Size(111, 32)
+        Me.Label24.TabIndex = 28
+        Me.Label24.Text = "元/kWh"
+        '
+        'Label25
+        '
+        Me.Label25.AutoSize = True
+        Me.Label25.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label25.Location = New System.Drawing.Point(552, 764)
+        Me.Label25.Name = "Label25"
+        Me.Label25.Size = New System.Drawing.Size(111, 32)
+        Me.Label25.TabIndex = 29
+        Me.Label25.Text = "元/kWh"
+        '
+        'Label26
+        '
+        Me.Label26.AutoSize = True
+        Me.Label26.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label26.Location = New System.Drawing.Point(552, 919)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(111, 32)
+        Me.Label26.TabIndex = 30
+        Me.Label26.Text = "元/kWh"
+        '
+        'Label27
+        '
+        Me.Label27.AutoSize = True
+        Me.Label27.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label27.Location = New System.Drawing.Point(552, 971)
+        Me.Label27.Name = "Label27"
+        Me.Label27.Size = New System.Drawing.Size(111, 32)
+        Me.Label27.TabIndex = 31
+        Me.Label27.Text = "元/kWh"
+        '
+        'GDDJ_GF2
+        '
+        Me.GDDJ_GF2.Location = New System.Drawing.Point(364, 563)
+        Me.GDDJ_GF2.Name = "GDDJ_GF2"
+        Me.GDDJ_GF2.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_GF2.TabIndex = 32
+        Me.GDDJ_GF2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_F1
+        '
+        Me.GDDJ_F1.Location = New System.Drawing.Point(364, 613)
+        Me.GDDJ_F1.Name = "GDDJ_F1"
+        Me.GDDJ_F1.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_F1.TabIndex = 33
+        Me.GDDJ_F1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_F2
+        '
+        Me.GDDJ_F2.Location = New System.Drawing.Point(364, 664)
+        Me.GDDJ_F2.Name = "GDDJ_F2"
+        Me.GDDJ_F2.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_F2.TabIndex = 34
+        Me.GDDJ_F2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_P1
+        '
+        Me.GDDJ_P1.Location = New System.Drawing.Point(364, 713)
+        Me.GDDJ_P1.Name = "GDDJ_P1"
+        Me.GDDJ_P1.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_P1.TabIndex = 35
+        Me.GDDJ_P1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_P2
+        '
+        Me.GDDJ_P2.Location = New System.Drawing.Point(364, 764)
+        Me.GDDJ_P2.Name = "GDDJ_P2"
+        Me.GDDJ_P2.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_P2.TabIndex = 36
+        Me.GDDJ_P2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_QT1
+        '
+        Me.GDDJ_QT1.Location = New System.Drawing.Point(364, 920)
+        Me.GDDJ_QT1.Name = "GDDJ_QT1"
+        Me.GDDJ_QT1.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_QT1.TabIndex = 37
+        Me.GDDJ_QT1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_QT2
+        '
+        Me.GDDJ_QT2.Location = New System.Drawing.Point(364, 971)
+        Me.GDDJ_QT2.Name = "GDDJ_QT2"
+        Me.GDDJ_QT2.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_QT2.TabIndex = 38
+        Me.GDDJ_QT2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label28
+        '
+        Me.Label28.AutoSize = True
+        Me.Label28.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label28.Location = New System.Drawing.Point(89, 820)
+        Me.Label28.Name = "Label28"
+        Me.Label28.Size = New System.Drawing.Size(231, 28)
+        Me.Label28.TabIndex = 39
+        Me.Label28.Text = "购电单价(谷1)："
+        '
+        'Label29
+        '
+        Me.Label29.AutoSize = True
+        Me.Label29.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.Label29.Location = New System.Drawing.Point(89, 870)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(231, 28)
+        Me.Label29.TabIndex = 40
+        Me.Label29.Text = "购电单价(谷2)："
+        '
+        'GDDJ_G1
+        '
+        Me.GDDJ_G1.Location = New System.Drawing.Point(364, 817)
+        Me.GDDJ_G1.Name = "GDDJ_G1"
+        Me.GDDJ_G1.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_G1.TabIndex = 41
+        Me.GDDJ_G1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GDDJ_G2
+        '
+        Me.GDDJ_G2.Location = New System.Drawing.Point(364, 866)
+        Me.GDDJ_G2.Name = "GDDJ_G2"
+        Me.GDDJ_G2.Size = New System.Drawing.Size(170, 35)
+        Me.GDDJ_G2.TabIndex = 42
+        Me.GDDJ_G2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label30
+        '
+        Me.Label30.AutoSize = True
+        Me.Label30.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label30.Location = New System.Drawing.Point(552, 815)
+        Me.Label30.Name = "Label30"
+        Me.Label30.Size = New System.Drawing.Size(111, 32)
+        Me.Label30.TabIndex = 43
+        Me.Label30.Text = "元/kWh"
+        '
+        'Label31
+        '
+        Me.Label31.AutoSize = True
+        Me.Label31.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label31.Location = New System.Drawing.Point(555, 866)
+        Me.Label31.Name = "Label31"
+        Me.Label31.Size = New System.Drawing.Size(111, 32)
+        Me.Label31.TabIndex = 44
+        Me.Label31.Text = "元/kWh"
+        '
         '计算模式选择
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(748, 794)
+        Me.ClientSize = New System.Drawing.Size(748, 1214)
+        Me.Controls.Add(Me.Label31)
+        Me.Controls.Add(Me.Label30)
+        Me.Controls.Add(Me.GDDJ_G2)
+        Me.Controls.Add(Me.GDDJ_G1)
+        Me.Controls.Add(Me.Label29)
+        Me.Controls.Add(Me.Label28)
+        Me.Controls.Add(Me.GDDJ_QT2)
+        Me.Controls.Add(Me.GDDJ_QT1)
+        Me.Controls.Add(Me.GDDJ_P2)
+        Me.Controls.Add(Me.GDDJ_P1)
+        Me.Controls.Add(Me.GDDJ_F2)
+        Me.Controls.Add(Me.GDDJ_F1)
+        Me.Controls.Add(Me.GDDJ_GF2)
+        Me.Controls.Add(Me.Label27)
+        Me.Controls.Add(Me.Label26)
+        Me.Controls.Add(Me.Label25)
+        Me.Controls.Add(Me.Label24)
+        Me.Controls.Add(Me.Label23)
+        Me.Controls.Add(Me.Label22)
+        Me.Controls.Add(Me.Label21)
+        Me.Controls.Add(Me.Label20)
+        Me.Controls.Add(Me.Label19)
+        Me.Controls.Add(Me.Label17)
+        Me.Controls.Add(Me.Label18)
+        Me.Controls.Add(Me.Label16)
+        Me.Controls.Add(Me.Label15)
+        Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.TRQDJ)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.Label10)
-        Me.Controls.Add(Me.GDDJ)
+        Me.Controls.Add(Me.GDDJ_GF1)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.FHTJJD_shuru)
@@ -256,10 +562,37 @@ Partial Class 计算模式选择
     Friend WithEvents FHTJJD_shuru As System.Windows.Forms.TextBox
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Label9 As System.Windows.Forms.Label
-    Friend WithEvents GDDJ As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_GF1 As System.Windows.Forms.TextBox
     Friend WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents Label11 As System.Windows.Forms.Label
     Friend WithEvents TRQDJ As System.Windows.Forms.TextBox
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents Label13 As System.Windows.Forms.Label
+    Friend WithEvents Label14 As System.Windows.Forms.Label
+    Friend WithEvents Label15 As System.Windows.Forms.Label
+    Friend WithEvents Label16 As System.Windows.Forms.Label
+    Friend WithEvents Label17 As System.Windows.Forms.Label
+    Friend WithEvents Label18 As System.Windows.Forms.Label
+    Friend WithEvents Label19 As System.Windows.Forms.Label
+    Friend WithEvents Label20 As System.Windows.Forms.Label
+    Friend WithEvents Label21 As System.Windows.Forms.Label
+    Friend WithEvents Label22 As System.Windows.Forms.Label
+    Friend WithEvents Label23 As System.Windows.Forms.Label
+    Friend WithEvents Label24 As System.Windows.Forms.Label
+    Friend WithEvents Label25 As System.Windows.Forms.Label
+    Friend WithEvents Label26 As System.Windows.Forms.Label
+    Friend WithEvents Label27 As System.Windows.Forms.Label
+    Friend WithEvents GDDJ_GF2 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_F1 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_F2 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_P1 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_P2 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_QT1 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_QT2 As System.Windows.Forms.TextBox
+    Friend WithEvents Label28 As System.Windows.Forms.Label
+    Friend WithEvents Label29 As System.Windows.Forms.Label
+    Friend WithEvents GDDJ_G1 As System.Windows.Forms.TextBox
+    Friend WithEvents GDDJ_G2 As System.Windows.Forms.TextBox
+    Friend WithEvents Label30 As System.Windows.Forms.Label
+    Friend WithEvents Label31 As System.Windows.Forms.Label
 End Class

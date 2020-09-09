@@ -48,7 +48,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         Call 锁定工作表(ExcelApp)
     End Sub
 
-    Sub 计算主程序(ExcelApp As Object, precision As Double, GDDJ As Double, TRQDJ As Double, JSMS As Integer)
+    Sub 计算主程序(ExcelApp As Object, precision As Double, GDDJ_GF1 As Double, GDDJ_GF2 As Double, GDDJ_F1 As Double, GDDJ_F2 As Double, GDDJ_P1 As Double, GDDJ_P2 As Double, GDDJ_G1 As Double, GDDJ_G2 As Double, GDDJ_QT1 As Double, GDDJ_QT2 As Double, TRQDJ As Double, JSMS As Integer)
         '本SUB为主程序
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————        
@@ -114,7 +114,16 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '计算模式
             Dim calculation_mode As Integer = JSMS
             '购电单价
-            Dim D_price As Double = GDDJ
+            Dim D_price_GF1 As Double = GDDJ_GF1
+            Dim D_price_GF2 As Double = GDDJ_GF2
+            Dim D_price_F1 As Double = GDDJ_F1
+            Dim D_price_F2 As Double = GDDJ_F2
+            Dim D_price_P1 As Double = GDDJ_P1
+            Dim D_price_P2 As Double = GDDJ_P2
+            Dim D_price_G1 As Double = GDDJ_G1
+            Dim D_price_G2 As Double = GDDJ_G2
+            Dim D_price_QT1 As Double = GDDJ_QT1
+            Dim D_price_QT2 As Double = GDDJ_QT2
             '天然气单价
             Dim TRQ_price As Double = TRQDJ
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -207,7 +216,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         HSSBGL = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
                     End If
                     '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
-                    If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) Then
+                    If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
                         Dim XXX As String = "(" & i & ")、"
                         XianShi = XianShi & XXX.ToString & "  "
                     End If
@@ -223,7 +232,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             'b表示当前正在计算的工况序号
             For b = 1 To n
                 '进行正常的负荷分析（主要技术指标）计算
-                Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                 '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                 Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                 Call 制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
@@ -259,7 +268,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                     '调用程序进行计算
                     Call 清空指定工况输入输出数据(ExcelApp, a)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, a, calculation_mode)
                     Call 制热和蓄热空调设备负荷率修正(ExcelApp, a, calculation_mode)
@@ -307,7 +316,7 @@ cgjsms_again:
                         '调用程序进行计算
                         Call 清空指定工况输入输出数据(ExcelApp, a)
                         '进行正常的负荷分析（主要技术指标）计算
-                        Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                        Call 负荷分析计算程序(ExcelApp, a, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                         '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                         Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, a, calculation_mode)
                         Call 制热和蓄热空调设备负荷率修正(ExcelApp, a, calculation_mode)
@@ -378,13 +387,38 @@ cgjsms_again:
         '重新锁定工作表
         Call 锁定工作表(ExcelApp)
     End Sub
-    Sub 负荷分析计算程序(ExcelApp As Object, b As Integer, FHTJJD As Double, JSBC As Integer， D_price As Double, TRQ_price As Double, calculation_mode As Integer, TJGRFHBL As Double, HSGRGLBL As Double)
+    Sub 负荷分析计算程序(ExcelApp As Object, b As Integer, FHTJJD As Double, JSBC As Integer， D_price_GF1 As Double, D_price_GF2 As Double, D_price_F1 As Double, D_price_F2 As Double, D_price_P1 As Double, D_price_P2 As Double, D_price_G1 As Double, D_price_G2 As Double, D_price_QT1 As Double, D_price_QT2 As Double, TRQ_price As Double, calculation_mode As Integer, TJGRFHBL As Double, HSGRGLBL As Double)
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————  
         '实例化一个计算过程显示窗体
         Dim Calculate_Progress As New 计算进度显示
         '————————————————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————————————————
+        '确定当前的电价
+        Dim D_price As Double
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "高峰1" Then
+            D_price = D_price_GF1
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "高峰2" Then
+            D_price = D_price_GF2
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "峰1" Then
+            D_price = D_price_F1
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "峰2" Then
+            D_price = D_price_F2
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "平1" Then
+            D_price = D_price_P1
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "平2" Then
+            D_price = D_price_P2
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "谷1" Then
+            D_price = D_price_G1
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "谷2" Then
+            D_price = D_price_G2
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "其它1" Then
+            D_price = D_price_QT1
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = "其它2" Then
+            D_price = D_price_QT2
+        Else
+            D_price = 1
+        End If
         '混水冷负荷热负荷默认值（常规计算模式需要）
         Dim HSLFH As Double = 0
         Dim HSRFH As Double = 0
@@ -403,6 +437,8 @@ cgjsms_again:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = Nothing
             '各种修正系数默认值均为1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = 1
+            '全局寻优计算模式设备启动数量
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = Nothing
             '混水冷负荷热负荷计算（常规计算模式需要）
             Dim ans_HSJS = 混水供冷供热量计算(ExcelApp, b, calculation_mode)
             HSLFH = ans_HSJS(0)
@@ -562,6 +598,8 @@ cgjsms_again:
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 97)).Value = Nothing
             '各种修正系数默认值均为1
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = 1
+            '全局寻优计算模式设备启动数量
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = Nothing
             '混水冷负荷热负荷计算（常规计算模式需要）
             Dim ans_HSJS = 混水供冷供热量计算(ExcelApp, b, calculation_mode)
             HSLFH = ans_HSJS(0)
@@ -2012,21 +2050,41 @@ cgjsms_again:
         '—————————————————————————————————————————————————————————————————————
         '电锅炉
         '设备（1）装机数量
-        Dim NUM1_DGL As Double = 1
+        Dim NUM1_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(49, 22).Value
         '设备（2）装机数量
-        Dim NUM2_DGL As Double = 1
+        Dim NUM2_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(68, 22).Value
         '设备（1）装机功率（总和）
         Dim ZJRGL1_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(48, 22).Value
         '设备（2）装机功率（总和）
         Dim ZJRGL2_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(67, 22).Value
         '设备（1）100%负荷时本体耗电功率（单台）
-        Dim BTHD1_ED_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(50, 22).Value
+        Dim BTHD1_ED_DGL As Double
+        If NUM1_DGL = 0 Then
+            BTHD1_ED_DGL = 0
+        Else
+            BTHD1_ED_DGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(50, 22).Value / NUM1_DGL
+        End If
         '设备（1）100%负荷时辅机耗电功率（单台）
-        Dim FJHD1_ED_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 22).Value
+        Dim FJHD1_ED_DGL As Double
+        If NUM1_DGL = 0 Then
+            FJHD1_ED_DGL = 0
+        Else
+            FJHD1_ED_DGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(52, 22).Value / NUM1_DGL
+        End If
         '设备（2）100%负荷时本体耗电功率（单台）
-        Dim BTHD2_ED_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(69, 22).Value
+        Dim BTHD2_ED_DGL As Double
+        If NUM2_DGL = 0 Then
+            BTHD2_ED_DGL = 0
+        Else
+            BTHD2_ED_DGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(69, 22).Value / NUM2_DGL
+        End If
         '设备（2）100%负荷时辅机耗电功率（单台）
-        Dim FJHD2_ED_DGL As Double = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 22).Value
+        Dim FJHD2_ED_DGL As Double
+        If NUM2_DGL = 0 Then
+            FJHD2_ED_DGL = 0
+        Else
+            FJHD2_ED_DGL = ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(71, 22).Value / NUM2_DGL
+        End If
         '—————————————————————————————————————————————————————————————————————
         '返回结果
         Dim ans(66)
@@ -2555,7 +2613,7 @@ cgjsms_again:
             End If
         End If
     End Sub
-    Sub 梯级或者混水供热计算(ExcelApp As Object, FHTJJD As Double, JSBC As Integer, n As Integer， D_price As Double, TRQ_price As Double, calculation_mode As Integer, TJGRFHBL As Double, HSGRGLBL As Double)
+    Sub 梯级或者混水供热计算(ExcelApp As Object, FHTJJD As Double, JSBC As Integer, n As Integer， D_price_GF1 As Double, D_price_GF2 As Double, D_price_F1 As Double, D_price_F2 As Double, D_price_P1 As Double, D_price_P2 As Double, D_price_G1 As Double, D_price_G2 As Double, D_price_QT1 As Double, D_price_QT2 As Double, TRQ_price As Double, calculation_mode As Integer, TJGRFHBL As Double, HSGRGLBL As Double)
         On Error Resume Next
         '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
         '本SUB暂时弃用，本SUB暂时弃用，本SUB暂时弃用，本SUB暂时弃用，本SUB暂时弃用，本SUB暂时弃用，本SUB暂时弃用
@@ -2609,7 +2667,7 @@ cgjsms_again:
                 Dim b As Integer = GKXH(i)
                 Call 清空指定工况输入输出数据(ExcelApp, b)
                 '进行正常的负荷分析（主要技术指标）计算
-                Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                 '对计算出的制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                 Call 制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
                 '计算制热季天然气耗量和耗电量综合修正系数
@@ -2704,7 +2762,7 @@ cgjsms_again:
                         'Dim b As Integer = i '工况序号
                         Call 清空指定工况输入输出数据(ExcelApp, i)
                         '进行正常的负荷分析（主要技术指标）计算
-                        Call 负荷分析计算程序(ExcelApp, i, FHTJJD, JSBC， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                        Call 负荷分析计算程序(ExcelApp, i, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                         '计算循环体，计算一次当前工况
                         '读取计算输入量
                         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 109)).Value
@@ -17748,9 +17806,15 @@ aaa:
                 Dim LXSLSJZLCOPXZ1 As Double = COPXZ1_LXSLSJ_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSLSJBTHD1_ALL_b = LXSLSJBTHD1_ALL_a / LXSLSJZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_LXSLSJ_List.IndexOf(LXSLSJZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 112).Value = NUM1_LXSLSJ_QD(COP_MAX_index)
             Else
                 LXSLSJBTHD1_ALL_a = 0
                 LXSLSJBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 112).Value = 0
             End If
             '离心式冷水机（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -17804,9 +17868,15 @@ bbb:
                 Dim LXSLSJZLCOPXZ2 As Double = COPXZ2_LXSLSJ_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSLSJBTHD2_ALL_b = LXSLSJBTHD2_ALL_a / LXSLSJZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_LXSLSJ_List.IndexOf(LXSLSJZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 113).Value = NUM2_LXSLSJ_QD(COP_MAX_index)
             Else
                 LXSLSJBTHD2_ALL_a = 0
                 LXSLSJBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 113).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -17862,9 +17932,15 @@ ccc:
                 Dim SLLGJZLCOPXZ1 As Double = COPXZ1_SLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 SLLGJBTHD1_ALL_b = SLLGJBTHD1_ALL_a / SLLGJZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_SLLGJ_List.IndexOf(SLLGJZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 120).Value = NUM1_SLLGJ_QD(COP_MAX_index)
             Else
                 SLLGJBTHD1_ALL_a = 0
                 SLLGJBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 120).Value = 0
             End If
             '水冷螺杆机（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -17918,9 +17994,15 @@ ddd:
                 Dim SLLGJZLCOPXZ2 As Double = COPXZ2_SLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 SLLGJBTHD2_ALL_b = SLLGJBTHD2_ALL_a / SLLGJZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_SLLGJ_List.IndexOf(SLLGJZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 121).Value = NUM2_SLLGJ_QD(COP_MAX_index)
             Else
                 SLLGJBTHD2_ALL_a = 0
                 SLLGJBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 121).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -17976,9 +18058,15 @@ eee:
                 Dim FLLGJZLCOPXZ1 As Double = COPXZ1_FLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_FLLGJ_List.IndexOf(FLLGJZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 114).Value = NUM1_FLLGJ_QD(COP_MAX_index)
             Else
                 FLLGJBTHD1_ALL_a = 0
                 FLLGJBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 114).Value = 0
             End If
             '风冷螺杆机（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -18032,9 +18120,15 @@ fff:
                 Dim FLLGJZLCOPXZ2 As Double = COPXZ2_FLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_FLLGJ_List.IndexOf(FLLGJZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 115).Value = NUM2_FLLGJ_QD(COP_MAX_index)
             Else
                 FLLGJBTHD2_ALL_a = 0
                 FLLGJBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 115).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18090,9 +18184,15 @@ ggg:
                 Dim SDYRBZLCOPXZ1 As Double = COPXZ1_SDYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_SDYRB_List.IndexOf(SDYRBZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 118).Value = NUM1_SDYRB_QD(COP_MAX_index)
             Else
                 SDYRBBTHD1_ALL_a = 0
                 SDYRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 118).Value = 0
             End If
             '水（地）源热泵（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -18146,9 +18246,15 @@ hhh:
                 Dim SDYRBZLCOPXZ2 As Double = COPXZ2_SDYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_SDYRB_List.IndexOf(SDYRBZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 119).Value = NUM2_SDYRB_QD(COP_MAX_index)
             Else
                 SDYRBBTHD2_ALL_a = 0
                 SDYRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 119).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18204,9 +18310,15 @@ iii:
                 Dim LXSRBZLCOPXZ1 As Double = COPXZ1_LXSRB_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_LXSRB_List.IndexOf(LXSRBZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 122).Value = NUM1_LXSRB_QD(COP_MAX_index)
             Else
                 LXSRBBTHD1_ALL_a = 0
                 LXSRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 122).Value = 0
             End If
             '离心式热泵（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -18260,9 +18372,15 @@ jjj:
                 Dim LXSRBZLCOPXZ2 As Double = COPXZ2_LXSRB_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_LXSRB_List.IndexOf(LXSRBZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 123).Value = NUM2_LXSRB_QD(COP_MAX_index)
             Else
                 LXSRBBTHD2_ALL_a = 0
                 LXSRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 123).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18318,9 +18436,15 @@ kkk:
                 Dim KQYRBZLCOPXZ1 As Double = COPXZ1_KQYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_KQYRB_List.IndexOf(KQYRBZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 116).Value = NUM1_KQYRB_QD(COP_MAX_index)
             Else
                 KQYRBBTHD1_ALL_a = 0
                 KQYRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 116).Value = 0
             End If
             '空气源热泵（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -18374,9 +18498,15 @@ lll:
                 Dim KQYRBZLCOPXZ2 As Double = COPXZ2_KQYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_KQYRB_List.IndexOf(KQYRBZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 117).Value = NUM2_KQYRB_QD(COP_MAX_index)
             Else
                 KQYRBBTHD2_ALL_a = 0
                 KQYRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 117).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18426,9 +18556,15 @@ mmm:
                 Dim ZRXXHLZLCOPXZ1 As Double = COPXZ1_ZRXXHL_List.Max
                 '经过修正后的设备本体天然气耗量
                 ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZLCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_ZRXXHL_List.IndexOf(ZRXXHLZLCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 124).Value = NUM1_ZRXXHL_QD(COP_MAX_index)
             Else
                 ZRXXHLBTTRQ1_ALL_a = 0
                 ZRXXHLBTTRQ1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 124).Value = 0
             End If
             '直燃型溴化锂（2）
             '此时的设备负荷率=供冷负荷率+蓄冷负荷率（除以装机数量换算一下）
@@ -18476,9 +18612,15 @@ nnn:
                 Dim ZRXXHLZLCOPXZ2 As Double = COPXZ2_ZRXXHL_List.Max
                 '经过修正后的设备本体天然气耗量
                 ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZLCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_ZRXXHL_List.IndexOf(ZRXXHLZLCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 125).Value = NUM2_ZRXXHL_QD(COP_MAX_index)
             Else
                 ZRXXHLBTTRQ2_ALL_a = 0
                 ZRXXHLBTTRQ2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 125).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18528,9 +18670,15 @@ ooo:
                 Dim NRJZLXLXZ1 As Double = NRJZLXLXZ1_List.Max
                 '经过修正后的设备本体天然气耗量
                 NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = NRJZLXLXZ1_List.IndexOf(NRJZLXLXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 110).Value = NUM1_NRJ_QD(COP_MAX_index)
             Else
                 NRJTRQ1_ALL_a = 0
                 NRJTRQ1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 110).Value = 0
             End If
             '内燃发电机（2）
             '此时的设备负荷率
@@ -18576,9 +18724,15 @@ ppp:
                 Dim NRJZLXLXZ2 As Double = NRJZLXLXZ2_List.Max
                 '经过修正后的设备本体天然气耗量
                 NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = NRJZLXLXZ2_List.IndexOf(NRJZLXLXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 111).Value = NUM2_NRJ_QD(COP_MAX_index)
             Else
                 NRJTRQ2_ALL_a = 0
                 NRJTRQ2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 111).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -18927,9 +19081,15 @@ aaa:
                 Dim TRQGLZRCOPXZ1 As Double = COPXZ1_TRQGL_List.Max
                 '经过修正后的设备本体天然气耗量
                 TRQGLBTTRQ1_ALL_b = TRQGLBTTRQ1_ALL_a / TRQGLZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_TRQGL_List.IndexOf(TRQGLZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 128).Value = NUM1_TRQGL_QD(COP_MAX_index)
             Else
                 TRQGLBTTRQ1_ALL_a = 0
                 TRQGLBTTRQ1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 128).Value = 0
             End If
             '天然气锅炉（2）
             '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
@@ -18976,9 +19136,15 @@ bbb:
                 Dim TRQGLZRCOPXZ2 As Double = COPXZ2_TRQGL_List.Max
                 '经过修正后的设备本体天然气耗量
                 TRQGLBTTRQ2_ALL_b = TRQGLBTTRQ2_ALL_a / TRQGLZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_TRQGL_List.IndexOf(TRQGLZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 129).Value = NUM2_TRQGL_QD(COP_MAX_index)
             Else
                 TRQGLBTTRQ2_ALL_a = 0
                 TRQGLBTTRQ2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 129).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -19027,9 +19193,15 @@ ccc:
                 Dim ZRXXHLZRCOPXZ1 As Double = COPXZ1_ZRXXHL_List.Max
                 '经过修正后的设备本体天然气耗量
                 ZRXXHLBTTRQ1_ALL_b = ZRXXHLBTTRQ1_ALL_a / ZRXXHLZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_ZRXXHL_List.IndexOf(ZRXXHLZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 138).Value = NUM1_ZRXXHL_QD(COP_MAX_index)
             Else
                 ZRXXHLBTTRQ1_ALL_a = 0
                 ZRXXHLBTTRQ1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 138).Value = 0
             End If
             '直燃型溴化锂（2）
             '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
@@ -19076,9 +19248,15 @@ ddd:
                 Dim ZRXXHLZRCOPXZ2 As Double = COPXZ2_ZRXXHL_List.Max
                 '经过修正后的设备本体天然气耗量
                 ZRXXHLBTTRQ2_ALL_b = ZRXXHLBTTRQ2_ALL_a / ZRXXHLZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_ZRXXHL_List.IndexOf(ZRXXHLZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 139).Value = NUM2_ZRXXHL_QD(COP_MAX_index)
             Else
                 ZRXXHLBTTRQ2_ALL_a = 0
                 ZRXXHLBTTRQ2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 139).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -19128,9 +19306,15 @@ eee:
                 Dim NRJZLXLXZ1 As Double = NRJZLXLXZ1_List.Max
                 '经过修正后的设备本体天然气耗量
                 NRJTRQ1_ALL_b = NRJTRQ1_ALL_a / NRJZLXLXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = NRJZLXLXZ1_List.IndexOf(NRJZLXLXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126).Value = NRJZLXLXZ1_List(COP_MAX_index)
             Else
                 NRJTRQ1_ALL_a = 0
                 NRJTRQ1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126).Value = 0
             End If
             '内燃发电机（2）
             '此时的设备负荷率
@@ -19176,9 +19360,15 @@ fff:
                 Dim NRJZLXLXZ2 As Double = NRJZLXLXZ2_List.Max
                 '经过修正后的设备本体天然气耗量
                 NRJTRQ2_ALL_b = NRJTRQ2_ALL_a / NRJZLXLXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = NRJZLXLXZ2_List.IndexOf(NRJZLXLXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 127).Value = NRJZLXLXZ2_List(COP_MAX_index)
             Else
                 NRJTRQ2_ALL_a = 0
                 NRJTRQ2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 127).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————               
@@ -19234,9 +19424,15 @@ ggg:
                 Dim FLLGJZRCOPXZ1 As Double = COPXZ1_FLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 FLLGJBTHD1_ALL_b = FLLGJBTHD1_ALL_a / FLLGJZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_FLLGJ_List.IndexOf(FLLGJZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 130).Value = NUM1_FLLGJ_QD(COP_MAX_index)
             Else
                 FLLGJBTHD1_ALL_a = 0
                 FLLGJBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 130).Value = 0
             End If
             '风冷螺杆机（2）
             '设备的装机总数量，台数
@@ -19292,9 +19488,15 @@ hhh:
                 Dim FLLGJZRCOPXZ2 As Double = COPXZ2_FLLGJ_List.Max
                 '经过修正后的设备本体耗电功率
                 FLLGJBTHD2_ALL_b = FLLGJBTHD2_ALL_a / FLLGJZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_FLLGJ_List.IndexOf(FLLGJZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 131).Value = NUM2_FLLGJ_QD(COP_MAX_index)
             Else
                 FLLGJBTHD2_ALL_a = 0
                 FLLGJBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 131).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————            
@@ -19350,9 +19552,15 @@ iii:
                 Dim SDYRBZRCOPXZ1 As Double = COPXZ1_SDYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 SDYRBBTHD1_ALL_b = SDYRBBTHD1_ALL_a / SDYRBZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_SDYRB_List.IndexOf(SDYRBZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 134).Value = NUM1_SDYRB_QD(COP_MAX_index)
             Else
                 SDYRBBTHD1_ALL_a = 0
                 SDYRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 134).Value = 0
             End If
             '水（地）源热泵（2）
             '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
@@ -19406,9 +19614,15 @@ jjj:
                 Dim SDYRBZRCOPXZ2 As Double = COPXZ2_SDYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 SDYRBBTHD2_ALL_b = SDYRBBTHD2_ALL_a / SDYRBZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_SDYRB_List.IndexOf(SDYRBZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 135).Value = NUM2_SDYRB_QD(COP_MAX_index)
             Else
                 SDYRBBTHD2_ALL_a = 0
                 SDYRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 135).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————            
@@ -19466,9 +19680,15 @@ kkk:
                 Dim KQYRBZRCOPXZ1 As Double = COPXZ1_KQYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 KQYRBBTHD1_ALL_b = KQYRBBTHD1_ALL_a / KQYRBZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_KQYRB_List.IndexOf(KQYRBZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 132).Value = NUM1_KQYRB_QD(COP_MAX_index)
             Else
                 KQYRBBTHD1_ALL_a = 0
                 KQYRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 132).Value = 0
             End If
             '空气源热泵（2）
             '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
@@ -19522,9 +19742,15 @@ lll:
                 Dim KQYRBZRCOPXZ2 As Double = COPXZ2_KQYRB_List.Max
                 '经过修正后的设备本体耗电功率
                 KQYRBBTHD2_ALL_b = KQYRBBTHD2_ALL_a / KQYRBZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_KQYRB_List.IndexOf(KQYRBZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 133).Value = NUM2_KQYRB_QD(COP_MAX_index)
             Else
                 KQYRBBTHD2_ALL_a = 0
                 KQYRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 133).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -19580,9 +19806,15 @@ mmm:
                 Dim LXSRBZRCOPXZ1 As Double = COPXZ1_LXSRB_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSRBBTHD1_ALL_b = LXSRBBTHD1_ALL_a / LXSRBZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_LXSRB_List.IndexOf(LXSRBZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 136).Value = NUM1_LXSRB_QD(COP_MAX_index)
             Else
                 LXSRBBTHD1_ALL_a = 0
                 LXSRBBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 136).Value = 0
             End If
             '离心式热泵（2）
             '此时的设备负荷率=供热负荷率+蓄热负荷率（除以装机数量换算一下）
@@ -19636,9 +19868,15 @@ nnn:
                 Dim LXSRBZRCOPXZ2 As Double = COPXZ2_LXSRB_List.Max
                 '经过修正后的设备本体耗电功率
                 LXSRBBTHD2_ALL_b = LXSRBBTHD2_ALL_a / LXSRBZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_LXSRB_List.IndexOf(LXSRBZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 137).Value = NUM2_LXSRB_QD(COP_MAX_index)
             Else
                 LXSRBBTHD2_ALL_a = 0
                 LXSRBBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 137).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -19656,13 +19894,49 @@ nnn:
                 Dim DGLBTHD1_XR As Double = BTHD1_ED_DGL * DGLFHL1_XR
                 '在没有考虑修正系数前的，总耗电功率
                 DGLBTHD1_ALL_a = DGLBTHD1_GR + DGLBTHD1_XR
-                '计算此时的制热COP修正系数
-                Dim DGLZLCOPXZ1 As Double = 电采暖锅炉制热效率曲线(DGLFHL1)
+                '用循环反算出单台设备负荷率最优解和此时的设备启动数量
+                '列表，储存计算出的COP修正系数、单台设备负荷率、设备启动数量
+                Dim COPXZ1_DGL_List As New List(Of Double)
+                Dim FHL1_DGL_single As New List(Of Double)
+                Dim NUM1_DGL_QD As New List(Of Double)
+                For n1 = 0 To NUM1_DGL Step 1
+                    '如果设备启动100%，制热量都不够，则跳入下一个循环，提高速度
+                    If n1 * ZJRGL1_DGL / NUM1_DGL < DGLFHL1 * ZJRGL1_DGL Then
+                        GoTo ooo
+                    End If
+                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                        '制热功率满足需求
+                        If a1 * n1 * ZJRGL1_DGL / NUM1_DGL >= DGLFHL1 * ZJRGL1_DGL Then
+                            '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
+                            COPXZ1_DGL_List.Add(电采暖锅炉制热效率曲线(a1))
+                            FHL1_DGL_single.Add(a1)
+                            NUM1_DGL_QD.Add(n1)
+                            '结束这一次循环，目的是仅计算第一个制热满足要求的情况
+                            GoTo ooo
+                        ElseIf a1 >= 1 Then
+                            '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
+                            COPXZ1_DGL_List.Add(电采暖锅炉制热效率曲线(a1))
+                            FHL1_DGL_single.Add(a1)
+                            NUM1_DGL_QD.Add(n1)
+                            '结束这一次循环，目的是仅计算第一个制热满足要求的情况
+                            GoTo ooo
+                        End If
+                    Next
+ooo:
+                Next
+                '计算此时的制热COP修正系数所有结果中得到最大值
+                Dim DGLZRCOPXZ1 As Double = COPXZ1_DGL_List.Max
                 '经过修正后的设备本体耗电功率
-                DGLBTHD1_ALL_b = DGLBTHD1_ALL_a / DGLZLCOPXZ1
+                DGLBTHD1_ALL_b = DGLBTHD1_ALL_a / DGLZRCOPXZ1
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ1_DGL_List.IndexOf(DGLZRCOPXZ1)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 140).Value = NUM1_DGL_QD(COP_MAX_index)
             Else
                 DGLBTHD1_ALL_a = 0
                 DGLBTHD1_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 140).Value = 0
             End If
             '电采暖锅炉（2）
             '设备的装机总功率
@@ -19678,13 +19952,49 @@ nnn:
                 Dim DGLBTHD2_XR As Double = BTHD2_ED_DGL * DGLFHL2_XR
                 '在没有考虑修正系数前的，总耗电功率
                 DGLBTHD2_ALL_a = DGLBTHD2_GR + DGLBTHD2_XR
-                '计算此时的制热COP修正系数
-                Dim DGLZLCOPXZ2 As Double = 电采暖锅炉制热效率曲线(DGLFHL2)
+                '用循环反算出单台设备负荷率最优解和此时的设备启动数量
+                '列表，储存计算出的COP修正系数、单台设备负荷率、设备启动数量
+                Dim COPXZ2_DGL_List As New List(Of Double)
+                Dim FHL2_DGL_single As New List(Of Double)
+                Dim NUM2_DGL_QD As New List(Of Double)
+                For n2 = 0 To NUM2_DGL Step 1
+                    '如果设备启动100%，制热量都不够，则跳入下一个循环，提高速度
+                    If n2 * ZJRGL2_DGL / NUM2_DGL < DGLFHL2 * ZJRGL2_DGL Then
+                        GoTo ppp
+                    End If
+                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                        '制热功率满足需求
+                        If a2 * n2 * ZJRGL2_DGL / NUM2_DGL >= DGLFHL2 * ZJRGL2_DGL Then
+                            '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
+                            COPXZ2_DGL_List.Add(电采暖锅炉制热效率曲线(a2))
+                            FHL2_DGL_single.Add(a2)
+                            NUM2_DGL_QD.Add(n2)
+                            '结束这一次循环，目的是仅计算第一个制热满足要求的情况
+                            GoTo ppp
+                        ElseIf a2 >= 1 Then
+                            '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
+                            COPXZ2_DGL_List.Add(电采暖锅炉制热效率曲线(a2))
+                            FHL2_DGL_single.Add(a2)
+                            NUM2_DGL_QD.Add(n2)
+                            '结束这一次循环，目的是仅计算第一个制热满足要求的情况
+                            GoTo ppp
+                        End If
+                    Next
+ppp:
+                Next
+                '计算此时的制热COP修正系数所有结果中得到最大值
+                Dim DGLZRCOPXZ2 As Double = COPXZ2_DGL_List.Max
                 '经过修正后的设备本体耗电功率
-                DGLBTHD2_ALL_b = DGLBTHD2_ALL_a / DGLZLCOPXZ2
+                DGLBTHD2_ALL_b = DGLBTHD2_ALL_a / DGLZRCOPXZ2
+                '找到所在标签
+                Dim COP_MAX_index As Integer = COPXZ2_DGL_List.IndexOf(DGLZRCOPXZ2)
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 141).Value = NUM2_DGL_QD(COP_MAX_index)
             Else
                 DGLBTHD2_ALL_a = 0
                 DGLBTHD2_ALL_b = 0
+                '设备启动数量写入Excel
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 141).Value = 0
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
@@ -19780,6 +20090,10 @@ nnn:
                 '定义列表，储存混水寻优计算结果
                 '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
                 Dim HD_ALL_HS As New List(Of Double）
+                Dim FHL1_HS_single As New List(Of Double)
+                Dim FHL2_HS_single As New List(Of Double)
+                Dim NUM1_HS_QD As New List(Of Double)
+                Dim NUM2_HS_QD As New List(Of Double)
                 '参与混水的设备也需要进行寻优计算
                 '穷举设备数量
                 For n1_hs = 0 To NUM1_HS Step 1
@@ -19798,7 +20112,7 @@ nnn:
                             RFH2_ALL_HS_temp = n2_hs * ZJRGL2_HS / NUM2_HS
                         End If
                         If (RFH1_ALL_HS_temp + RFH2_ALL_HS_temp) < GRGL_HS_now Then
-                            GoTo ooo
+                            GoTo qqq
                         End If
                         '穷举设备负荷率
                         For a1_hs = FHL1_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_hs表示设备(1)负荷率（单台）
@@ -19851,22 +20165,45 @@ nnn:
                                 If RGL_out_all_HS >= GRGL_HS_now Then
                                     '计算结果加入列表
                                     HD_ALL_HS.Add(BTZHD_HS)
+                                    FHL1_HS_single.Add(a1_hs)
+                                    FHL2_HS_single.Add(a2_hs)
+                                    NUM1_HS_QD.Add(n1_hs)
+                                    NUM2_HS_QD.Add(n2_hs)
                                     '跳出循环
                                     Exit For
                                 ElseIf a1_hs >= 1 And a2_hs >= 1 Then
                                     '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
                                     '计算结果加入列表
                                     HD_ALL_HS.Add(BTZHD_HS)
+                                    FHL1_HS_single.Add(a1_hs)
+                                    FHL2_HS_single.Add(a2_hs)
+                                    NUM1_HS_QD.Add(n1_hs)
+                                    NUM2_HS_QD.Add(n2_hs)
                                     '跳出循环
                                     Exit For
                                 End If
                             Next
                         Next
-ooo:
+qqq:
                     Next
                 Next
                 '考虑修正后的总耗电
                 BTHD_ALL_HS_b = HD_ALL_HS.Min
+                '找到所在标签
+                Dim COP_MAX_index As Integer = HD_ALL_HS.IndexOf(BTHD_ALL_HS_b)
+                '设备启动数量写入Excel
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 132).Value = NUM1_HS_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 133).Value = NUM2_HS_QD(COP_MAX_index)
+                End If
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 134).Value = NUM1_HS_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 135).Value = NUM2_HS_QD(COP_MAX_index)
+                End If
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 130).Value = NUM1_HS_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 131).Value = NUM2_HS_QD(COP_MAX_index)
+                End If
             Else
                 BTHD_ALL_HS_a = 0
                 BTHD_ALL_HS_b = 0
@@ -19921,7 +20258,6 @@ ooo:
                 '100%负荷时本体耗电功率（单台）
                 BTHD1_ED_TJ = BTHD1_ED_SDYRB
                 BTHD2_ED_TJ = BTHD2_ED_SDYRB
-
                 '梯级设备负荷率下限（单台）
                 FHL1_min_TJ = FHL1_min_SDYRB
                 FHL2_min_TJ = FHL2_min_SDYRB
@@ -19963,6 +20299,10 @@ ooo:
                 '定义列表，储存梯级寻优计算结果
                 '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
                 Dim HD_ALL_TJ As New List(Of Double）
+                Dim FHL1_TJ_single As New List(Of Double)
+                Dim FHL2_TJ_single As New List(Of Double)
+                Dim NUM1_TJ_QD As New List(Of Double)
+                Dim NUM2_TJ_QD As New List(Of Double)
                 '参与梯级的设备也需要进行寻优计算
                 '穷举设备数量
                 For n1_TJ = 0 To NUM1_TJ Step 1
@@ -19981,7 +20321,7 @@ ooo:
                             RFH2_ALL_TJ_temp = n2_TJ * ZJRGL2_TJ / NUM2_TJ
                         End If
                         If (RFH1_ALL_TJ_temp + RFH2_ALL_TJ_temp) < GRGL_TJ_now Then
-                            GoTo ppp
+                            GoTo rrr
                         End If
                         '穷举设备负荷率
                         For a1_TJ = FHL1_min_TJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_TJ表示设备(1)负荷率（单台）
@@ -20034,22 +20374,45 @@ ooo:
                                 If RGL_out_all_TJ >= GRGL_TJ_now Then
                                     '计算结果加入列表
                                     HD_ALL_TJ.Add(BTZHD_TJ)
+                                    FHL1_TJ_single.Add(a1_TJ)
+                                    FHL2_TJ_single.Add(a2_TJ)
+                                    NUM1_TJ_QD.Add(n1_TJ)
+                                    NUM2_TJ_QD.Add(n2_TJ)
                                     '跳出循环
                                     Exit For
                                 ElseIf a1_TJ >= 1 And a2_TJ >= 1 Then
                                     '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
                                     '计算结果加入列表
                                     HD_ALL_TJ.Add(BTZHD_TJ)
+                                    FHL1_TJ_single.Add(a1_TJ)
+                                    FHL2_TJ_single.Add(a2_TJ)
+                                    NUM1_TJ_QD.Add(n1_TJ)
+                                    NUM2_TJ_QD.Add(n2_TJ)
                                     '跳出循环
                                     Exit For
                                 End If
                             Next
                         Next
-ppp:
+rrr:
                     Next
                 Next
                 '考虑修正后的总耗电
                 BTHD_ALL_TJ_b = HD_ALL_TJ.Min
+                '找到所在标签
+                Dim COP_MAX_index As Integer = HD_ALL_TJ.IndexOf(BTHD_ALL_HS_b)
+                '设备启动数量写入Excel
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "空气源热泵" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 132).Value = NUM1_TJ_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 133).Value = NUM2_TJ_QD(COP_MAX_index)
+                End If
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "水(地)源热泵" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 134).Value = NUM1_TJ_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 135).Value = NUM2_TJ_QD(COP_MAX_index)
+                End If
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value = "风冷螺杆机" Then
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 130).Value = NUM1_TJ_QD(COP_MAX_index)
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 131).Value = NUM2_TJ_QD(COP_MAX_index)
+                End If
             Else
                 BTHD_ALL_TJ_a = 0
                 BTHD_ALL_TJ_b = 0
@@ -22572,20 +22935,22 @@ ppp:
         '清空计算输入输出数据
         Call 清空输入输出数据(ExcelApp)
         '清空计算输入的用户输入量
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:DE57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK57").ClearContents
         '将所有数据重置为0
         '将所有数据变成0，计算一次，以清空全部数据
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 97)).Value = 0
         '各种修正系数默认值均为1
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 98), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 109)).Value = 1
+        '全局寻优计算模式设备启动数量
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = Nothing
         '读取计算输入量
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 109)).Value
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 141)).Value
         '返回计算结果
         ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(8, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(8, 54)).Value = ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(3, 54)).Value
         '再清空一次全部数据
         Call 清空输入输出数据(ExcelApp)
         '情况计算输入的用户输入量
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:DE57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK57").ClearContents
         '清空冷热负荷分段计算结果
         ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D80:D88").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D91:D99").ClearContents
@@ -22603,6 +22968,9 @@ ppp:
         '清空已有的蓄冷设备运行计算结果，每次重新计算时都必须清空一次
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 51)).Value = 0
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 40), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 51)).Value = 0
+        '全局寻优计算模式设备启动数量
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 125)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 125)).Value = Nothing
     End Sub
     Sub 清空制热和蓄热设备负荷率计算结果(ExcelApp As Object, b As Integer)
         On Error Resume Next
@@ -22616,6 +22984,9 @@ ppp:
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 80), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 83)).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value = Nothing
+        '全局寻优计算模式设备启动数量
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 126), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 141)).Value = Nothing
     End Sub
     Sub 清空指定工况输入输出数据(ExcelApp As Object, b As Integer)
         On Error Resume Next
@@ -22634,6 +23005,9 @@ ppp:
         ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range(ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 23), ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 30)).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range(ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 54), ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 57)).Value = Nothing
         ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range(ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 62), ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Cells(8 + b, 69)).Value = Nothing
+        '全局寻优计算模式设备启动数量
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 110), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 125)).Value = Nothing
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 141)).Value = Nothing
     End Sub
     Sub 计算循环体(ExcelApp As Object, n As Integer)
         On Error Resume Next
@@ -22641,7 +23015,7 @@ ppp:
         '计算
         For i = 1 To n
             '读取计算输入量
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 109)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 109)).Value
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 141)).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 141)).Value
             '返回计算结果
             ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + i, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(7 + i, 54)).Value = ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range(ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(3, 2), ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Cells(3, 54)).Value
             '返回内燃机及其余热利用计算结果
