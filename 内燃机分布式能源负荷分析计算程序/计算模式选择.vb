@@ -61,29 +61,25 @@ Public Class 计算模式选择
         Dim calculation_mode As Integer = 2
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '如果输入的为空，报错
+        '负荷调节精度没有输入
         If FHTJJD_shuru.Text = Nothing Then
             MsgBox("必须输入负荷调节进度参数，否则无法进行全局寻优计算！")
             Exit Sub
         End If
-        If GDDJ_GF1.Text = Nothing And GDDJ_GF2.Text = Nothing And GDDJ_F1.Text = Nothing And GDDJ_F2.Text = Nothing And GDDJ_P1.Text = Nothing And GDDJ_P2.Text = Nothing And GDDJ_G1.Text = Nothing And GDDJ_G2.Text = Nothing And GDDJ_QT1.Text = Nothing And GDDJ_QT2.Text = Nothing And TRQDJ.Text = Nothing Then
-            MsgBox("购电单价和天然气单价必须根据实际情况正确输入，否则无法进行全局寻优计算！")
-            Exit Sub
-        End If
+        '负荷调节精度输入的数值不正确
         If precision <= 0 Then
             MsgBox("必须输入正确的负荷调节进度参数，否则无法进行全局寻优计算！")
             Exit Sub
         End If
+        '——————————————————————————————————————————————————————————————————————————————————————————————
+        '购电单价输入不能都为空
+        If GDDJ_GF1.Text = Nothing And GDDJ_GF2.Text = Nothing And GDDJ_F1.Text = Nothing And GDDJ_F2.Text = Nothing And GDDJ_P1.Text = Nothing And GDDJ_P2.Text = Nothing And GDDJ_G1.Text = Nothing And GDDJ_G2.Text = Nothing And GDDJ_QT1.Text = Nothing And GDDJ_QT2.Text = Nothing Then
+            MsgBox("购电单价必须根据实际情况正确输入，否则无法进行全局寻优计算！")
+            Exit Sub
+        End If
         '如果没有输入价格，则报错
-        If D_price_GF1 < 0 And D_price_GF2 < 0 And D_price_F1 < 0 And D_price_F2 < 0 And D_price_P1 < 0 And D_price_P2 < 0 And D_price_G1 < 0 And D_price_G2 < 0 And D_price_QT1 < 0 And D_price_QT2 < 0 Then
+        If D_price_GF1 <= 0 And D_price_GF2 <= 0 And D_price_F1 <= 0 And D_price_F2 <= 0 And D_price_P1 <= 0 And D_price_P2 <= 0 And D_price_G1 <= 0 And D_price_G2 <= 0 And D_price_QT1 <= 0 And D_price_QT2 <= 0 Then
             MsgBox("必须输入正确的购电单价，否则无法进行全局寻优计算！")
-            Exit Sub
-        End If
-        If TRQ_price < 0 Then
-            MsgBox("必须输入正确的天然气单价，否则无法进行全局寻优计算！")
-            Exit Sub
-        End If
-        If D_price_GF1 = 0 And D_price_GF2 = 0 And D_price_F1 = 0 And D_price_F2 = 0 And D_price_P1 = 0 And D_price_P2 = 0 And D_price_G1 = 0 And D_price_G2 = 0 And D_price_QT1 = 0 And D_price_QT2 = 0 And TRQ_price = 0 Then
-            MsgBox("购电单价和天然气单价必须根据实际情况正确输入，否则无法进行全局寻优计算！")
             Exit Sub
         End If
         'Excel中选择的用电时间段是否全部已经输入了电价
@@ -157,6 +153,19 @@ Public Class 计算模式选择
                 Exit Sub
             End If
         Next
+        '——————————————————————————————————————————————————————————————————————————————————————————————
+        '天然气单价没有输入
+        '如果选择的设备有内燃发电机、天然气锅炉、直燃型溴化锂，则必须输入天然气单价
+        If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(47, 7).Value > 0 Or ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(56, 7).Value > 0 Or ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(65, 7).Value > 0 Or ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(66, 7).Value > 0 Then
+            If TRQDJ.Text = Nothing Then
+                MsgBox("天然气单价必须根据实际情况正确输入，否则无法进行全局寻优计算！")
+                Exit Sub
+            End If
+            If TRQ_price <= 0 Then
+                MsgBox("必须输入正确的天然气单价，否则无法进行全局寻优计算！")
+                Exit Sub
+            End If
+        End If
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '隐藏窗体

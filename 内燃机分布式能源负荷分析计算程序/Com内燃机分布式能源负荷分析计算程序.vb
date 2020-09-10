@@ -17170,24 +17170,62 @@ zzzz：
         Dim GYZQYRGLXLXZ1 As Double
         Dim GYZQYRGLXLXZ2 As Double
         '只有全局寻优计算模式才进行计算
-        If calculation_mode = 2 And NUM1 + NUM2 > 0 Then
+        If calculation_mode = 2 Then
             '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
-            '发电效率修正系数
-            FDXLXZ1 = 内燃机发电效率曲线(ZLNRJFHL1)
-            FDXLXZ2 = 内燃机发电效率曲线(ZLNRJFHL2)
-            '余热效率修正系数
-            YRXLXZ1 = 内燃机余热效率曲线(ZLNRJFHL1)
-            YRXLXZ2 = 内燃机余热效率曲线(ZLNRJFHL2)
-            '计算烟气热水型溴化锂制冷COP修正系数
-            XHLZLCOPXZ1 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL1)
-            XHLZLCOPXZ2 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL2)
-            '内燃机余热锅炉效率修正系数
-            '生活热水余热锅炉
-            SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZLNRJFHL1)
-            SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZLNRJFHL2)
-            '工业蒸汽余热锅炉
-            GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL1)
-            GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL2)
+            '内燃机1
+            If NUM1 > 0 Then
+                '发电效率修正系数
+                FDXLXZ1 = 内燃机发电效率曲线(ZLNRJFHL1)
+                '余热效率修正系数
+                YRXLXZ1 = 内燃机余热效率曲线(ZLNRJFHL1)
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZLCOPXZ1 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL1)
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZLNRJFHL1)
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL1)
+            Else
+                '结果全部为1
+                '发电效率修正系数
+                FDXLXZ1 = 1
+                '余热效率修正系数
+                YRXLXZ1 = 1
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZLCOPXZ1 = 1
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ1 = 1
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ1 = 1
+            End If
+            '内燃机2
+            If NUM2 > 0 Then
+                '发电效率修正系数
+                FDXLXZ2 = 内燃机发电效率曲线(ZLNRJFHL2)
+                '余热效率修正系数
+                YRXLXZ2 = 内燃机余热效率曲线(ZLNRJFHL2)
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZLCOPXZ2 = 烟气热水型溴化锂制冷COP曲线(ZLNRJFHL2)
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZLNRJFHL2)
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL2)
+            Else
+                '结果全部为1
+                '发电效率修正系数
+                FDXLXZ2 = 1
+                '余热效率修正系数
+                YRXLXZ2 = 1
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZLCOPXZ2 = 1
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ2 = 1
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ2 = 1
+            End If
         Else
             '结果全部为1
             '发电效率修正系数
@@ -17296,6 +17334,16 @@ zzzz：
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 101).Value = 1
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 101).Value = 1
             End If
+        Else
+            '如果什么都没有选择，全部系数改为1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 98).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 98).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 99).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 99).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 100).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 100).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 101).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 101).Value = 1
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
@@ -17357,24 +17405,62 @@ zzzz：
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
         '只有全局寻优计算模式才进行计算
-        If calculation_mode = 2 And NUM1 + NUM2 > 0 Then
+        If calculation_mode = 2 Then
             '根据内燃机1和内燃机2的负荷率，计算内燃机1、2的发电效率和余热效率相对100%负荷时的修正系数
-            '发电效率修正系数
-            FDXLXZ1 = 内燃机发电效率曲线(ZRNRJFHL1)
-            FDXLXZ2 = 内燃机发电效率曲线(ZRNRJFHL2)
-            '余热效率修正系数
-            YRXLXZ1 = 内燃机余热效率曲线(ZRNRJFHL1)
-            YRXLXZ2 = 内燃机余热效率曲线(ZRNRJFHL2)
-            '计算烟气热水型溴化锂制冷COP修正系数
-            XHLZRCOPXZ1 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL1)
-            XHLZRCOPXZ2 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL2)
-            '内燃机余热锅炉效率修正系数
-            '生活热水余热锅炉
-            SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZRNRJFHL1)
-            SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZRNRJFHL2)
-            '工业蒸汽余热锅炉
-            GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL1)
-            GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL2)
+            '内燃机1
+            If NUM1 > 0 Then
+                '发电效率修正系数
+                FDXLXZ1 = 内燃机发电效率曲线(ZRNRJFHL1)
+                '余热效率修正系数
+                YRXLXZ1 = 内燃机余热效率曲线(ZRNRJFHL1)
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZRCOPXZ1 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL1)
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZRNRJFHL1)
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL1)
+            Else
+                '全部等于1
+                '发电效率修正系数
+                FDXLXZ1 = 1
+                '余热效率修正系数
+                YRXLXZ1 = 1
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZRCOPXZ1 = 1
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ1 = 1
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ1 = 1
+            End If
+            '内燃机2
+            If NUM2 > 0 Then
+                '发电效率修正系数
+                FDXLXZ2 = 内燃机发电效率曲线(ZRNRJFHL2)
+                '余热效率修正系数
+                YRXLXZ2 = 内燃机余热效率曲线(ZRNRJFHL2)
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZRCOPXZ2 = 烟气热水型溴化锂制热COP曲线(ZRNRJFHL2)
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZRNRJFHL2)
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL2)
+            Else
+                '全部等于1
+                '发电效率修正系数
+                FDXLXZ2 = 1
+                '余热效率修正系数
+                YRXLXZ2 = 1
+                '计算烟气热水型溴化锂制冷COP修正系数
+                XHLZRCOPXZ2 = 1
+                '内燃机余热锅炉效率修正系数
+                '生活热水余热锅炉
+                SHRSYRGLXLXZ2 = 1
+                '工业蒸汽余热锅炉
+                GYZQYRGLXLXZ2 = 1
+            End If
         Else
             '全部等于1
             '发电效率修正系数
@@ -17483,6 +17569,16 @@ zzzz：
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 105).Value = 1
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 105).Value = 1
             End If
+        Else
+            '如果什么都没有选择，全部系数改为1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 102).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 102).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 103).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 103).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 104).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 104).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 105).Value = 1
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 105).Value = 1
         End If
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————  
@@ -18776,6 +18872,19 @@ ppp:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '如果本工况没有选择内燃机，则将内燃机及其余热利用的各种系数设置为1
+            If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(47, 7).Value = 0 Then
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 98).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 98).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 99).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 99).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 100).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 100).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 101).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 101).Value = 1
+            End If
         Else
             '常规计算模式，修正系数全部设置为1
             '制冷季系数
@@ -20459,6 +20568,19 @@ rrr:
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, i).Value, 3)
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, i).Value, 3)
             Next
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————        
+            '如果本工况没有选择内燃机，则将内燃机及其余热利用的各种系数设置为1
+            If ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(47, 7).Value = 0 Then
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 102).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 102).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 103).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 103).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 104).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 104).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 105).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 105).Value = 1
+            End If
         Else
             '常规计算模式，修正系数全部设置为1
             '制热设备本体耗电修正
