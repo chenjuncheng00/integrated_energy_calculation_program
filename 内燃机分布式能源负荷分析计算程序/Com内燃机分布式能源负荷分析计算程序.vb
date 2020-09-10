@@ -2876,6 +2876,14 @@ aaaaa:
         '冷负荷总量=供冷+蓄冷
         Dim LFH_GL_now As Double = LFHZXQL(b) - (XNGLGL(b) + XHLZL)
         Dim LFH_XL_now As Double = XNXLGL(b) - XHLXL
+        '如果当前冷负荷总需求量=0，则将LFH_GL ,强制设置为0，防止出错
+        If LFHZXQL(b) = 0 Then
+            LFH_GL_now = 0
+        End If
+        '如果当前蓄冷负荷总需求量=0，则将LFH_XL ,强制设置为0，防止出错
+        If XNXLGL(b) = 0 Then
+            LFH_XL_now = 0
+        End If
         Dim LFH_ALL As Double = LFH_GL_now + LFH_XL_now
         '负荷调整系数（全局寻优时候能否计算到了负荷上限的倍数）
         Dim TZXS As Double = 1 + 10 * FHTJJD / 100
@@ -6676,6 +6684,14 @@ zzzz:
         '热负荷总量=供热+蓄热
         Dim RFH_GR_now As Double = RFHZXQL(b) - (XNGRGL(b) + XHLZR)
         Dim RFH_XR_now As Double = XNXRGL(b) - XHLXR
+        '如果当前热负荷总需求量=0，则将RFH_GR ,强制设置为0，防止出错
+        If RFHZXQL(b) = 0 Then
+            RFH_GR_now = 0
+        End If
+        '如果当前蓄热负荷总需求量=0，则将RFH_XR ,强制设置为0，防止出错
+        If XNXRGL(b) = 0 Then
+            RFH_XR_now = 0
+        End If
         Dim RFH_ALL As Double = RFH_GR_now + RFH_XR_now
         '混水设备供热功率
         '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
