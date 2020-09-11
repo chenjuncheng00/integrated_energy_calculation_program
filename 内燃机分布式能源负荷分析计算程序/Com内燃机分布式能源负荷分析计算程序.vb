@@ -3047,10 +3047,22 @@ aaaaa:
             Else
                 ZJZGL_LXSLSJ = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_LXSLSJ As Double = 0
+            Dim FH1_min_LXSLSJ As Double = 0
+            Dim FH2_min_LXSLSJ As Double = 0
             If ZJJC_LXSLSJ = 1 Then
-                FH_min_LXSLSJ = ZJLGL1_LXSLSJ * FHL1_min_LXSLSJ + ZJLGL2_LXSLSJ * FHL2_min_LXSLSJ
+                If NUM1_LXSLSJ > 0 Then
+                    FH1_min_LXSLSJ = ZJLGL1_LXSLSJ * FHL1_min_LXSLSJ / NUM1_LXSLSJ
+                Else
+                    FH1_min_LXSLSJ = 0
+                End If
+                If NUM2_LXSLSJ > 0 Then
+                    FH2_min_LXSLSJ = ZJLGL2_LXSLSJ * FHL2_min_LXSLSJ / NUM2_LXSLSJ
+                Else
+                    FH2_min_LXSLSJ = 0
+                End If
+                FH_min_LXSLSJ = FH1_min_LXSLSJ + FH2_min_LXSLSJ
             Else
                 FH_min_LXSLSJ = 0
             End If
@@ -3062,85 +3074,157 @@ aaaaa:
             Else
                 ZJZGL_SLLGJ = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_SLLGJ As Double = 0
+            Dim FH1_min_SLLGJ As Double = 0
+            Dim FH2_min_SLLGJ As Double = 0
             If ZJJC_SLLGJ = 1 Then
-                FH_min_SLLGJ = ZJLGL1_SLLGJ * FHL1_min_SLLGJ + ZJLGL2_SLLGJ * FHL2_min_SLLGJ
+                If NUM1_SLLGJ > 0 Then
+                    FH1_min_SLLGJ = ZJLGL1_SLLGJ * FHL1_min_SLLGJ / NUM1_SLLGJ
+                Else
+                    FH1_min_SLLGJ = 0
+                End If
+                If NUM2_SLLGJ > 0 Then
+                    FH2_min_SLLGJ = ZJLGL2_SLLGJ * FHL2_min_SLLGJ / NUM2_SLLGJ
+                Else
+                    FH2_min_SLLGJ = 0
+                End If
+                FH_min_SLLGJ = FH1_min_SLLGJ + FH2_min_SLLGJ
             Else
                 FH_min_SLLGJ = 0
             End If
             '水（地）源热泵
-            '装机总功率
+            '装机总功率（总和）
             Dim ZJZGL_SDYRB As Double = 0
             If ZJJC_SDYRB = 1 Then
                 ZJZGL_SDYRB = ZJLGL1_SDYRB + ZJLGL2_SDYRB
             Else
                 ZJZGL_SDYRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_SDYRB As Double = 0
+            Dim FH1_min_SDYRB As Double = 0
+            Dim FH2_min_SDYRB As Double = 0
             If ZJJC_SDYRB = 1 Then
-                FH_min_SDYRB = ZJLGL1_SDYRB * FHL1_min_SDYRB + ZJLGL2_SDYRB * FHL2_min_SDYRB
+                If NUM1_SDYRB > 0 Then
+                    FH1_min_SDYRB = ZJLGL1_SDYRB * FHL1_min_SDYRB / NUM1_SDYRB
+                Else
+                    FH1_min_SDYRB = 0
+                End If
+                If NUM2_SDYRB > 0 Then
+                    FH2_min_SDYRB = ZJLGL2_SDYRB * FHL2_min_SDYRB / NUM2_SDYRB
+                Else
+                    FH2_min_SDYRB = 0
+                End If
+                FH_min_SDYRB = FH1_min_SDYRB + FH2_min_SDYRB
             Else
                 FH_min_SDYRB = 0
             End If
             '离心式热泵
-            '装机总功率
+            '装机总功率（总和）
             Dim ZJZGL_LXSRB As Double = 0
             If ZJJC_LXSRB = 1 Then
                 ZJZGL_LXSRB = ZJLGL1_LXSRB + ZJLGL2_LXSRB
             Else
                 ZJZGL_LXSRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_LXSRB As Double = 0
+            Dim FH1_min_LXSRB As Double = 0
+            Dim FH2_min_LXSRB As Double = 0
             If ZJJC_LXSRB = 1 Then
-                FH_min_LXSRB = ZJLGL1_LXSRB * FHL1_min_LXSRB + ZJLGL2_LXSRB * FHL2_min_LXSRB
+                If NUM1_LXSRB > 0 Then
+                    FH1_min_LXSRB = ZJLGL1_LXSRB * FHL1_min_LXSRB / NUM1_LXSRB
+                Else
+                    FH1_min_LXSRB = 0
+                End If
+                If NUM2_LXSRB > 0 Then
+                    FH2_min_LXSRB = ZJLGL2_LXSRB * FHL2_min_LXSRB / NUM2_LXSRB
+                Else
+                    FH2_min_LXSRB = 0
+                End If
+                FH_min_LXSRB = FH1_min_LXSRB + FH2_min_LXSRB
             Else
                 FH_min_LXSRB = 0
             End If
-            '风冷螺杆机           
-            '装机总功率
+            '风冷螺杆机
+            '装机总功率（总和）
             Dim ZJZGL_FLLGJ As Double = 0
             If ZJJC_FLLGJ = 1 Then
                 ZJZGL_FLLGJ = ZJLGL1_FLLGJ + ZJLGL2_FLLGJ
             Else
                 ZJZGL_FLLGJ = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_FLLGJ As Double = 0
+            Dim FH1_min_FLLGJ As Double = 0
+            Dim FH2_min_FLLGJ As Double = 0
             If ZJJC_FLLGJ = 1 Then
-                FH_min_FLLGJ = ZJLGL1_FLLGJ * FHL1_min_FLLGJ + ZJLGL2_FLLGJ * FHL2_min_FLLGJ
+                If NUM1_FLLGJ > 0 Then
+                    FH1_min_FLLGJ = ZJLGL1_FLLGJ * FHL1_min_FLLGJ / NUM1_FLLGJ
+                Else
+                    FH1_min_FLLGJ = 0
+                End If
+                If NUM2_FLLGJ > 0 Then
+                    FH2_min_FLLGJ = ZJLGL2_FLLGJ * FHL2_min_FLLGJ / NUM2_FLLGJ
+                Else
+                    FH2_min_FLLGJ = 0
+                End If
+                FH_min_FLLGJ = FH1_min_FLLGJ + FH2_min_FLLGJ
             Else
                 FH_min_FLLGJ = 0
             End If
-            '空气源热泵           
-            '装机总功率
+            '空气源热泵
+            '装机总功率（总和）
             Dim ZJZGL_KQYRB As Double = 0
             If ZJJC_KQYRB = 1 Then
                 ZJZGL_KQYRB = ZJLGL1_KQYRB + ZJLGL2_KQYRB
             Else
                 ZJZGL_KQYRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_KQYRB As Double = 0
+            Dim FH1_min_KQYRB As Double = 0
+            Dim FH2_min_KQYRB As Double = 0
             If ZJJC_KQYRB = 1 Then
-                FH_min_KQYRB = ZJLGL1_KQYRB * FHL1_min_KQYRB + ZJLGL2_KQYRB * FHL2_min_KQYRB
+                If NUM1_KQYRB > 0 Then
+                    FH1_min_KQYRB = ZJLGL1_KQYRB * FHL1_min_KQYRB / NUM1_KQYRB
+                Else
+                    FH1_min_KQYRB = 0
+                End If
+                If NUM2_KQYRB > 0 Then
+                    FH2_min_KQYRB = ZJLGL2_KQYRB * FHL2_min_KQYRB / NUM2_KQYRB
+                Else
+                    FH2_min_KQYRB = 0
+                End If
+                FH_min_KQYRB = FH1_min_KQYRB + FH2_min_KQYRB
             Else
                 FH_min_KQYRB = 0
             End If
-            '直燃型溴化锂           
-            '装机总功率
+            '直燃型溴化锂
+            '装机总功率（总和）
             Dim ZJZGL_ZRXXHL As Double = 0
             If ZJJC_ZRXXHL = 1 Then
                 ZJZGL_ZRXXHL = ZJLGL1_ZRXXHL + ZJLGL2_ZRXXHL
             Else
                 ZJZGL_ZRXXHL = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_ZRXXHL As Double = 0
+            Dim FH1_min_ZRXXHL As Double = 0
+            Dim FH2_min_ZRXXHL As Double = 0
             If ZJJC_ZRXXHL = 1 Then
-                FH_min_ZRXXHL = ZJLGL1_ZRXXHL * FHL1_min_ZRXXHL + ZJLGL2_ZRXXHL * FHL2_min_ZRXXHL
+                If NUM1_ZRXXHL > 0 Then
+                    FH1_min_ZRXXHL = ZJLGL1_ZRXXHL * FHL1_min_ZRXXHL / NUM1_ZRXXHL
+                Else
+                    FH1_min_ZRXXHL = 0
+                End If
+                If NUM2_ZRXXHL > 0 Then
+                    FH2_min_ZRXXHL = ZJLGL2_ZRXXHL * FHL2_min_ZRXXHL / NUM2_ZRXXHL
+                Else
+                    FH2_min_ZRXXHL = 0
+                End If
+                FH_min_ZRXXHL = FH1_min_ZRXXHL + FH2_min_ZRXXHL
             Else
                 FH_min_ZRXXHL = 0
             End If
@@ -7006,10 +7090,22 @@ zzzz:
             Else
                 ZJZGL_TRQGL = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_TRQGL As Double = 0
+            Dim FH1_min_TRQGL As Double = 0
+            Dim FH2_min_TRQGL As Double = 0
             If ZJJC_TRQGL = 1 Then
-                FH_min_TRQGL = ZJRGL1_TRQGL * FHL1_min_TRQGL + ZJRGL2_TRQGL * FHL2_min_TRQGL
+                If NUM1_TRQGL > 0 Then
+                    FH1_min_TRQGL = ZJRGL1_TRQGL * FHL1_min_TRQGL / NUM1_TRQGL
+                Else
+                    FH1_min_TRQGL = 0
+                End If
+                If NUM2_TRQGL > 0 Then
+                    FH2_min_TRQGL = ZJRGL2_TRQGL * FHL2_min_TRQGL / NUM2_TRQGL
+                Else
+                    FH2_min_TRQGL = 0
+                End If
+                FH_min_TRQGL = FH1_min_TRQGL + FH2_min_TRQGL
             Else
                 FH_min_TRQGL = 0
             End If
@@ -7021,10 +7117,22 @@ zzzz:
             Else
                 ZJZGL_DGL = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_DGL As Double = 0
+            Dim FH1_min_DGL As Double = 0
+            Dim FH2_min_DGL As Double = 0
             If ZJJC_DGL = 1 Then
-                FH_min_DGL = ZJRGL1_DGL * FHL1_min_DGL + ZJRGL2_DGL * FHL2_min_DGL
+                If NUM1_DGL > 0 Then
+                    FH1_min_DGL = ZJRGL1_DGL * FHL1_min_DGL / NUM1_DGL
+                Else
+                    FH1_min_DGL = 0
+                End If
+                If NUM2_DGL > 0 Then
+                    FH2_min_DGL = ZJRGL2_DGL * FHL2_min_DGL / NUM2_DGL
+                Else
+                    FH2_min_DGL = 0
+                End If
+                FH_min_DGL = FH1_min_DGL + FH2_min_DGL
             Else
                 FH_min_DGL = 0
             End If
@@ -7036,10 +7144,22 @@ zzzz:
             Else
                 ZJZGL_SDYRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_SDYRB As Double = 0
+            Dim FH1_min_SDYRB As Double = 0
+            Dim FH2_min_SDYRB As Double = 0
             If ZJJC_SDYRB = 1 Then
-                FH_min_SDYRB = ZJRGL1_SDYRB * FHL1_min_SDYRB + ZJRGL2_SDYRB * FHL2_min_SDYRB
+                If NUM1_SDYRB > 0 Then
+                    FH1_min_SDYRB = ZJRGL1_SDYRB * FHL1_min_SDYRB / NUM1_SDYRB
+                Else
+                    FH1_min_SDYRB = 0
+                End If
+                If NUM2_SDYRB > 0 Then
+                    FH2_min_SDYRB = ZJRGL2_SDYRB * FHL2_min_SDYRB / NUM2_SDYRB
+                Else
+                    FH2_min_SDYRB = 0
+                End If
+                FH_min_SDYRB = FH1_min_SDYRB + FH2_min_SDYRB
             Else
                 FH_min_SDYRB = 0
             End If
@@ -7051,10 +7171,22 @@ zzzz:
             Else
                 ZJZGL_LXSRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_LXSRB As Double = 0
+            Dim FH1_min_LXSRB As Double = 0
+            Dim FH2_min_LXSRB As Double = 0
             If ZJJC_LXSRB = 1 Then
-                FH_min_LXSRB = ZJRGL1_LXSRB * FHL1_min_LXSRB + ZJRGL2_LXSRB * FHL2_min_LXSRB
+                If NUM1_LXSRB > 0 Then
+                    FH1_min_LXSRB = ZJRGL1_LXSRB * FHL1_min_LXSRB / NUM1_LXSRB
+                Else
+                    FH1_min_LXSRB = 0
+                End If
+                If NUM2_LXSRB > 0 Then
+                    FH2_min_LXSRB = ZJRGL2_LXSRB * FHL2_min_LXSRB / NUM2_LXSRB
+                Else
+                    FH2_min_LXSRB = 0
+                End If
+                FH_min_LXSRB = FH1_min_LXSRB + FH2_min_LXSRB
             Else
                 FH_min_LXSRB = 0
             End If
@@ -7066,10 +7198,22 @@ zzzz:
             Else
                 ZJZGL_FLLGJ = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_FLLGJ As Double = 0
+            Dim FH1_min_FLLGJ As Double = 0
+            Dim FH2_min_FLLGJ As Double = 0
             If ZJJC_FLLGJ = 1 Then
-                FH_min_FLLGJ = ZJRGL1_FLLGJ * FHL1_min_FLLGJ + ZJRGL2_FLLGJ * FHL2_min_FLLGJ
+                If NUM1_FLLGJ > 0 Then
+                    FH1_min_FLLGJ = ZJRGL1_FLLGJ * FHL1_min_FLLGJ / NUM1_FLLGJ
+                Else
+                    FH1_min_FLLGJ = 0
+                End If
+                If NUM2_FLLGJ > 0 Then
+                    FH2_min_FLLGJ = ZJRGL2_FLLGJ * FHL2_min_FLLGJ / NUM2_FLLGJ
+                Else
+                    FH2_min_FLLGJ = 0
+                End If
+                FH_min_FLLGJ = FH1_min_FLLGJ + FH2_min_FLLGJ
             Else
                 FH_min_FLLGJ = 0
             End If
@@ -7081,10 +7225,22 @@ zzzz:
             Else
                 ZJZGL_KQYRB = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_KQYRB As Double = 0
+            Dim FH1_min_KQYRB As Double = 0
+            Dim FH2_min_KQYRB As Double = 0
             If ZJJC_KQYRB = 1 Then
-                FH_min_KQYRB = ZJRGL1_KQYRB * FHL1_min_KQYRB + ZJRGL2_KQYRB * FHL2_min_KQYRB
+                If NUM1_KQYRB > 0 Then
+                    FH1_min_KQYRB = ZJRGL1_KQYRB * FHL1_min_KQYRB / NUM1_KQYRB
+                Else
+                    FH1_min_KQYRB = 0
+                End If
+                If NUM2_KQYRB > 0 Then
+                    FH2_min_KQYRB = ZJRGL2_KQYRB * FHL2_min_KQYRB / NUM2_KQYRB
+                Else
+                    FH2_min_KQYRB = 0
+                End If
+                FH_min_KQYRB = FH1_min_KQYRB + FH2_min_KQYRB
             Else
                 FH_min_KQYRB = 0
             End If
@@ -7096,10 +7252,22 @@ zzzz:
             Else
                 ZJZGL_ZRXXHL = 0
             End If
-            '允许运行最低负荷
+            '允许运行最低负荷（要除以设备装机数量）
             Dim FH_min_ZRXXHL As Double = 0
+            Dim FH1_min_ZRXXHL As Double = 0
+            Dim FH2_min_ZRXXHL As Double = 0
             If ZJJC_ZRXXHL = 1 Then
-                FH_min_ZRXXHL = ZJRGL1_ZRXXHL * FHL1_min_ZRXXHL + ZJRGL2_ZRXXHL * FHL2_min_ZRXXHL
+                If NUM1_ZRXXHL > 0 Then
+                    FH1_min_ZRXXHL = ZJRGL1_ZRXXHL * FHL1_min_ZRXXHL / NUM1_ZRXXHL
+                Else
+                    FH1_min_ZRXXHL = 0
+                End If
+                If NUM2_ZRXXHL > 0 Then
+                    FH2_min_ZRXXHL = ZJRGL2_ZRXXHL * FHL2_min_ZRXXHL / NUM2_ZRXXHL
+                Else
+                    FH2_min_ZRXXHL = 0
+                End If
+                FH_min_ZRXXHL = FH1_min_ZRXXHL + FH2_min_ZRXXHL
             Else
                 FH_min_ZRXXHL = 0
             End If
