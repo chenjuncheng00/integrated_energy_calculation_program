@@ -177,8 +177,6 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             '存在混水计算，输入混水计算比例
             Dim HSGRGLBL As Double = 0
             If HSGRZTJC > 0 Then
-                '让用户手动输入混水设备制热功率，占总热功率（总热功率指的是，几种混水向外供热的设备总供热功率的合计）的比例
-                HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
                 '读取采暖季装机方案及参数
                 Dim ans_ZJFA_R = 读取采暖季装机方案参数(ExcelApp)
@@ -200,6 +198,27 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                 '直燃型溴化锂装机功率（总和）
                 Dim ZRXHL1ZRGL As Double = ans_ZJFA_R(60)
                 Dim ZRXHL2ZRGL As Double = ans_ZJFA_R(61)
+                '如果选择的天然气锅炉、电采暖锅炉、直燃型溴化锂中，存在两种或者三种，则禁止计算（暂时不支持这么复杂的功能）
+                Dim JC_NUM As Integer = 0
+                If TRQGL1ZRGL + TRQGL2ZRGL > 0 Then
+                    JC_NUM = JC_NUM + 1
+                End If
+                If DCNGL1ZRGL + DCNGL2ZRGL > 0 Then
+                    JC_NUM = JC_NUM + 1
+                End If
+                If ZRXHL1ZRGL + ZRXHL2ZRGL > 0 Then
+                    JC_NUM = JC_NUM + 1
+                End If
+                If JC_NUM = 0 Then
+                    MsgBox("混水供热计算必须选择<天然气采暖锅炉>、<电采暖锅炉>、<直燃型溴化锂>中的一种设备。")
+                    Exit Sub
+                End If
+                If JC_NUM > 1 Then
+                    MsgBox("混水供热计算只可以选择<天然气采暖锅炉>、<电采暖锅炉>、<直燃型溴化锂>中的一种设备，当前选择的设备种类大于一种，暂不支持这种计算，请联系开发者或重新选择。")
+                    Exit Sub
+                End If
+                '让用户手动输入混水设备制热功率，占总热功率（总热功率指的是，几种混水向外供热的设备总供热功率的合计）的比例
+                HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
                 For i = 1 To n
@@ -216,13 +235,16 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         HSSBGL = ZJRGL1_FLLGJ + ZJRGL2_FLLGJ
                     End If
                     '检查混水供热的两种设备的装机功率比例和输入的混水设备比例的大小关系，如果输入的比例大于实际装机比例，报错
-                    If HSGRGLBL > HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL) And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
+                    If HSGRGLBL < （HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL)） * 0.9 And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
+                        Dim XXX As String = "(" & i & ")、"
+                        XianShi = XianShi & XXX.ToString & "  "
+                    ElseIf HSGRGLBL > (HSSBGL / (HSSBGL + TRQGL1ZRGL + TRQGL2ZRGL + ZRXHL1ZRGL + ZRXHL2ZRGL + DCNGL1ZRGL + DCNGL2ZRGL)) * 1.1 And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 82).Value <> Nothing Then
                         Dim XXX As String = "(" & i & ")、"
                         XianShi = XianShi & XXX.ToString & "  "
                     End If
                 Next
                 If XianShi <> Nothing Then
-                    MsgBox("输入的<混水供热供冷比例系数>大于装机选择的两种设备的实际比例，计算结果可能会不正确！工况序号为： " & XianShi)
+                    MsgBox("输入的<混水供热供冷比例系数>与装机选择的两种设备的实际比例存在一定的偏差，计算结果可能会不正确！工况序号为： " & XianShi)
                 End If
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
@@ -9169,6 +9191,9 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_LXSRB
         Dim FHL2_min As Double = FHL2_min_LXSRB
+        '梯级设备负荷率下限（不除以设备数量，因此需要还原）
+        FHL1_min_TJ = FHL1_min_TJ * NUM1_TJ
+        FHL2_min_TJ = FHL2_min_TJ * NUM2_TJ
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '根据供热功率和蓄热功率的比例，计算出本体耗电的综合修正系数
@@ -9181,8 +9206,10 @@ zzzz:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '全局寻优计算模式时的梯级供热计算
-        '装机制热功率（2个设备要加两个RCXS）
-        Dim ZJRGL_TJ_ALL As Double = ZJRGL1_TJ + ZJRGL2_TJ + RCXS_a + RCXS_a
+        '装机制热功率
+        ZJRGL1_TJ = ZJRGL1_TJ + RCXS_a
+        ZJRGL2_TJ = ZJRGL2_TJ + RCXS_a
+        Dim ZJRGL_TJ_ALL As Double = ZJRGL1_TJ + ZJRGL2_TJ
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
@@ -9840,6 +9867,9 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_DGL
         Dim FHL2_min As Double = FHL2_min_DGL
+        '混水设备负荷率下限（不除以设备数量，因此需要还原）
+        FHL1_min_HS = FHL1_min_HS * NUM1_HS
+        FHL2_min_HS = FHL2_min_HS * NUM2_HS
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '根据供热功率和蓄热功率的比例，计算出本体耗电的综合修正系数
@@ -9852,8 +9882,10 @@ zzzz:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '全局寻优计算模式时的混水供热计算
-        '装机制热功率（2个设备要加两个RCXS）
-        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS + RCXS_a + RCXS_a
+        '装机制热功率
+        ZJRGL1_HS = ZJRGL1_HS + RCXS_a
+        ZJRGL2_HS = ZJRGL2_HS + RCXS_a
+        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
@@ -9881,21 +9913,17 @@ zzzz:
                 Else
                     RFH2_ALL_temp = n2 * ZJRGL2_DGL / NUM2_DGL
                 End If
-                If (RFH1_ALL_temp + RFH2_ALL_temp) < (RFH_GR + RFH_XR) Then
+                '混水供热的设备计算
+                Dim HSRFH_temp As Double = 0
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing And HSGRGLBL > 0 Then
+                    HSRFH_temp = HSGRGLBL * (RFH1_ALL_temp + RFH2_ALL_temp) / (1 - HSGRGLBL)
+                End If
+                If (RFH1_ALL_temp + RFH2_ALL_temp + HSRFH_temp) < (RFH_GR + RFH_XR) Then
                     GoTo zzzz
                 End If
                 '穷举设备负荷率
                 For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率（单台）
                     For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率（单台）
-                        '计算设备（1）和设备（2）本体的效率修正系数
-                        Dim XZXS1 As Double = 电采暖锅炉制热效率曲线(a1)
-                        Dim XZXS2 As Double = 电采暖锅炉制热效率曲线(a2)
-                        '计算设备（1）和设备（2）本体的耗电功率
-                        Dim BTHD1_now As Double = BTHDXS_ZH * n1 * a1 * BTHD1_ED_DGL / XZXS1
-                        Dim BTHD2_now As Double = BTHDXS_ZH * n2 * a2 * BTHD2_ED_DGL / XZXS2
-                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                        Dim FJHD1_now As Double = FJHDXS * n1 * a1 * FJHD1_ED_DGL
-                        Dim FJHD2_now As Double = FJHDXS * n2 * a2 * FJHD2_ED_DGL
                         '计算此时的总出力
                         Dim RGL1_out_now As Double
                         If ZJRGL1_DGL <= RCXS_a Then
@@ -9917,6 +9945,23 @@ zzzz:
                                 RGL2_out_now = n2 * a2 * ZJRGL2_DGL / NUM2_DGL
                             End If
                         End If
+                        '计算此时混水设备可以提供的热负荷
+                        '混水供热的设备计算
+                        Dim HSGRGL_temp As Double = 0
+                        HSGRGL_temp = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
+                        If (RGL1_out_now + RGL2_out_now + HSGRGL_temp) < (RFH_GR + RFH_XR) Then
+                            GoTo qqqq
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '计算设备（1）和设备（2）本体的效率修正系数
+                        Dim XZXS1 As Double = 电采暖锅炉制热效率曲线(a1)
+                        Dim XZXS2 As Double = 电采暖锅炉制热效率曲线(a2)
+                        '计算设备（1）和设备（2）本体的耗电功率
+                        Dim BTHD1_now As Double = BTHDXS_ZH * n1 * a1 * BTHD1_ED_DGL / XZXS1
+                        Dim BTHD2_now As Double = BTHDXS_ZH * n2 * a2 * BTHD2_ED_DGL / XZXS2
+                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                        Dim FJHD1_now As Double = FJHDXS * n1 * a1 * FJHD1_ED_DGL
+                        Dim FJHD2_now As Double = FJHDXS * n2 * a2 * FJHD2_ED_DGL
                         '————————————————————————————————————————————————————————————————————————————————————————
                         '————————————————————————————————————————————————————————————————————————————————————————
                         '混水供热的设备计算
@@ -10079,6 +10124,7 @@ kkk:
                             '跳出循环
                             Exit For
                         End If
+qqqq:
                     Next
                 Next
 zzzz:
@@ -10161,6 +10207,9 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_TRQGL
         Dim FHL2_min As Double = FHL2_min_TRQGL
+        '混水设备负荷率下限（不除以设备数量，因此需要还原）
+        FHL1_min_HS = FHL1_min_HS * NUM1_HS
+        FHL2_min_HS = FHL2_min_HS * NUM2_HS
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
@@ -10171,211 +10220,255 @@ zzzz:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '全局寻优计算模式时的混水供热计算
-        '装机制热功率（2个设备要加两个RCXS）
-        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS + RCXS_a + RCXS_a
+        '装机制热功率
+        ZJRGL1_HS = ZJRGL1_HS + RCXS_a
+        ZJRGL2_HS = ZJRGL2_HS + RCXS_a
+        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
+        '总成本
+        Dim COST_ALL As New List(Of Double)
         '列表，储存总耗气量，耗电量，设备（1）负荷率和设备（2）负荷率
         Dim HQ_ALL As New List(Of Double）
         Dim HD_ALL As New List(Of Double)
         Dim FHL1 As New List(Of Double）
         Dim FHL2 As New List(Of Double）
+        '列表，储存设备（1）和设备（2）的启动数量
+        Dim NUM1_List As New List(Of Double)
+        Dim NUM2_List As New List(Of Double)
         '混水设备负荷率
         Dim FHL_HS As New List(Of Double)
-        '总成本
-        Dim COST_ALL As New List(Of Double)
-        '穷举法求各种可能的组合的总耗电功率
-        For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率
-            For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率
-                '计算设备（1）和设备（2）本体的效率修正系数
-                Dim XZXS1 As Double = 天然气采暖锅炉制热效率曲线(a1)
-                Dim XZXS2 As Double = 天然气采暖锅炉制热效率曲线(a2)
-                '计算设备（1）和设备（2）本体的耗气量
-                Dim BTHQ1_now As Double = TRQHLXZXS_QT * a1 * BTHQ1_ED_TRQGL / XZXS1
-                Dim BTHQ2_now As Double = TRQHLXZXS_QT * a2 * BTHQ2_ED_TRQGL / XZXS2
-                '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                Dim FJHD1_now As Double = FJHDXS * a1 * FJHD1_ED_TRQGL
-                Dim FJHD2_now As Double = FJHDXS * a2 * FJHD2_ED_TRQGL
-                '计算此时的总出力
-                Dim RGL1_out_now As Double
-                If ZJRGL1_TRQGL <= RCXS_a Then
-                    RGL1_out_now = 0
+        '穷举设备数量
+        For n1 = 0 To NUM1_TRQGL Step 1 '设备1数量
+            For n2 = 0 To NUM2_TRQGL Step 1 '设备2数量
+                '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
+                Dim RFH1_ALL_temp As Double
+                If NUM1_TRQGL = 0 Then
+                    RFH1_ALL_temp = 0
                 Else
-                    RGL1_out_now = a1 * ZJRGL1_TRQGL
+                    RFH1_ALL_temp = n1 * ZJRGL1_TRQGL / NUM1_TRQGL
                 End If
-                Dim RGL2_out_now As Double
-                If ZJRGL2_TRQGL <= RCXS_a Then
-                    RGL2_out_now = 0
+                Dim RFH2_ALL_temp As Double
+                If NUM2_TRQGL = 0 Then
+                    RFH2_ALL_temp = 0
                 Else
-                    RGL2_out_now = a2 * ZJRGL2_TRQGL
+                    RFH2_ALL_temp = n2 * ZJRGL2_TRQGL / NUM2_TRQGL
                 End If
-                '————————————————————————————————————————————————————————————————————————————————————————
-                '————————————————————————————————————————————————————————————————————————————————————————
                 '混水供热的设备计算
-                Dim HSGRGL_now As Double = 0
-                '此时实际的设备总耗电
-                Dim HD_ALL_HS_now As Double = 0
-                '混水设备负荷率
-                Dim FHL_HS_now As Double = 0
+                Dim HSRFH_temp As Double = 0
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing And HSGRGLBL > 0 Then
-                    '根据HSGRGLBL，计算出此时混水设备的负荷率
-                    HSGRGL_now = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
-                    '混水设备负荷率
-                    FHL_HS_now = HSGRGL_now / ZJRGL_HS_ALL
-                    '设备本体耗电修正系数
-                    Dim XZXS_HS As Double = 1
-                    '定义列表，储存混水寻优计算结果
-                    '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
-                    Dim HD_ALL_HS As New List(Of Double）
-                    Dim FHL1_HS As New List(Of Double）
-                    Dim FHL2_HS As New List(Of Double）
-                    '列表，储存设备（1）和设备（2）的启动数量
-                    Dim NUM1_HS_List As New List(Of Double)
-                    Dim NUM2_HS_List As New List(Of Double)
-                    '参与混水的设备也需要进行寻优计算
-                    '穷举设备数量
-                    For n1_hs = 0 To NUM1_HS Step 1
-                        For n2_hs = 0 To NUM2_HS Step 1
-                            '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
-                            Dim RFH1_ALL_HS_temp As Double
-                            If NUM1_HS = 0 Then
-                                RFH1_ALL_HS_temp = 0
-                            Else
-                                RFH1_ALL_HS_temp = n1_hs * ZJRGL1_HS / NUM1_HS
-                            End If
-                            Dim RFH2_ALL_HS_temp As Double
-                            If NUM2_HS = 0 Then
-                                RFH2_ALL_HS_temp = 0
-                            Else
-                                RFH2_ALL_HS_temp = n2_hs * ZJRGL2_HS / NUM2_HS
-                            End If
-                            If (RFH1_ALL_HS_temp + RFH2_ALL_HS_temp) < HSGRGL_now Then
-                                GoTo kkk
-                            End If
-                            '穷举设备负荷率
-                            For a1_hs = FHL1_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_hs表示设备(1)负荷率（单台）
-                                For a2_hs = FHL2_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a2_hs表示设备(2)负荷率（单台）
-                                    '计算设备（1）和设备（2）本体的效率修正系数
-                                    Dim XZXS1_HS As Double = 1
-                                    Dim XZXS2_HS As Double = 1
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
-                                        XZXS1_HS = 空气源热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 空气源热泵制热COP曲线(a2_hs)
-                                    End If
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
-                                        XZXS1_HS = 水_地源热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 水_地源热泵制热COP曲线(a2_hs)
-                                    End If
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
-                                        XZXS1_HS = 风冷螺杆式热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 风冷螺杆式热泵制热COP曲线(a2_hs)
-                                    End If
-                                    '混水设备的总和本体耗电系数
-                                    Dim BTHDXS_ZH_HS As Double = BTHDXS_GR_air
-                                    '计算设备（1）和设备（2）本体的耗电功率
-                                    Dim BTHD1_HS_now As Double = BTHDXS_ZH_HS * n1_hs * a1_hs * BTHD1_ED_HS / XZXS1_HS
-                                    Dim BTHD2_HS_now As Double = BTHDXS_ZH_HS * n2_hs * a2_hs * BTHD2_ED_HS / XZXS2_HS
-                                    '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                                    Dim FJHD1_HS_now As Double = FJHDXS * n1_hs * a1_hs * FJHD1_ED_HS
-                                    Dim FJHD2_HS_now As Double = FJHDXS * n2_hs * a2_hs * FJHD2_ED_HS
-                                    '计算此时的总耗电功率
-                                    Dim ZHD_HS As Double = BTHD1_HS_now + BTHD2_HS_now + FJHD1_HS_now + FJHD2_HS_now
-                                    '计算此时的混水总出力
-                                    Dim RGL1_out_now_HS As Double
-                                    If ZJRGL1_HS <= RCXS_a Then
-                                        RGL1_out_now_HS = 0
+                    HSRFH_temp = HSGRGLBL * (RFH1_ALL_temp + RFH2_ALL_temp) / (1 - HSGRGLBL)
+                End If
+                If (RFH1_ALL_temp + RFH2_ALL_temp + HSRFH_temp) < (RFH_GR + 0) Then
+                    GoTo zzzz
+                End If
+                '穷举设备负荷率
+                '穷举法求各种可能的组合的总耗电功率
+                For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率
+                    For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率
+                        '计算此时的总出力
+                        Dim RGL1_out_now As Double
+                        If ZJRGL1_TRQGL <= RCXS_a Then
+                            RGL1_out_now = 0
+                        Else
+                            RGL1_out_now = a1 * ZJRGL1_TRQGL
+                        End If
+                        Dim RGL2_out_now As Double
+                        If ZJRGL2_TRQGL <= RCXS_a Then
+                            RGL2_out_now = 0
+                        Else
+                            RGL2_out_now = a2 * ZJRGL2_TRQGL
+                        End If
+                        '计算此时混水设备可以提供的热负荷
+                        '混水供热的设备计算
+                        Dim HSGRGL_temp As Double = 0
+                        HSGRGL_temp = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
+                        If (RGL1_out_now + RGL2_out_now + HSGRGL_temp) < (RFH_GR + 0) Then
+                            GoTo qqqq
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '计算设备（1）和设备（2）本体的效率修正系数
+                        Dim XZXS1 As Double = 天然气采暖锅炉制热效率曲线(a1)
+                        Dim XZXS2 As Double = 天然气采暖锅炉制热效率曲线(a2)
+                        '计算设备（1）和设备（2）本体的耗气量
+                        Dim BTHQ1_now As Double = TRQHLXZXS_QT * a1 * BTHQ1_ED_TRQGL / XZXS1
+                        Dim BTHQ2_now As Double = TRQHLXZXS_QT * a2 * BTHQ2_ED_TRQGL / XZXS2
+                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                        Dim FJHD1_now As Double = FJHDXS * a1 * FJHD1_ED_TRQGL
+                        Dim FJHD2_now As Double = FJHDXS * a2 * FJHD2_ED_TRQGL
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '混水供热的设备计算
+                        Dim HSGRGL_now As Double = 0
+                        '此时实际的设备总耗电
+                        Dim HD_ALL_HS_now As Double = 0
+                        '混水设备负荷率
+                        Dim FHL_HS_now As Double = 0
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing And HSGRGLBL > 0 Then
+                            '根据HSGRGLBL，计算出此时混水设备的负荷率
+                            HSGRGL_now = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
+                            '混水设备负荷率
+                            FHL_HS_now = HSGRGL_now / ZJRGL_HS_ALL
+                            '设备本体耗电修正系数
+                            Dim XZXS_HS As Double = 1
+                            '定义列表，储存混水寻优计算结果
+                            '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
+                            Dim HD_ALL_HS As New List(Of Double）
+                            Dim FHL1_HS As New List(Of Double）
+                            Dim FHL2_HS As New List(Of Double）
+                            '列表，储存设备（1）和设备（2）的启动数量
+                            Dim NUM1_HS_List As New List(Of Double)
+                            Dim NUM2_HS_List As New List(Of Double)
+                            '参与混水的设备也需要进行寻优计算
+                            '穷举设备数量
+                            For n1_hs = 0 To NUM1_HS Step 1
+                                For n2_hs = 0 To NUM2_HS Step 1
+                                    '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
+                                    Dim RFH1_ALL_HS_temp As Double
+                                    If NUM1_HS = 0 Then
+                                        RFH1_ALL_HS_temp = 0
                                     Else
-                                        If NUM1_HS = 0 Then
-                                            RGL1_out_now_HS = 0
-                                        Else
-                                            RGL1_out_now_HS = n1_hs * a1_hs * ZJRGL1_HS / NUM1_HS
-                                        End If
+                                        RFH1_ALL_HS_temp = n1_hs * ZJRGL1_HS / NUM1_HS
                                     End If
-                                    Dim RGL2_out_now_HS As Double
-                                    If ZJRGL2_HS <= RCXS_a Then
-                                        RGL2_out_now_HS = 0
+                                    Dim RFH2_ALL_HS_temp As Double
+                                    If NUM2_HS = 0 Then
+                                        RFH2_ALL_HS_temp = 0
                                     Else
-                                        If NUM2_HS = 0 Then
-                                            RGL2_out_now_HS = 0
-                                        Else
-                                            RGL2_out_now_HS = n2_hs * a2_hs * ZJRGL2_HS / NUM2_HS
-                                        End If
+                                        RFH2_ALL_HS_temp = n2_hs * ZJRGL2_HS / NUM2_HS
                                     End If
-                                    Dim RGL_out_all_HS As Double = RGL1_out_now_HS + RGL2_out_now_HS
-                                    '如果达到了热负荷需求，则跳出内层循环
-                                    If RGL_out_all_HS >= HSGRGL_now Then
-                                        '计算结果加入列表
-                                        HD_ALL_HS.Add(ZHD_HS)
-                                        FHL1_HS.Add(a1_hs)
-                                        FHL2_HS.Add(a2_hs)
-                                        NUM1_HS_List.Add(n1_hs)
-                                        NUM2_HS_List.Add(n2_hs)
-                                        '跳出循环
-                                        Exit For
-                                    ElseIf a1_hs >= 1 And a2_hs >= 1 Then
-                                        '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
-                                        '计算结果加入列表
-                                        HD_ALL_HS.Add(ZHD_HS)
-                                        FHL1_HS.Add(a1_hs)
-                                        FHL2_HS.Add(a2_hs)
-                                        NUM1_HS_List.Add(n1_hs)
-                                        NUM2_HS_List.Add(n2_hs)
-                                        '跳出循环
-                                        Exit For
+                                    If (RFH1_ALL_HS_temp + RFH2_ALL_HS_temp) < HSGRGL_now Then
+                                        GoTo kkk
                                     End If
+                                    '穷举设备负荷率
+                                    For a1_hs = FHL1_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_hs表示设备(1)负荷率（单台）
+                                        For a2_hs = FHL2_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a2_hs表示设备(2)负荷率（单台）
+                                            '计算设备（1）和设备（2）本体的效率修正系数
+                                            Dim XZXS1_HS As Double = 1
+                                            Dim XZXS2_HS As Double = 1
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                                                XZXS1_HS = 空气源热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 空气源热泵制热COP曲线(a2_hs)
+                                            End If
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                                                XZXS1_HS = 水_地源热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 水_地源热泵制热COP曲线(a2_hs)
+                                            End If
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                                                XZXS1_HS = 风冷螺杆式热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 风冷螺杆式热泵制热COP曲线(a2_hs)
+                                            End If
+                                            '混水设备的总和本体耗电系数
+                                            Dim BTHDXS_ZH_HS As Double = BTHDXS_GR_air
+                                            '计算设备（1）和设备（2）本体的耗电功率
+                                            Dim BTHD1_HS_now As Double = BTHDXS_ZH_HS * n1_hs * a1_hs * BTHD1_ED_HS / XZXS1_HS
+                                            Dim BTHD2_HS_now As Double = BTHDXS_ZH_HS * n2_hs * a2_hs * BTHD2_ED_HS / XZXS2_HS
+                                            '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                                            Dim FJHD1_HS_now As Double = FJHDXS * n1_hs * a1_hs * FJHD1_ED_HS
+                                            Dim FJHD2_HS_now As Double = FJHDXS * n2_hs * a2_hs * FJHD2_ED_HS
+                                            '计算此时的总耗电功率
+                                            Dim ZHD_HS As Double = BTHD1_HS_now + BTHD2_HS_now + FJHD1_HS_now + FJHD2_HS_now
+                                            '计算此时的混水总出力
+                                            Dim RGL1_out_now_HS As Double
+                                            If ZJRGL1_HS <= RCXS_a Then
+                                                RGL1_out_now_HS = 0
+                                            Else
+                                                If NUM1_HS = 0 Then
+                                                    RGL1_out_now_HS = 0
+                                                Else
+                                                    RGL1_out_now_HS = n1_hs * a1_hs * ZJRGL1_HS / NUM1_HS
+                                                End If
+                                            End If
+                                            Dim RGL2_out_now_HS As Double
+                                            If ZJRGL2_HS <= RCXS_a Then
+                                                RGL2_out_now_HS = 0
+                                            Else
+                                                If NUM2_HS = 0 Then
+                                                    RGL2_out_now_HS = 0
+                                                Else
+                                                    RGL2_out_now_HS = n2_hs * a2_hs * ZJRGL2_HS / NUM2_HS
+                                                End If
+                                            End If
+                                            Dim RGL_out_all_HS As Double = RGL1_out_now_HS + RGL2_out_now_HS
+                                            '如果达到了热负荷需求，则跳出内层循环
+                                            If RGL_out_all_HS >= HSGRGL_now Then
+                                                '计算结果加入列表
+                                                HD_ALL_HS.Add(ZHD_HS)
+                                                FHL1_HS.Add(a1_hs)
+                                                FHL2_HS.Add(a2_hs)
+                                                NUM1_HS_List.Add(n1_hs)
+                                                NUM2_HS_List.Add(n2_hs)
+                                                '跳出循环
+                                                Exit For
+                                            ElseIf a1_hs >= 1 And a2_hs >= 1 Then
+                                                '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
+                                                '计算结果加入列表
+                                                HD_ALL_HS.Add(ZHD_HS)
+                                                FHL1_HS.Add(a1_hs)
+                                                FHL2_HS.Add(a2_hs)
+                                                NUM1_HS_List.Add(n1_hs)
+                                                NUM2_HS_List.Add(n2_hs)
+                                                '跳出循环
+                                                Exit For
+                                            End If
+                                        Next
+                                    Next
+kkk:
                                 Next
                             Next
-kkk:
-                        Next
+                            '找出总耗电功率最低的运行工况并写入Excel
+                            Dim HD_ALL_min_HS As Double
+                            Dim HD_index_min_HS As Integer
+                            '求此时设备（1）和设备（2）的负荷率（单台）
+                            Dim FHL1_result_HS As Double
+                            Dim FHL2_result_HS As Double
+                            '得到结果
+                            HD_ALL_min_HS = HD_ALL_HS.Min
+                            HD_index_min_HS = HD_ALL_HS.IndexOf(HD_ALL_min_HS)
+                            '求此时设备（1）和设备（2）的负荷率（单台）
+                            FHL1_result_HS = FHL1_HS(HD_index_min_HS)
+                            FHL2_result_HS = FHL2_HS(HD_index_min_HS)
+                            '总耗电
+                            HD_ALL_HS_now = HD_ALL_min_HS
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '总制热出力
+                        Dim RGL_out_all As Double = RGL1_out_now + RGL2_out_now + HSGRGL_now
+                        '计算此时的总耗气量
+                        Dim ZHQ As Double = BTHQ1_now + BTHQ2_now
+                        '计算此时的总耗电量
+                        Dim ZHD As Double = FJHD1_now + FJHD2_now + FJHD1_now + FJHD2_now + HD_ALL_HS_now
+                        '计算总成本
+                        Dim COST_ALL_now As Double = D_price * ZHD + TRQ_price * ZHQ
+                        '如果达到了热负荷需求，则跳出内层循环
+                        If RGL_out_all >= RFH_GR Then
+                            '计算结果加入列表
+                            HQ_ALL.Add(ZHQ)
+                            HD_ALL.Add(ZHD)
+                            FHL1.Add(a1)
+                            FHL2.Add(a2)
+                            FHL_HS.Add(FHL_HS_now)
+                            COST_ALL.Add(COST_ALL_now)
+                            '跳出循环
+                            Exit For
+                        ElseIf a1 >= 1 And a2 >= 1 Then
+                            '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
+                            '计算结果加入列表
+                            HD_ALL.Add(ZHD)
+                            FHL1.Add(a1)
+                            FHL2.Add(a2)
+                            FHL_HS.Add(FHL_HS_now)
+                            COST_ALL.Add(COST_ALL_now)
+                            '跳出循环
+                            Exit For
+                        End If
+qqqq:
                     Next
-                    '找出总耗电功率最低的运行工况并写入Excel
-                    Dim HD_ALL_min_HS As Double
-                    Dim HD_index_min_HS As Integer
-                    '求此时设备（1）和设备（2）的负荷率（单台）
-                    Dim FHL1_result_HS As Double
-                    Dim FHL2_result_HS As Double
-                    '得到结果
-                    HD_ALL_min_HS = HD_ALL_HS.Min
-                    HD_index_min_HS = HD_ALL_HS.IndexOf(HD_ALL_min_HS)
-                    '求此时设备（1）和设备（2）的负荷率（单台）
-                    FHL1_result_HS = FHL1_HS(HD_index_min_HS)
-                    FHL2_result_HS = FHL2_HS(HD_index_min_HS)
-                    '总耗电
-                    HD_ALL_HS_now = HD_ALL_min_HS
-                End If
-                '————————————————————————————————————————————————————————————————————————————————————————
-                '总制热出力
-                Dim RGL_out_all As Double = RGL1_out_now + RGL2_out_now + HSGRGL_now
-                '计算此时的总耗气量
-                Dim ZHQ As Double = BTHQ1_now + BTHQ2_now
-                '计算此时的总耗电量
-                Dim ZHD As Double = FJHD1_now + FJHD2_now + FJHD1_now + FJHD2_now + HD_ALL_HS_now
-                '计算总成本
-                Dim COST_ALL_now As Double = D_price * ZHD + TRQ_price * ZHQ
-                '如果达到了热负荷需求，则跳出内层循环
-                If RGL_out_all >= RFH_GR Then
-                    '计算结果加入列表
-                    HQ_ALL.Add(ZHQ)
-                    HD_ALL.Add(ZHD)
-                    FHL1.Add(a1)
-                    FHL2.Add(a2)
-                    FHL_HS.Add(FHL_HS_now)
-                    COST_ALL.Add(COST_ALL_now)
-                    '跳出循环
-                    Exit For
-                ElseIf a1 >= 1 And a2 >= 1 Then
-                    '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
-                    '计算结果加入列表
-                    HD_ALL.Add(ZHD)
-                    FHL1.Add(a1)
-                    FHL2.Add(a2)
-                    FHL_HS.Add(FHL_HS_now)
-                    COST_ALL.Add(COST_ALL_now)
-                    '跳出循环
-                    Exit For
-                End If
+                Next
+zzzz：
             Next
         Next
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
         '找出总成本量最低的运行工况
         Dim COST_ALL_min As Double
         Dim COST_index_min As Integer
@@ -10386,6 +10479,9 @@ kkk:
         '求此时设备（1）和设备（2）的负荷率
         Dim FHL1_result As Double
         Dim FHL2_result As Double
+        '求此时设备（1）和设备（2）启动数量
+        Dim NUM1_result As Double
+        Dim NUM2_result As Double
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配，蓄热负荷率转换为台数
         Dim FHL1_GR_result As Double
         Dim FHL2_GR_result As Double
@@ -10399,6 +10495,9 @@ kkk:
         '求此时设备（1）和设备（2）的负荷率
         FHL1_result = FHL1(COST_index_min)
         FHL2_result = FHL2(COST_index_min)
+        '求此时设备（1）和设备（2）启动数量
+        NUM1_result = NUM1_List(COST_index_min)
+        NUM2_result = NUM2_List(COST_index_min)
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配
         '负荷率的换算还要考虑RXCS的因素
         Dim RCZHXS_1 As Double
@@ -10433,6 +10532,9 @@ kkk:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_ZRXXHL
         Dim FHL2_min As Double = FHL2_min_ZRXXHL
+        '混水设备负荷率下限（不除以设备数量，因此需要还原）
+        FHL1_min_HS = FHL1_min_HS * NUM1_HS
+        FHL2_min_HS = FHL2_min_HS * NUM2_HS
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
@@ -10443,211 +10545,256 @@ kkk:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '全局寻优计算模式时的混水供热计算
-        '装机制热功率（2个设备要加两个RCXS）
-        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS + RCXS_a + RCXS_a
+        '装机制热功率
+        ZJRGL1_HS = ZJRGL1_HS + RCXS_a
+        ZJRGL2_HS = ZJRGL2_HS + RCXS_a
+        Dim ZJRGL_HS_ALL As Double = ZJRGL1_HS + ZJRGL2_HS
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
+        '总成本
+        Dim COST_ALL As New List(Of Double)
         '列表，储存总耗气量，耗电量，设备（1）负荷率和设备（2）负荷率
         Dim HQ_ALL As New List(Of Double）
         Dim HD_ALL As New List(Of Double)
         Dim FHL1 As New List(Of Double）
         Dim FHL2 As New List(Of Double）
+        '列表，储存设备（1）和设备（2）的启动数量
+        Dim NUM1_List As New List(Of Double)
+        Dim NUM2_List As New List(Of Double)
         '混水设备负荷率
         Dim FHL_HS As New List(Of Double)
-        '总成本
-        Dim COST_ALL As New List(Of Double)
-        '穷举法求各种可能的组合的总耗电功率
-        '直燃型溴化锂制热负荷率上限为1
-        For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率
-            For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率
-                '计算设备（1）和设备（2）本体的效率修正系数
-                Dim XZXS1 As Double = 直燃型溴化锂制热COP曲线(a1)
-                Dim XZXS2 As Double = 直燃型溴化锂制热COP曲线(a2)
-                '计算设备（1）和设备（2）本体的耗气量
-                Dim BTHQ1_now As Double = TRQHLXZXS_QT * a1 * BTHQ1_ED_ZRXXHL / XZXS1
-                Dim BTHQ2_now As Double = TRQHLXZXS_QT * a2 * BTHQ2_ED_ZRXXHL / XZXS2
-                '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                Dim FJHD1_now As Double = FJHDXS * a1 * FJHD1_ED_ZRXXHL
-                Dim FJHD2_now As Double = FJHDXS * a2 * FJHD2_ED_ZRXXHL
-                '计算此时的总出力
-                Dim RGL1_out_now As Double
-                If ZJRGL1_ZRXXHL <= RCXS_a Then
-                    RGL1_out_now = 0
+        '穷举设备数量
+        For n1 = 0 To NUM1_ZRXXHL Step 1 '设备1数量
+            For n2 = 0 To NUM2_ZRXXHL Step 1 '设备2数量
+                '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
+                Dim RFH1_ALL_temp As Double
+                If NUM1_ZRXXHL = 0 Then
+                    RFH1_ALL_temp = 0
                 Else
-                    RGL1_out_now = a1 * ZJRGL1_ZRXXHL
+                    RFH1_ALL_temp = n1 * ZJRGL1_ZRXXHL / NUM1_ZRXXHL
                 End If
-                Dim RGL2_out_now As Double
-                If ZJRGL2_ZRXXHL <= RCXS_a Then
-                    RGL2_out_now = 0
+                Dim RFH2_ALL_temp As Double
+                If NUM2_ZRXXHL = 0 Then
+                    RFH2_ALL_temp = 0
                 Else
-                    RGL2_out_now = a2 * ZJRGL2_ZRXXHL
+                    RFH2_ALL_temp = n2 * ZJRGL2_ZRXXHL / NUM2_ZRXXHL
                 End If
-                '————————————————————————————————————————————————————————————————————————————————————————
                 '混水供热的设备计算
-                Dim HSGRGL_now As Double = 0
-                '此时实际的设备总耗电
-                Dim HD_ALL_HS_now As Double = 0
-                '混水设备负荷率
-                Dim FHL_HS_now As Double = 0
+                Dim HSRFH_temp As Double = 0
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing And HSGRGLBL > 0 Then
-                    '根据HSGRGLBL，计算出此时混水设备的负荷率
-                    HSGRGL_now = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
-                    '混水设备负荷率
-                    FHL_HS_now = HSGRGL_now / ZJRGL_HS_ALL
-                    '设备本体耗电修正系数
-                    Dim XZXS_HS As Double = 1
-                    '定义列表，储存混水寻优计算结果
-                    '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
-                    Dim HD_ALL_HS As New List(Of Double）
-                    Dim FHL1_HS As New List(Of Double）
-                    Dim FHL2_HS As New List(Of Double）
-                    '列表，储存设备（1）和设备（2）的启动数量
-                    Dim NUM1_HS_List As New List(Of Double)
-                    Dim NUM2_HS_List As New List(Of Double)
-                    '参与混水的设备也需要进行寻优计算
-                    '穷举设备数量
-                    For n1_hs = 0 To NUM1_HS Step 1
-                        For n2_hs = 0 To NUM2_HS Step 1
-                            '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
-                            Dim RFH1_ALL_HS_temp As Double
-                            If NUM1_HS = 0 Then
-                                RFH1_ALL_HS_temp = 0
-                            Else
-                                RFH1_ALL_HS_temp = n1_hs * ZJRGL1_HS / NUM1_HS
-                            End If
-                            Dim RFH2_ALL_HS_temp As Double
-                            If NUM2_HS = 0 Then
-                                RFH2_ALL_HS_temp = 0
-                            Else
-                                RFH2_ALL_HS_temp = n2_hs * ZJRGL2_HS / NUM2_HS
-                            End If
-                            If (RFH1_ALL_HS_temp + RFH2_ALL_HS_temp) < HSGRGL_now Then
-                                GoTo kkk
-                            End If
-                            '穷举设备负荷率
-                            For a1_hs = FHL1_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_hs表示设备(1)负荷率（单台）
-                                For a2_hs = FHL2_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a2_hs表示设备(2)负荷率（单台）
-                                    '计算设备（1）和设备（2）本体的效率修正系数
-                                    Dim XZXS1_HS As Double = 1
-                                    Dim XZXS2_HS As Double = 1
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
-                                        XZXS1_HS = 空气源热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 空气源热泵制热COP曲线(a2_hs)
-                                    End If
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
-                                        XZXS1_HS = 水_地源热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 水_地源热泵制热COP曲线(a2_hs)
-                                    End If
-                                    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
-                                        XZXS1_HS = 风冷螺杆式热泵制热COP曲线(a1_hs)
-                                        XZXS2_HS = 风冷螺杆式热泵制热COP曲线(a2_hs)
-                                    End If
-                                    '混水设备的总和本体耗电系数
-                                    Dim BTHDXS_ZH_HS As Double = BTHDXS_GR_air
-                                    '计算设备（1）和设备（2）本体的耗电功率
-                                    Dim BTHD1_HS_now As Double = BTHDXS_ZH_HS * n1_hs * a1_hs * BTHD1_ED_HS / XZXS1_HS
-                                    Dim BTHD2_HS_now As Double = BTHDXS_ZH_HS * n2_hs * a2_hs * BTHD2_ED_HS / XZXS2_HS
-                                    '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                                    Dim FJHD1_HS_now As Double = FJHDXS * n1_hs * a1_hs * FJHD1_ED_HS
-                                    Dim FJHD2_HS_now As Double = FJHDXS * n2_hs * a2_hs * FJHD2_ED_HS
-                                    '计算此时的总耗电功率
-                                    Dim ZHD_HS As Double = BTHD1_HS_now + BTHD2_HS_now + FJHD1_HS_now + FJHD2_HS_now
-                                    '计算此时的混水总出力
-                                    Dim RGL1_out_now_HS As Double
-                                    If ZJRGL1_HS <= RCXS_a Then
-                                        RGL1_out_now_HS = 0
+                    HSRFH_temp = HSGRGLBL * (RFH1_ALL_temp + RFH2_ALL_temp) / (1 - HSGRGLBL)
+                End If
+                If (RFH1_ALL_temp + RFH2_ALL_temp + HSRFH_temp) < (RFH_GR + 0) Then
+                    GoTo zzzz
+                End If
+                '穷举设备负荷率
+                '穷举法求各种可能的组合的总耗电功率
+                '直燃型溴化锂制热负荷率上限为1
+                For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率
+                    For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率
+                        '计算此时的总出力
+                        Dim RGL1_out_now As Double
+                        If ZJRGL1_ZRXXHL <= RCXS_a Then
+                            RGL1_out_now = 0
+                        Else
+                            RGL1_out_now = a1 * ZJRGL1_ZRXXHL
+                        End If
+                        Dim RGL2_out_now As Double
+                        If ZJRGL2_ZRXXHL <= RCXS_a Then
+                            RGL2_out_now = 0
+                        Else
+                            RGL2_out_now = a2 * ZJRGL2_ZRXXHL
+                        End If
+                        '计算此时混水设备可以提供的热负荷
+                        '混水供热的设备计算
+                        Dim HSGRGL_temp As Double = 0
+                        HSGRGL_temp = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
+                        If (RGL1_out_now + RGL2_out_now + HSGRGL_temp) < (RFH_GR + 0) Then
+                            GoTo qqqq
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '计算设备（1）和设备（2）本体的效率修正系数
+                        Dim XZXS1 As Double = 直燃型溴化锂制热COP曲线(a1)
+                        Dim XZXS2 As Double = 直燃型溴化锂制热COP曲线(a2)
+                        '计算设备（1）和设备（2）本体的耗气量
+                        Dim BTHQ1_now As Double = TRQHLXZXS_QT * a1 * BTHQ1_ED_ZRXXHL / XZXS1
+                        Dim BTHQ2_now As Double = TRQHLXZXS_QT * a2 * BTHQ2_ED_ZRXXHL / XZXS2
+                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                        Dim FJHD1_now As Double = FJHDXS * a1 * FJHD1_ED_ZRXXHL
+                        Dim FJHD2_now As Double = FJHDXS * a2 * FJHD2_ED_ZRXXHL
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '混水供热的设备计算
+                        Dim HSGRGL_now As Double = 0
+                        '此时实际的设备总耗电
+                        Dim HD_ALL_HS_now As Double = 0
+                        '混水设备负荷率
+                        Dim FHL_HS_now As Double = 0
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing And HSGRGLBL > 0 Then
+                            '根据HSGRGLBL，计算出此时混水设备的负荷率
+                            HSGRGL_now = HSGRGLBL * (RGL1_out_now + RGL2_out_now) / (1 - HSGRGLBL)
+                            '混水设备负荷率
+                            FHL_HS_now = HSGRGL_now / ZJRGL_HS_ALL
+                            '设备本体耗电修正系数
+                            Dim XZXS_HS As Double = 1
+                            '定义列表，储存混水寻优计算结果
+                            '列表，储存总耗电量，设备（1）负荷率和设备（2）负荷率
+                            Dim HD_ALL_HS As New List(Of Double）
+                            Dim FHL1_HS As New List(Of Double）
+                            Dim FHL2_HS As New List(Of Double）
+                            '列表，储存设备（1）和设备（2）的启动数量
+                            Dim NUM1_HS_List As New List(Of Double)
+                            Dim NUM2_HS_List As New List(Of Double)
+                            '参与混水的设备也需要进行寻优计算
+                            '穷举设备数量
+                            For n1_hs = 0 To NUM1_HS Step 1
+                                For n2_hs = 0 To NUM2_HS Step 1
+                                    '判断启动的设备100%负荷率够不够，不够跳出循环，提高速度
+                                    Dim RFH1_ALL_HS_temp As Double
+                                    If NUM1_HS = 0 Then
+                                        RFH1_ALL_HS_temp = 0
                                     Else
-                                        If NUM1_HS = 0 Then
-                                            RGL1_out_now_HS = 0
-                                        Else
-                                            RGL1_out_now_HS = n1_hs * a1_hs * ZJRGL1_HS / NUM1_HS
-                                        End If
+                                        RFH1_ALL_HS_temp = n1_hs * ZJRGL1_HS / NUM1_HS
                                     End If
-                                    Dim RGL2_out_now_HS As Double
-                                    If ZJRGL2_HS <= RCXS_a Then
-                                        RGL2_out_now_HS = 0
+                                    Dim RFH2_ALL_HS_temp As Double
+                                    If NUM2_HS = 0 Then
+                                        RFH2_ALL_HS_temp = 0
                                     Else
-                                        If NUM2_HS = 0 Then
-                                            RGL2_out_now_HS = 0
-                                        Else
-                                            RGL2_out_now_HS = n2_hs * a2_hs * ZJRGL2_HS / NUM2_HS
-                                        End If
+                                        RFH2_ALL_HS_temp = n2_hs * ZJRGL2_HS / NUM2_HS
                                     End If
-                                    Dim RGL_out_all_HS As Double = RGL1_out_now_HS + RGL2_out_now_HS
-                                    '如果达到了热负荷需求，则跳出内层循环
-                                    If RGL_out_all_HS >= HSGRGL_now Then
-                                        '计算结果加入列表
-                                        HD_ALL_HS.Add(ZHD_HS)
-                                        FHL1_HS.Add(a1_hs)
-                                        FHL2_HS.Add(a2_hs)
-                                        NUM1_HS_List.Add(n1_hs)
-                                        NUM2_HS_List.Add(n2_hs)
-                                        '跳出循环
-                                        Exit For
-                                    ElseIf a1_hs >= 1 And a2_hs >= 1 Then
-                                        '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
-                                        '计算结果加入列表
-                                        HD_ALL_HS.Add(ZHD_HS)
-                                        FHL1_HS.Add(a1_hs)
-                                        FHL2_HS.Add(a2_hs)
-                                        NUM1_HS_List.Add(n1_hs)
-                                        NUM2_HS_List.Add(n2_hs)
-                                        '跳出循环
-                                        Exit For
+                                    If (RFH1_ALL_HS_temp + RFH2_ALL_HS_temp) < HSGRGL_now Then
+                                        GoTo kkk
                                     End If
+                                    '穷举设备负荷率
+                                    For a1_hs = FHL1_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1_hs表示设备(1)负荷率（单台）
+                                        For a2_hs = FHL2_min_HS To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a2_hs表示设备(2)负荷率（单台）
+                                            '计算设备（1）和设备（2）本体的效率修正系数
+                                            Dim XZXS1_HS As Double = 1
+                                            Dim XZXS2_HS As Double = 1
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "空气源热泵" Then
+                                                XZXS1_HS = 空气源热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 空气源热泵制热COP曲线(a2_hs)
+                                            End If
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "水(地)源热泵" Then
+                                                XZXS1_HS = 水_地源热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 水_地源热泵制热COP曲线(a2_hs)
+                                            End If
+                                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value = "风冷螺杆机" Then
+                                                XZXS1_HS = 风冷螺杆式热泵制热COP曲线(a1_hs)
+                                                XZXS2_HS = 风冷螺杆式热泵制热COP曲线(a2_hs)
+                                            End If
+                                            '混水设备的总和本体耗电系数
+                                            Dim BTHDXS_ZH_HS As Double = BTHDXS_GR_air
+                                            '计算设备（1）和设备（2）本体的耗电功率
+                                            Dim BTHD1_HS_now As Double = BTHDXS_ZH_HS * n1_hs * a1_hs * BTHD1_ED_HS / XZXS1_HS
+                                            Dim BTHD2_HS_now As Double = BTHDXS_ZH_HS * n2_hs * a2_hs * BTHD2_ED_HS / XZXS2_HS
+                                            '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                                            Dim FJHD1_HS_now As Double = FJHDXS * n1_hs * a1_hs * FJHD1_ED_HS
+                                            Dim FJHD2_HS_now As Double = FJHDXS * n2_hs * a2_hs * FJHD2_ED_HS
+                                            '计算此时的总耗电功率
+                                            Dim ZHD_HS As Double = BTHD1_HS_now + BTHD2_HS_now + FJHD1_HS_now + FJHD2_HS_now
+                                            '计算此时的混水总出力
+                                            Dim RGL1_out_now_HS As Double
+                                            If ZJRGL1_HS <= RCXS_a Then
+                                                RGL1_out_now_HS = 0
+                                            Else
+                                                If NUM1_HS = 0 Then
+                                                    RGL1_out_now_HS = 0
+                                                Else
+                                                    RGL1_out_now_HS = n1_hs * a1_hs * ZJRGL1_HS / NUM1_HS
+                                                End If
+                                            End If
+                                            Dim RGL2_out_now_HS As Double
+                                            If ZJRGL2_HS <= RCXS_a Then
+                                                RGL2_out_now_HS = 0
+                                            Else
+                                                If NUM2_HS = 0 Then
+                                                    RGL2_out_now_HS = 0
+                                                Else
+                                                    RGL2_out_now_HS = n2_hs * a2_hs * ZJRGL2_HS / NUM2_HS
+                                                End If
+                                            End If
+                                            Dim RGL_out_all_HS As Double = RGL1_out_now_HS + RGL2_out_now_HS
+                                            '如果达到了热负荷需求，则跳出内层循环
+                                            If RGL_out_all_HS >= HSGRGL_now Then
+                                                '计算结果加入列表
+                                                HD_ALL_HS.Add(ZHD_HS)
+                                                FHL1_HS.Add(a1_hs)
+                                                FHL2_HS.Add(a2_hs)
+                                                NUM1_HS_List.Add(n1_hs)
+                                                NUM2_HS_List.Add(n2_hs)
+                                                '跳出循环
+                                                Exit For
+                                            ElseIf a1_hs >= 1 And a2_hs >= 1 Then
+                                                '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
+                                                '计算结果加入列表
+                                                HD_ALL_HS.Add(ZHD_HS)
+                                                FHL1_HS.Add(a1_hs)
+                                                FHL2_HS.Add(a2_hs)
+                                                NUM1_HS_List.Add(n1_hs)
+                                                NUM2_HS_List.Add(n2_hs)
+                                                '跳出循环
+                                                Exit For
+                                            End If
+                                        Next
+                                    Next
+kkk:
                                 Next
                             Next
-kkk:
-                        Next
+                            '找出总耗电功率最低的运行工况并写入Excel
+                            Dim HD_ALL_min_HS As Double
+                            Dim HD_index_min_HS As Integer
+                            '求此时设备（1）和设备（2）的负荷率（单台）
+                            Dim FHL1_result_HS As Double
+                            Dim FHL2_result_HS As Double
+                            '得到结果
+                            HD_ALL_min_HS = HD_ALL_HS.Min
+                            HD_index_min_HS = HD_ALL_HS.IndexOf(HD_ALL_min_HS)
+                            '求此时设备（1）和设备（2）的负荷率（单台）
+                            FHL1_result_HS = FHL1_HS(HD_index_min_HS)
+                            FHL2_result_HS = FHL2_HS(HD_index_min_HS)
+                            '总耗电
+                            HD_ALL_HS_now = HD_ALL_min_HS
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '总制热出力
+                        Dim RGL_out_all As Double = RGL1_out_now + RGL2_out_now + HSGRGL_now
+                        '计算此时的总耗气量
+                        Dim ZHQ As Double = BTHQ1_now + BTHQ2_now
+                        '计算此时的总耗电量
+                        Dim ZHD As Double = FJHD1_now + FJHD2_now + FJHD1_now + FJHD2_now + HD_ALL_HS_now
+                        '计算总成本
+                        Dim COST_ALL_now As Double = D_price * ZHD + TRQ_price * ZHQ
+                        '如果达到了热负荷需求，则跳出内层循环
+                        If RGL_out_all >= RFH_GR Then
+                            '计算结果加入列表
+                            HQ_ALL.Add(ZHQ)
+                            HD_ALL.Add(ZHD)
+                            FHL1.Add(a1)
+                            FHL2.Add(a2)
+                            FHL_HS.Add(FHL_HS_now)
+                            COST_ALL.Add(COST_ALL_now)
+                            '跳出循环
+                            Exit For
+                        ElseIf a1 >= 1 And a2 >= 1 Then
+                            '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
+                            '计算结果加入列表
+                            HD_ALL.Add(ZHD)
+                            FHL1.Add(a1)
+                            FHL2.Add(a2)
+                            FHL_HS.Add(FHL_HS_now)
+                            COST_ALL.Add(COST_ALL_now)
+                            '跳出循环
+                            Exit For
+                        End If
+qqqq:
                     Next
-                    '找出总耗电功率最低的运行工况并写入Excel
-                    Dim HD_ALL_min_HS As Double
-                    Dim HD_index_min_HS As Integer
-                    '求此时设备（1）和设备（2）的负荷率（单台）
-                    Dim FHL1_result_HS As Double
-                    Dim FHL2_result_HS As Double
-                    '得到结果
-                    HD_ALL_min_HS = HD_ALL_HS.Min
-                    HD_index_min_HS = HD_ALL_HS.IndexOf(HD_ALL_min_HS)
-                    '求此时设备（1）和设备（2）的负荷率（单台）
-                    FHL1_result_HS = FHL1_HS(HD_index_min_HS)
-                    FHL2_result_HS = FHL2_HS(HD_index_min_HS)
-                    '总耗电
-                    HD_ALL_HS_now = HD_ALL_min_HS
-                End If
-                '————————————————————————————————————————————————————————————————————————————————————————
-                '总制热出力
-                Dim RGL_out_all As Double = RGL1_out_now + RGL2_out_now + HSGRGL_now
-                '计算此时的总耗气量
-                Dim ZHQ As Double = BTHQ1_now + BTHQ2_now
-                '计算此时的总耗电量
-                Dim ZHD As Double = FJHD1_now + FJHD2_now + FJHD1_now + FJHD2_now + HD_ALL_HS_now
-                '计算总成本
-                Dim COST_ALL_now As Double = D_price * ZHD + TRQ_price * ZHQ
-                '如果达到了热负荷需求，则跳出内层循环
-                If RGL_out_all >= RFH_GR Then
-                    '计算结果加入列表
-                    HQ_ALL.Add(ZHQ)
-                    HD_ALL.Add(ZHD)
-                    FHL1.Add(a1)
-                    FHL2.Add(a2)
-                    FHL_HS.Add(FHL_HS_now)
-                    COST_ALL.Add(COST_ALL_now)
-                    '跳出循环
-                    Exit For
-                ElseIf a1 >= 1 And a2 >= 1 Then
-                    '如果设备(1)和设备(2)的负荷率都到了1，也跳出循环
-                    '计算结果加入列表
-                    HD_ALL.Add(ZHD)
-                    FHL1.Add(a1)
-                    FHL2.Add(a2)
-                    FHL_HS.Add(FHL_HS_now)
-                    COST_ALL.Add(COST_ALL_now)
-                    '跳出循环
-                    Exit For
-                End If
+                Next
+zzzz：
             Next
         Next
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
         '找出总成本量最低的运行工况
         Dim COST_ALL_min As Double
         Dim COST_index_min As Integer
@@ -10658,6 +10805,9 @@ kkk:
         '求此时设备（1）和设备（2）的负荷率
         Dim FHL1_result As Double
         Dim FHL2_result As Double
+        '求此时设备（1）和设备（2）启动数量
+        Dim NUM1_result As Double
+        Dim NUM2_result As Double
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配，蓄热负荷率转换为台数
         Dim FHL1_GR_result As Double
         Dim FHL2_GR_result As Double
@@ -10671,6 +10821,9 @@ kkk:
         '求此时设备（1）和设备（2）的负荷率
         FHL1_result = FHL1(COST_index_min)
         FHL2_result = FHL2(COST_index_min)
+        '求此时设备（1）和设备（2）启动数量
+        NUM1_result = NUM1_List(COST_index_min)
+        NUM2_result = NUM2_List(COST_index_min)
         '返回计算出的设备（1）和设备（2）负荷率，负荷率根据供热和蓄热功率比例进行分配
         '负荷率的换算还要考虑RXCS的因素
         Dim RCZHXS_1 As Double
