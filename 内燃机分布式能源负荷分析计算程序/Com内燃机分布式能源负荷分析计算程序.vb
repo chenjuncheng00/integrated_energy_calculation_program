@@ -9285,7 +9285,7 @@ zzzz:
                         Dim FHL_TJ_now As Double = 0
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing And TJGRFHBL > 0 Then
                             '梯级设备负荷率
-                            FHL_TJ_now = TJGRFHBL * (a1 * (ZJRGL1_LXSRB - RCXS_a) + a2 * (ZJRGL2_LXSRB - RCXS_a)) / ((ZJRGL1_LXSRB - RCXS_a) + (ZJRGL2_LXSRB - RCXS_a))
+                            FHL_TJ_now = TJGRFHBL * (n1 * a1 * (ZJRGL1_LXSRB - RCXS_a) / NUM1_LXSRB + n2 * a2 * (ZJRGL2_LXSRB - RCXS_a) / NUM2_LXSRB) / ((ZJRGL1_LXSRB - RCXS_a) + (ZJRGL2_LXSRB - RCXS_a))
                             '设备本体耗电修正系数
                             Dim XZXS_TJ As Double = 1
                             '定义列表，储存梯级寻优计算结果
@@ -18077,7 +18077,7 @@ zzzz：
                     If n1 * ZJLGL1_LXSLSJ / NUM1_LXSLSJ < LXSLSJFHL1 * ZJLGL1_LXSLSJ Then
                         GoTo aaa
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_LXSLSJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_LXSLSJ / NUM1_LXSLSJ >= LXSLSJFHL1 * ZJLGL1_LXSLSJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18139,7 +18139,7 @@ aaa:
                     If n2 * ZJLGL2_LXSLSJ / NUM2_LXSLSJ < LXSLSJFHL2 * ZJLGL2_LXSLSJ Then
                         GoTo bbb
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_LXSLSJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_LXSLSJ / NUM2_LXSLSJ >= LXSLSJFHL2 * ZJLGL2_LXSLSJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18203,7 +18203,7 @@ bbb:
                     If n1 * ZJLGL1_SLLGJ / NUM1_SLLGJ < SLLGJFHL1 * ZJLGL1_SLLGJ Then
                         GoTo ccc
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_SLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_SLLGJ / NUM1_SLLGJ >= SLLGJFHL1 * ZJLGL1_SLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18265,7 +18265,7 @@ ccc:
                     If n2 * ZJLGL2_SLLGJ / NUM2_SLLGJ < SLLGJFHL2 * ZJLGL2_SLLGJ Then
                         GoTo ddd
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_SLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_SLLGJ / NUM2_SLLGJ >= SLLGJFHL2 * ZJLGL2_SLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18329,7 +18329,7 @@ ddd:
                     If n1 * ZJLGL1_FLLGJ / NUM1_FLLGJ < FLLGJFHL1 * ZJLGL1_FLLGJ Then
                         GoTo eee
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_FLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_FLLGJ / NUM1_FLLGJ >= FLLGJFHL1 * ZJLGL1_FLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18391,7 +18391,7 @@ eee:
                     If n2 * ZJLGL2_FLLGJ / NUM2_FLLGJ < FLLGJFHL2 * ZJLGL2_FLLGJ Then
                         GoTo fff
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_FLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_FLLGJ / NUM2_FLLGJ >= FLLGJFHL2 * ZJLGL2_FLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18455,7 +18455,7 @@ fff:
                     If n1 * ZJLGL1_SDYRB / NUM1_SDYRB < SDYRBFHL1 * ZJLGL1_SDYRB Then
                         GoTo ggg
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_SDYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_SDYRB / NUM1_SDYRB >= SDYRBFHL1 * ZJLGL1_SDYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18517,7 +18517,7 @@ ggg:
                     If n2 * ZJLGL2_SDYRB / NUM2_SDYRB < SDYRBFHL2 * ZJLGL2_SDYRB Then
                         GoTo hhh
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_SDYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_SDYRB / NUM2_SDYRB >= SDYRBFHL2 * ZJLGL2_SDYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18581,7 +18581,7 @@ hhh:
                     If n1 * ZJLGL1_LXSRB / NUM1_LXSRB < LXSRBFHL1 * ZJLGL1_LXSRB Then
                         GoTo iii
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_LXSRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_LXSRB / NUM1_LXSRB >= LXSRBFHL1 * ZJLGL1_LXSRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18643,7 +18643,7 @@ iii:
                     If n2 * ZJLGL2_LXSRB / NUM2_LXSRB < LXSRBFHL2 * ZJLGL2_LXSRB Then
                         GoTo jjj
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_LXSRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_LXSRB / NUM2_LXSRB >= LXSRBFHL2 * ZJLGL2_LXSRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18707,7 +18707,7 @@ jjj:
                     If n1 * ZJLGL1_KQYRB / NUM1_KQYRB < KQYRBFHL1 * ZJLGL1_KQYRB Then
                         GoTo kkk
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_KQYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_KQYRB / NUM1_KQYRB >= KQYRBFHL1 * ZJLGL1_KQYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18769,7 +18769,7 @@ kkk:
                     If n2 * ZJLGL2_KQYRB / NUM2_KQYRB < KQYRBFHL2 * ZJLGL2_KQYRB Then
                         GoTo lll
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_KQYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_KQYRB / NUM2_KQYRB >= KQYRBFHL2 * ZJLGL2_KQYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18827,7 +18827,7 @@ lll:
                         GoTo mmm
                     End If
                     '直燃型溴化锂可以超发到1.2
-                    For a1 = 0 To (1.2 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_ZRXXHL To (1.2 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * ZJLGL1_ZRXXHL / NUM1_ZRXXHL >= ZRXXHLFHL1 * ZJLGL1_ZRXXHL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18883,7 +18883,7 @@ mmm:
                         GoTo nnn
                     End If
                     '直燃型溴化锂可以超发到1.2
-                    For a2 = 0 To (1.2 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_ZRXXHL To (1.2 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * ZJLGL2_ZRXXHL / NUM2_ZRXXHL >= ZRXXHLFHL2 * ZJLGL2_ZRXXHL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -18941,7 +18941,7 @@ nnn:
                     If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ Then
                         GoTo ooo
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -18995,7 +18995,7 @@ ooo:
                     If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ Then
                         GoTo ppp
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19375,7 +19375,7 @@ ppp:
                     If n1 * ZJRGL1_TRQGL / NUM1_TRQGL < TRQGLFHL1 * ZJRGL1_TRQGL Then
                         GoTo aaa
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_TRQGL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_TRQGL / NUM1_TRQGL >= TRQGLFHL1 * ZJRGL1_TRQGL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -19430,7 +19430,7 @@ aaa:
                     If n2 * ZJRGL2_TRQGL / NUM2_TRQGL < TRQGLFHL2 * ZJRGL2_TRQGL Then
                         GoTo bbb
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_TRQGL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_TRQGL / NUM2_TRQGL >= TRQGLFHL2 * ZJRGL2_TRQGL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19487,7 +19487,7 @@ bbb:
                     If n1 * ZJRGL1_ZRXXHL / NUM1_ZRXXHL < ZRXXHLFHL1 * ZJRGL1_ZRXXHL Then
                         GoTo ccc
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_ZRXXHL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_ZRXXHL / NUM1_ZRXXHL >= ZRXXHLFHL1 * ZJRGL1_ZRXXHL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -19542,7 +19542,7 @@ ccc:
                     If n2 * ZJRGL2_ZRXXHL / NUM2_ZRXXHL < ZRXXHLFHL2 * ZJRGL2_ZRXXHL Then
                         GoTo ddd
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_ZRXXHL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_ZRXXHL / NUM2_ZRXXHL >= ZRXXHLFHL2 * ZJRGL2_ZRXXHL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19600,7 +19600,7 @@ ddd:
                     If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ Then
                         GoTo eee
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a1 = FHL1_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -19654,7 +19654,7 @@ eee:
                     If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ Then
                         GoTo fff
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
+                    For a2 = FHL2_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
                         If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19718,7 +19718,7 @@ fff:
                     If n1 * ZJRGL1_FLLGJ / NUM1_FLLGJ < FLLGJFHL1 * ZJRGL1_FLLGJ Then
                         GoTo ggg
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_FLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_FLLGJ / NUM1_FLLGJ >= FLLGJFHL1 * ZJRGL1_FLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -19782,7 +19782,7 @@ ggg:
                     If n2 * ZJRGL2_FLLGJ / NUM2_FLLGJ < FLLGJFHL2 * ZJRGL2_FLLGJ Then
                         GoTo hhh
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_FLLGJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_FLLGJ / NUM2_FLLGJ >= FLLGJFHL2 * ZJRGL2_FLLGJ Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19846,7 +19846,7 @@ hhh:
                     If n1 * ZJRGL1_SDYRB / NUM1_SDYRB < SDYRBFHL1 * ZJRGL1_SDYRB Then
                         GoTo iii
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_SDYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_SDYRB / NUM1_SDYRB >= SDYRBFHL1 * ZJRGL1_SDYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -19908,7 +19908,7 @@ iii:
                     If n2 * ZJRGL2_SDYRB / NUM2_SDYRB < SDYRBFHL2 * ZJRGL2_SDYRB Then
                         GoTo jjj
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_SDYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_SDYRB / NUM2_SDYRB >= SDYRBFHL2 * ZJRGL2_SDYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -19974,7 +19974,7 @@ jjj:
                     If n1 * ZJRGL1_KQYRB / NUM1_KQYRB < KQYRBFHL1 * ZJRGL1_KQYRB Then
                         GoTo kkk
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_KQYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_KQYRB / NUM1_KQYRB >= KQYRBFHL1 * ZJRGL1_KQYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -20036,7 +20036,7 @@ kkk:
                     If n2 * ZJRGL2_KQYRB / NUM2_KQYRB < KQYRBFHL2 * ZJRGL2_KQYRB Then
                         GoTo lll
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_KQYRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_KQYRB / NUM2_KQYRB >= KQYRBFHL2 * ZJRGL2_KQYRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -20100,7 +20100,7 @@ lll:
                     If n1 * ZJRGL1_LXSRB / NUM1_LXSRB < LXSRBFHL1 * ZJRGL1_LXSRB Then
                         GoTo mmm
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_LXSRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_LXSRB / NUM1_LXSRB >= LXSRBFHL1 * ZJRGL1_LXSRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -20162,7 +20162,7 @@ mmm:
                     If n2 * ZJRGL2_LXSRB / NUM2_LXSRB < LXSRBFHL2 * ZJRGL2_LXSRB Then
                         GoTo nnn
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_LXSRB To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_LXSRB / NUM2_LXSRB >= LXSRBFHL2 * ZJRGL2_LXSRB Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -20222,7 +20222,7 @@ nnn:
                     If n1 * ZJRGL1_DGL / NUM1_DGL < DGLFHL1 * ZJRGL1_DGL Then
                         GoTo ooo
                     End If
-                    For a1 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a1 = FHL1_min_DGL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a1 * n1 * ZJRGL1_DGL / NUM1_DGL >= DGLFHL1 * ZJRGL1_DGL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
@@ -20280,7 +20280,7 @@ ooo:
                     If n2 * ZJRGL2_DGL / NUM2_DGL < DGLFHL2 * ZJRGL2_DGL Then
                         GoTo ppp
                     End If
-                    For a2 = 0 To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
+                    For a2 = FHL2_min_DGL To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 '单台负荷率
                         '制热功率满足需求
                         If a2 * n2 * ZJRGL2_DGL / NUM2_DGL >= DGLFHL2 * ZJRGL2_DGL Then
                             '计算此时单台设备的COP修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
@@ -20391,15 +20391,15 @@ ppp:
                 BTHD_XZXS_HS = BTHDXS_GR_air
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            '混水供热的设备计算
-            Dim GRGL_HS_now As Double = 0
-            '此时实际的设备总耗电
+            '混水供热此时实际的设备总耗电
             Dim HD_ALL_HS_now As Double = 0
             '混水设备负荷率
             Dim FHL_HS_now As Double = 0
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 82).Value <> Nothing Then
                 '混水设备当前计算出的负荷率
                 FHL_HS_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 83).Value
+                '混水供热的设备计算
+                Dim GRGL_HS_now As Double = FHL_HS_now * ZJRGL_HS_ALL
                 '设备本体耗电修正系数
                 Dim XZXS_HS As Double = 1
                 '没有考虑COP修正时的本体耗电
@@ -20600,9 +20600,7 @@ qqq:
                 BTHD_XZXS_TJ = BTHDXS_GR_air
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            '梯级供热的设备计算
-            Dim GRGL_TJ_now As Double = 0
-            '此时实际的设备总耗电
+            '梯级供热此时实际的设备总耗电
             Dim HD_ALL_TJ_now As Double = 0
             '梯级设备负荷率
             Dim FHL_TJ_now As Double = 0
@@ -20611,6 +20609,8 @@ qqq:
                 FHL_TJ_now = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 81).Value
                 '设备本体耗电修正系数
                 Dim XZXS_TJ As Double = 1
+                '梯级供热的设备计算
+                Dim GRGL_TJ_now As Double = FHL_TJ_now * ZJRGL_TJ_ALL
                 '没有考虑COP修正时的本体耗电
                 BTHD_ALL_TJ_a = FHL_TJ_now * (NUM1_TJ * BTHD1_ED_TJ + NUM2_TJ * BTHD2_ED_TJ) * BTHD_XZXS_TJ
                 '定义列表，储存梯级寻优计算结果
