@@ -9191,9 +9191,7 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_LXSRB
         Dim FHL2_min As Double = FHL2_min_LXSRB
-        '梯级设备负荷率下限（不除以设备数量，因此需要还原）
-        FHL1_min_TJ = FHL1_min_TJ * NUM1_TJ
-        FHL2_min_TJ = FHL2_min_TJ * NUM2_TJ
+        '梯级设备负荷率下限（不除以设备数量）
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '根据供热功率和蓄热功率的比例，计算出本体耗电的综合修正系数
@@ -9244,15 +9242,6 @@ zzzz:
                 '穷举设备负荷率
                 For a1 = FHL1_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(1)负荷率（单台）
                     For a2 = FHL2_min To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100 'a1表示设备(2)负荷率（单台）
-                        '计算设备（1）和设备（2）本体的效率修正系数
-                        Dim XZXS1 As Double = 离心式热泵制热COP曲线(a1)
-                        Dim XZXS2 As Double = 离心式热泵制热COP曲线(a2)
-                        '计算设备（1）和设备（2）本体的耗电功率
-                        Dim BTHD1_now As Double = BTHDXS_ZH * n1 * a1 * BTHD1_ED_LXSRB / XZXS1
-                        Dim BTHD2_now As Double = BTHDXS_ZH * n2 * a2 * BTHD2_ED_LXSRB / XZXS2
-                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
-                        Dim FJHD1_now As Double = FJHDXS * n1 * a1 * FJHD1_ED_LXSRB
-                        Dim FJHD2_now As Double = FJHDXS * n2 * a2 * FJHD2_ED_LXSRB
                         '计算此时的总出力
                         Dim RGL1_out_now As Double
                         If ZJRGL1_LXSRB <= RCXS_a Then
@@ -9274,6 +9263,20 @@ zzzz:
                                 RGL2_out_now = n2 * a2 * ZJRGL2_LXSRB / NUM2_LXSRB
                             End If
                         End If
+                        '加快计算
+                        If (RGL1_out_now + RGL2_out_now) < (RFH_GR + RFH_XR) Then
+                            GoTo qqqq
+                        End If
+                        '————————————————————————————————————————————————————————————————————————————————————————
+                        '计算设备（1）和设备（2）本体的效率修正系数
+                        Dim XZXS1 As Double = 离心式热泵制热COP曲线(a1)
+                        Dim XZXS2 As Double = 离心式热泵制热COP曲线(a2)
+                        '计算设备（1）和设备（2）本体的耗电功率
+                        Dim BTHD1_now As Double = BTHDXS_ZH * n1 * a1 * BTHD1_ED_LXSRB / XZXS1
+                        Dim BTHD2_now As Double = BTHDXS_ZH * n2 * a2 * BTHD2_ED_LXSRB / XZXS2
+                        '计算设备（1）和设备（2）辅助设备的耗电功率（直接按照负荷率打折）
+                        Dim FJHD1_now As Double = FJHDXS * n1 * a1 * FJHD1_ED_LXSRB
+                        Dim FJHD2_now As Double = FJHDXS * n2 * a2 * FJHD2_ED_LXSRB
                         '————————————————————————————————————————————————————————————————————————————————————————
                         '————————————————————————————————————————————————————————————————————————————————————————
                         '此时实际的梯级供热设备总耗电
@@ -9432,6 +9435,7 @@ kkk:
                             '跳出循环
                             Exit For
                         End If
+qqqq:
                     Next
                 Next
 zzzz:
@@ -9867,9 +9871,7 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_DGL
         Dim FHL2_min As Double = FHL2_min_DGL
-        '混水设备负荷率下限（不除以设备数量，因此需要还原）
-        FHL1_min_HS = FHL1_min_HS * NUM1_HS
-        FHL2_min_HS = FHL2_min_HS * NUM2_HS
+        '混水设备负荷率下限（不除以设备数量）
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '根据供热功率和蓄热功率的比例，计算出本体耗电的综合修正系数
@@ -10207,9 +10209,7 @@ zzzz:
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_TRQGL
         Dim FHL2_min As Double = FHL2_min_TRQGL
-        '混水设备负荷率下限（不除以设备数量，因此需要还原）
-        FHL1_min_HS = FHL1_min_HS * NUM1_HS
-        FHL2_min_HS = FHL2_min_HS * NUM2_HS
+        '混水设备负荷率下限（不除以设备数量）
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
@@ -10532,9 +10532,7 @@ zzzz：
         '设备可以允许运行的负荷率下限（不除以设备数量）
         Dim FHL1_min As Double = FHL1_min_ZRXXHL
         Dim FHL2_min As Double = FHL2_min_ZRXXHL
-        '混水设备负荷率下限（不除以设备数量，因此需要还原）
-        FHL1_min_HS = FHL1_min_HS * NUM1_HS
-        FHL2_min_HS = FHL2_min_HS * NUM2_HS
+        '混水设备负荷率下限（不除以设备数量）
         '装机功率容错系数（程序在计算时候采用的设备（1）（2）装机功率需要比Excel读入的数据略大，防止程序出错）
         Dim RCXS_a As Double = RCXS * (FHTJJD / 0.5)
         '不严格按照设置好的六种设备启动顺序进行计算，而是六种设备综合在一起进行全局寻优计算，寻找总成本最低的运行模式
