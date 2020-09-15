@@ -17384,6 +17384,22 @@ zzzz：
                 SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZLNRJFHL1)
                 '工业蒸汽余热锅炉
                 GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL1)
+                '消除特殊情况
+                If FDXLXZ1 > 1 And FDXLXZ1 < 1.001 Then
+                    FDXLXZ1 = 1
+                End If
+                If YRXLXZ1 > 1 And YRXLXZ1 < 1.001 Then
+                    YRXLXZ1 = 1
+                End If
+                If XHLZLCOPXZ1 > 1 And XHLZLCOPXZ1 < 1.001 Then
+                    XHLZLCOPXZ1 = 1
+                End If
+                If SHRSYRGLXLXZ1 > 1 And SHRSYRGLXLXZ1 < 1.001 Then
+                    SHRSYRGLXLXZ1 = 1
+                End If
+                If GYZQYRGLXLXZ1 > 1 And GYZQYRGLXLXZ1 < 1.001 Then
+                    GYZQYRGLXLXZ1 = 1
+                End If
             Else
                 '结果全部为1
                 '发电效率修正系数
@@ -17411,6 +17427,22 @@ zzzz：
                 SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZLNRJFHL2)
                 '工业蒸汽余热锅炉
                 GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZLNRJFHL2)
+                '消除特殊情况
+                If FDXLXZ2 > 1 And FDXLXZ2 < 1.001 Then
+                    FDXLXZ2 = 1
+                End If
+                If YRXLXZ2 > 1 And YRXLXZ2 < 1.001 Then
+                    YRXLXZ2 = 1
+                End If
+                If XHLZLCOPXZ2 > 1 And XHLZLCOPXZ2 < 1.001 Then
+                    XHLZLCOPXZ2 = 1
+                End If
+                If SHRSYRGLXLXZ2 > 1 And SHRSYRGLXLXZ2 < 1.001 Then
+                    SHRSYRGLXLXZ2 = 1
+                End If
+                If GYZQYRGLXLXZ2 > 1 And GYZQYRGLXLXZ2 < 1.001 Then
+                    GYZQYRGLXLXZ2 = 1
+                End If
             Else
                 '结果全部为1
                 '发电效率修正系数
@@ -17619,6 +17651,22 @@ zzzz：
                 SHRSYRGLXLXZ1 = 生活热水余热锅炉效率曲线(ZRNRJFHL1)
                 '工业蒸汽余热锅炉
                 GYZQYRGLXLXZ1 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL1)
+                '消除特殊情况
+                If FDXLXZ1 > 1 And FDXLXZ1 < 1.001 Then
+                    FDXLXZ1 = 1
+                End If
+                If YRXLXZ1 > 1 And YRXLXZ1 < 1.001 Then
+                    YRXLXZ1 = 1
+                End If
+                If XHLZRCOPXZ1 > 1 And XHLZRCOPXZ1 < 1.001 Then
+                    XHLZRCOPXZ1 = 1
+                End If
+                If SHRSYRGLXLXZ1 > 1 And SHRSYRGLXLXZ1 < 1.001 Then
+                    SHRSYRGLXLXZ1 = 1
+                End If
+                If GYZQYRGLXLXZ1 > 1 And GYZQYRGLXLXZ1 < 1.001 Then
+                    GYZQYRGLXLXZ1 = 1
+                End If
             Else
                 '全部等于1
                 '发电效率修正系数
@@ -17646,6 +17694,22 @@ zzzz：
                 SHRSYRGLXLXZ2 = 生活热水余热锅炉效率曲线(ZRNRJFHL2)
                 '工业蒸汽余热锅炉
                 GYZQYRGLXLXZ2 = 工业蒸汽余热锅炉效率曲线(ZRNRJFHL2)
+                '消除特殊情况
+                If FDXLXZ2 > 1 And FDXLXZ2 < 1.001 Then
+                    FDXLXZ2 = 1
+                End If
+                If YRXLXZ2 > 1 And YRXLXZ2 < 1.001 Then
+                    YRXLXZ2 = 1
+                End If
+                If XHLZRCOPXZ2 > 1 And XHLZRCOPXZ2 < 1.001 Then
+                    XHLZRCOPXZ2 = 1
+                End If
+                If SHRSYRGLXLXZ2 > 1 And SHRSYRGLXLXZ2 < 1.001 Then
+                    SHRSYRGLXLXZ2 = 1
+                End If
+                If GYZQYRGLXLXZ2 > 1 And GYZQYRGLXLXZ2 < 1.001 Then
+                    GYZQYRGLXLXZ2 = 1
+                End If
             Else
                 '全部等于1
                 '发电效率修正系数
@@ -18938,12 +19002,12 @@ nnn:
                 Dim NUM1_NRJ_QD As New List(Of Double)
                 For n1 = 0 To NUM1_NRJ Step 1
                     '如果设备启动100%，发电量都不够，则跳入下一个循环，提高速度
-                    If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ Then
+                    If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ * NUM1_NRJ Then
                         GoTo ooo
                     End If
                     For a1 = FHL1_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
-                        If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ Then
+                        If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ * NUM1_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
                             NRJZLXLXZ1_List.Add(内燃机发电效率曲线(a1))
                             FHL1_NRJ_single.Add(a1)
@@ -18992,12 +19056,12 @@ ooo:
                 Dim NUM2_NRJ_QD As New List(Of Double)
                 For n2 = 0 To NUM2_NRJ Step 1
                     '如果设备启动100%，发电量都不够，则跳入下一个循环，提高速度
-                    If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ Then
+                    If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ * NUM2_NRJ Then
                         GoTo ppp
                     End If
                     For a2 = FHL2_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
-                        If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ Then
+                        If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ * NUM2_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
                             NRJZLXLXZ2_List.Add(内燃机发电效率曲线(a2))
                             FHL2_NRJ_single.Add(a2)
@@ -19597,12 +19661,12 @@ ddd:
                 Dim NUM1_NRJ_QD As New List(Of Double)
                 For n1 = 0 To NUM1_NRJ Step 1
                     '如果设备启动100%，发电量都不够，则跳入下一个循环，提高速度
-                    If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ Then
+                    If n1 * FDGL1_ED_NRJ < NRJFHL1 * FDGL1_ED_NRJ * NUM1_NRJ Then
                         GoTo eee
                     End If
                     For a1 = FHL1_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
-                        If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ Then
+                        If a1 * n1 * FDGL1_ED_NRJ >= NRJFHL1 * FDGL1_ED_NRJ * NUM1_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a1）、单台设备负荷率、设备启动数量，并加入列表
                             NRJZLXLXZ1_List.Add(内燃机发电效率曲线(a1))
                             FHL1_NRJ_single.Add(a1)
@@ -19627,7 +19691,7 @@ eee:
                 '找到所在标签
                 Dim COP_MAX_index As Integer = NRJZLXLXZ1_List.IndexOf(NRJZLXLXZ1)
                 '设备启动数量写入Excel
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126).Value = NRJZLXLXZ1_List(COP_MAX_index)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 126).Value = NUM1_NRJ_QD(COP_MAX_index)
             Else
                 NRJTRQ1_ALL_a = 0
                 NRJTRQ1_ALL_b = 0
@@ -19651,12 +19715,12 @@ eee:
                 Dim NUM2_NRJ_QD As New List(Of Double)
                 For n2 = 0 To NUM2_NRJ Step 1
                     '如果设备启动100%，发电量都不够，则跳入下一个循环，提高速度
-                    If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ Then
+                    If n2 * FDGL2_ED_NRJ < NRJFHL2 * FDGL2_ED_NRJ * NUM2_NRJ Then
                         GoTo fff
                     End If
                     For a2 = FHL2_min_NRJ To (1 + 2 * FHTJJD / 100) Step FHTJJD / 100
                         '制冷功率满足需求
-                        If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ Then
+                        If a2 * n2 * FDGL2_ED_NRJ >= NRJFHL2 * FDGL2_ED_NRJ * NUM2_NRJ Then
                             '计算此时单台设备的效率修正系数（此时负荷率是a2）、单台设备负荷率、设备启动数量，并加入列表
                             NRJZLXLXZ2_List.Add(内燃机发电效率曲线(a2))
                             FHL2_NRJ_single.Add(a2)
@@ -19681,7 +19745,7 @@ fff:
                 '找到所在标签
                 Dim COP_MAX_index As Integer = NRJZLXLXZ2_List.IndexOf(NRJZLXLXZ2)
                 '设备启动数量写入Excel
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 127).Value = NRJZLXLXZ2_List(COP_MAX_index)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 127).Value = NUM2_NRJ_QD(COP_MAX_index)
             Else
                 NRJTRQ2_ALL_a = 0
                 NRJTRQ2_ALL_b = 0
