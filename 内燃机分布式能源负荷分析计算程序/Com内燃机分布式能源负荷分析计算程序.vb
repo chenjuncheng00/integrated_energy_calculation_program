@@ -3255,7 +3255,7 @@ aaaaa:
             '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
             Dim FHFPCS_start As Integer = 20 '初始值
-            Dim FHFPCS_max As Integer = 50 '负荷分配次数参数的最大允许值
+            Dim FHFPCS_max As Integer = 100 '负荷分配次数参数的最大允许值
             Dim JS_start As Integer = 0 '已经计算过的次数计数，用于改变FHFPCS的值
 zzzzz：
             Dim FHFPCS As Integer = FHFPCS_start + JS_start * 5
@@ -7298,7 +7298,7 @@ zzzz:
             '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
             Dim FHFPCS_start As Integer = 20 '初始值
-            Dim FHFPCS_max As Integer = 50 '负荷分配次数参数的最大允许值
+            Dim FHFPCS_max As Integer = 100 '负荷分配次数参数的最大允许值
             Dim JS_start As Integer = 0 '已经计算过的次数计数，用于改变FHFPCS的值
 zzzzz：
             Dim FHFPCS As Integer = FHFPCS_start + JS_start * 5
@@ -23066,9 +23066,9 @@ rrr:
     Sub 清空输入输出数据(ExcelApp As Object)
         On Error Resume Next
         '——————————————————————————————————————————————————————————————————————————————————————————
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B3:DE3").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B3:EK3").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("AB8:BX57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("CL8:DE57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("CL8:EK57").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range("B8:BB57").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Range("B8:BK57").ClearContents
         ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("O9:R57").ClearContents
