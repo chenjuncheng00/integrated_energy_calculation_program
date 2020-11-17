@@ -12070,7 +12070,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 15).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 15).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -12088,7 +12088,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 16).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 16).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -12106,7 +12106,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 17).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 17).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -12124,7 +12124,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 18).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 18).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -12142,7 +12142,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 19).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 19).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -12160,7 +12160,7 @@ zzzz：
                     Call 空气源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_KQYRB, NUM2_KQYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 20).Value = "水(地)源热泵" Then
-                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM2_SDYRB, NUM2_SDYRB)
+                    Call 水_地源热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_SDYRB, NUM2_SDYRB)
                 End If
                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 20).Value = "离心式热泵" Then
                     Call 离心式热泵常规模式蓄热计算(ExcelApp, b, FHTJJD, NUM1_LXSRB, NUM2_LXSRB)
@@ -13202,7 +13202,7 @@ qqq:
         End If
         '计算所有设备总制冷功率
         ZZLGL = XHLZLPD + XNGLGL(a) + GLGL_1 + GLGL_2 + GLGL_3 + GLGL_4 + GLGL_5 + GLGL_6
-        If LFHZXQL(a) + XNXLGL(a) > ZZLGL Then
+        If LFHZXQL(a) + XNXLGL(a) > ZZLGL * 1.005 Then '放大0.5%，防止极小偏差
             MsgBox("出现了冷负荷总需求量+蓄冷负荷需求量之和大于所有设备总制冷量的情况！" & Chr(10) & "工况序号为：" & a)
             ZTJC_LRFH = 1
             Call 锁定工作表(ExcelApp)
@@ -13372,7 +13372,7 @@ qqq:
         End If
         '计算所有设备总制热功率
         ZZRGL = XHLZRPD + XNGRGL(a) + GRGL_1 + GRGL_2 + GRGL_3 + GRGL_4 + GRGL_5 + GRGL_6 + HSGRGL
-        If RFHZXQL(a) + XNXRGL(a) > ZZRGL Then
+        If RFHZXQL(a) + XNXRGL(a) > ZZRGL * 1.005 Then '放大0.5%，防止极小偏差
             MsgBox("出现了热负荷总需求量+蓄热负荷需求量之和大于所有设备总制热量的情况！" & Chr(10) & "工况序号为：" & a)
             ZTJC_LRFH = 1
             Call 锁定工作表(ExcelApp)
