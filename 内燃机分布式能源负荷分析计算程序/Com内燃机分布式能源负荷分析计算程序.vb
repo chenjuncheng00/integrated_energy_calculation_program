@@ -69,7 +69,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         '————————————————————————————————————————————————————————————————————————————————————————        
         '计数，统计一共有多少种不同工况
         Dim n As Integer = 0
-        For i = 57 To 8 Step -1 '行号，从大到小查找
+        For i = 207 To 8 Step -1 '行号，从大到小查找
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(i, 24).Value > 0 Then
                 n = i - 7 '工况总数
                 Exit For '跳出循环
@@ -743,7 +743,7 @@ cgjsms_again:
         '————————————————————————————————————————————————————————————————————————————————————————        
         '计数，统计一共有多少种不同工况
         Dim n As Integer = 0
-        For i = 57 To 8 Step -1 '行号，从大到小查找
+        For i = 207 To 8 Step -1 '行号，从大到小查找
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(i, 24).Value > 0 Then
                 n = i - 7 '工况总数
                 Exit For '跳出循环
@@ -751,8 +751,8 @@ cgjsms_again:
         Next
         If n > 0 Then
             '清空已经输入的蓄冷、蓄热数据
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 13), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(57, 14)).Value = Nothing
-            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 22), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(57, 23)).Value = Nothing
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 13), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(207, 14)).Value = Nothing
+            ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 22), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(207, 23)).Value = Nothing
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 13), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 14)).Value = Nothing
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 22), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 23)).Value = Nothing
             '申明局部变量和数组
@@ -880,35 +880,6 @@ cgjsms_again:
             '让用户输入蓄冷和蓄热工况的最大功率（kW）
             Dim PJXLGL As Double = XLGL_PJ '平均蓄冷功率            
             Dim PJXRGL As Double = XRGL_PJ '平均蓄热功率
-            '根据输入的蓄冷功率最大值，修正计算出的各种结果，如果出现不合理的结果，报错
-            '如果勾选了蓄冷功率存在最大值（模式=1）
-            Dim ZDXLGL As Double '最大蓄冷功率
-            Dim LFH As New List(Of Double) '输入的每一条冷负荷
-            If XLJS_MS = 1 Then
-                '等于输入的最大蓄冷功率
-                ZDXLGL = XLGL_MAX '最大蓄冷功率
-            Else
-                '遍历所有的冷负荷总需求量
-                For i = 1 To 50
-                    LFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value)
-                Next
-                ZDXLGL = LFH.Max + 100 '最大值加100，放大一点，防止出错
-            End If
-            '如果勾选了蓄热功率存在最大值（模式=1）
-            Dim ZDXRGL As Double  '最大蓄热功率
-            Dim RFH As New List(Of Double) '输入的每一条热负荷
-            '如果勾选了蓄热功率存在最大值（模式=1）
-            If XRJS_MS = 1 Then
-                ZDXRGL = XRGL_MAX '最大蓄热功率
-            Else
-                '遍历所有的热负荷总需求量
-                For i = 1 To 50
-                    RFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value)
-                Next
-                ZDXRGL = RFH.Max + 100 '最大值加100，放大一点，防止出错
-            End If
-            '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-            '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
             '如果输入的都是0，则退出计算
             If PJXLGL = 0 And PJXRGL = 0 Then
                 Exit Sub
@@ -922,6 +893,22 @@ cgjsms_again:
                 Dim GKXHmax As Integer = RQXHJS(a)
                 '判断这一组日期序号代表制冷还是制热
                 If RQXH(RQXHJS(a)) = 1 Or RQXH(RQXHJS(a)) = 2 Then '制冷工况；RXHCJS(a):日期序号发生变化前的最后一个工况序号；RQXH()：对应的日期序号
+                    '求可以蓄冷的最大功率
+                    '如果勾选了蓄冷功率存在最大值（模式=1）
+                    Dim ZDXLGL As Double = 0 '最大蓄冷功率
+                    Dim LFH As New List(Of Double) '输入的每一条冷负荷
+                    If XLJS_MS = 1 Then
+                        '等于输入的最大蓄冷功率
+                        ZDXLGL = XLGL_MAX '最大蓄冷功率
+                    Else
+                        '遍历所有的冷负荷总需求量
+                        For i = GKXHmin To GKXHmax
+                            LFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value)
+                        Next
+                        ZDXLGL = LFH.Max + 100 '最大值加100，放大一点，防止出错
+                    End If
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     Dim SYXLGL As Double = 0 '剩余蓄冷功率
                     Dim XLZL As Double = 0 '蓄冷总量
                     Dim GLZL As Double = 0 '供冷总量
@@ -1276,6 +1263,22 @@ cgjsms_again:
                 '————————————————————————————————————————————————————————————————————————————————————————————————————————
                 '判断这一组日期序号代表制热还是制热
                 If RQXH(RQXHJS(a)) = 3 Or RQXH(RQXHJS(a)) = 4 Then '制热工况；RXHCJS(a):日期序号发生变化前的最后一个工况序号；RQXH()：对应的日期序号
+                    '求可以蓄热的最大功率
+                    '如果勾选了蓄热功率存在最大值（模式=1）
+                    Dim ZDXRGL As Double = 0 '最大蓄热功率
+                    Dim RFH As New List(Of Double) '输入的每一条热负荷
+                    '如果勾选了蓄热功率存在最大值（模式=1）
+                    If XRJS_MS = 1 Then
+                        ZDXRGL = XRGL_MAX '最大蓄热功率
+                    Else
+                        '遍历所有的热负荷总需求量
+                        For i = GKXHmin To GKXHmax
+                            RFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value)
+                        Next
+                        ZDXRGL = RFH.Max + 100 '最大值加100，放大一点，防止出错
+                    End If
+                    '——————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     Dim SYXRGL As Double = 0 '剩余蓄热功率
                     Dim XRZL As Double = 0 '蓄热总量
                     Dim GRZL As Double = 0 '供热总量
@@ -1394,7 +1397,7 @@ cgjsms_again:
                             GRZL = GRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i) '统计全部供热量
                         End If
                         '判断当前削峰功率是否大于输入的最大热负荷，如果是，则报错，但是不修改数值，使得计算可以继续进行
-                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value > ZDXLGL Then
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value > ZDXRGL Then
                             MsgBox("蓄热装置供热功率大于输入的最大蓄热功率，装机方案选择不合理，程序不会自动修改计算出的数值，但请检查并重新选择装机方案！！" & "装机方案不合理的工况序号为： " & i)
                         End If
                     Next
@@ -21933,7 +21936,7 @@ rrr:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
         '清空已有的计算结果
-        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D80:D88").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D81:D89").ClearContents
         '添加部分报错功能
         '如果第一个工况的第一顺序制冷设备为空，报错
         Dim ZLZJ As Double = 0 '除了溴化锂和蓄冷以外的装机功率合计
@@ -22502,7 +22505,7 @@ rrr:
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————        
         '清空已有的计算结果
-        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D91:D99").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D92:D100").ClearContents
         '添加部分报错功能
         '如果第一个工况的第一顺序制热设备为空，报错
         Dim ZRZJ As Double = 0 '除了溴化锂和蓄热以外的装机功率合计
@@ -23067,14 +23070,14 @@ rrr:
         On Error Resume Next
         '——————————————————————————————————————————————————————————————————————————————————————————
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B3:EK3").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("AB8:BX57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("CL8:EK57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range("B8:BB57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Range("B8:BK57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("O9:R57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("W9:AD57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("BB9:BE57").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("BJ9:BQ57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("AB8:BX207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("CL8:EK207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算结果输出").Range("B8:BB207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("设备运行信息汇总").Range("B8:BK207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("O9:R207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("W9:AD207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("BB9:BE207").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("内燃机及其余热利用计算结果").Range("BJ9:BQ207").ClearContents
     End Sub
     Function 内燃机发电效率曲线(FHL As Double)
         On Error Resume Next
@@ -23329,7 +23332,7 @@ rrr:
         '清空计算输入输出数据
         Call 清空输入输出数据(ExcelApp)
         '清空计算输入的用户输入量
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK207").ClearContents
         '将所有数据重置为0
         '将所有数据变成0，计算一次，以清空全部数据
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 2), ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(8, 97)).Value = 0
@@ -23344,10 +23347,10 @@ rrr:
         '再清空一次全部数据
         Call 清空输入输出数据(ExcelApp)
         '情况计算输入的用户输入量
-        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK57").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B8:EK207").ClearContents
         '清空冷热负荷分段计算结果
-        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D80:D88").ClearContents
-        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D91:D99").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D81:D89").ClearContents
+        ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Range("D92:D100").ClearContents
         '重新锁定工作表
         Call 锁定工作表(ExcelApp)
     End Sub
