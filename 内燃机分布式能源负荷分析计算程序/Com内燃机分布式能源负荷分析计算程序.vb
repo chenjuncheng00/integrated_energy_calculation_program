@@ -1676,6 +1676,31 @@ cgjsms_again:
         End If
         Call 锁定工作表(ExcelApp)
     End Sub
+    Sub 典型日输入参数赋值()
+        On Error Resume Next
+        '定义Excel对象
+        Dim ExcelApp As Excel.Application '定义Excel对象
+        ExcelApp = GetObject(, "Excel.Application")    '当前EXCEL对象赋值给ExcelApp
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
+        Dim ZTJC_EXCEL As Integer = Excel版本号验证(ExcelApp)
+        If ZTJC_EXCEL = 1 Then
+            Call 锁定工作表(ExcelApp)
+            ZTJC_EXCEL = 0
+            Exit Sub
+        End If
+        Call 解锁工作表(ExcelApp)
+        Call 清空输入输出数据(ExcelApp)
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————    
+        Dim Form_DXRSR As New 典型日输入参数赋值
+        Form_DXRSR.ShowDialog() '窗口显示
+        Form_DXRSR.TopMost = True
+        System.Windows.Forms.Application.DoEvents()
+        '————————————————————————————————————————————————————————————————————————————————————————
+        '————————————————————————————————————————————————————————————————————————————————————————
+        Call 锁定工作表(ExcelApp)
+    End Sub
     Sub 打开表格自动运行()
         On Error Resume Next
         '定义Excel对象
