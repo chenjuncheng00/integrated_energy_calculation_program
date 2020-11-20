@@ -67,6 +67,7 @@ Partial Class 计算模式选择
         Me.GDDJ_G2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
         Me.Label31 = New System.Windows.Forms.Label()
+        Me.TS_XZ = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -110,7 +111,7 @@ Partial Class 计算模式选择
         '常规计算模式
         '
         Me.常规计算模式.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.常规计算模式.Location = New System.Drawing.Point(37, 1084)
+        Me.常规计算模式.Location = New System.Drawing.Point(36, 1146)
         Me.常规计算模式.Name = "常规计算模式"
         Me.常规计算模式.Size = New System.Drawing.Size(284, 100)
         Me.常规计算模式.TabIndex = 4
@@ -120,7 +121,7 @@ Partial Class 计算模式选择
         '全局寻优计算
         '
         Me.全局寻优计算.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.全局寻优计算.Location = New System.Drawing.Point(431, 1084)
+        Me.全局寻优计算.Location = New System.Drawing.Point(430, 1146)
         Me.全局寻优计算.Name = "全局寻优计算"
         Me.全局寻优计算.Size = New System.Drawing.Size(284, 100)
         Me.全局寻优计算.TabIndex = 5
@@ -492,11 +493,23 @@ Partial Class 计算模式选择
         Me.Label31.TabIndex = 44
         Me.Label31.Text = "元/kWh"
         '
+        'TS_XZ
+        '
+        Me.TS_XZ.AutoSize = True
+        Me.TS_XZ.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
+        Me.TS_XZ.Location = New System.Drawing.Point(77, 1087)
+        Me.TS_XZ.Name = "TS_XZ"
+        Me.TS_XZ.Size = New System.Drawing.Size(595, 32)
+        Me.TS_XZ.TabIndex = 45
+        Me.TS_XZ.Text = "当计算过程中出现异常时，是否弹出提示？"
+        Me.TS_XZ.UseVisualStyleBackColor = True
+        '
         '计算模式选择
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(748, 1214)
+        Me.ClientSize = New System.Drawing.Size(748, 1274)
+        Me.Controls.Add(Me.TS_XZ)
         Me.Controls.Add(Me.Label31)
         Me.Controls.Add(Me.Label30)
         Me.Controls.Add(Me.GDDJ_G2)
@@ -595,4 +608,5 @@ Partial Class 计算模式选择
     Friend WithEvents GDDJ_G2 As System.Windows.Forms.TextBox
     Friend WithEvents Label30 As System.Windows.Forms.Label
     Friend WithEvents Label31 As System.Windows.Forms.Label
+    Friend WithEvents TS_XZ As System.Windows.Forms.CheckBox
 End Class

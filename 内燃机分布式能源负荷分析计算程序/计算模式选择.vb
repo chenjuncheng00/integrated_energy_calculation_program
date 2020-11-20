@@ -15,6 +15,11 @@ Public Class 计算模式选择
         Dim precision As Double = CType(Me.FHTJJD_shuru.Text, Double)
         '计算模式设置为1
         Dim calculation_mode As Integer = 1
+        '是否弹出提示
+        Dim TS As Boolean = False
+        If TS_XZ.Checked = True Then
+            TS = True
+        End If
         '——————————————————————————————————————————————————————————————————————————————————————————————
         If FHTJJD_shuru.Text = Nothing Then
             MsgBox("必须输入负荷调节进度参数，否则无法进行全局寻优计算！")
@@ -29,7 +34,7 @@ Public Class 计算模式选择
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(ExcelApp, precision, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, calculation_mode)
+        mainprogram.计算主程序(ExcelApp, precision, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, calculation_mode, TS)
         '关闭窗口
         Me.Close()
     End Sub
@@ -59,6 +64,11 @@ Public Class 计算模式选择
         Dim D_price_QT2 As Double = CType(Me.GDDJ_QT2.Text, Double)
         '计算模式设置为2
         Dim calculation_mode As Integer = 2
+        '是否弹出提示
+        Dim TS As Boolean = False
+        If TS_XZ.Checked = True Then
+            TS = True
+        End If
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '如果输入的为空，报错
         '负荷调节精度没有输入
@@ -171,7 +181,7 @@ Public Class 计算模式选择
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(ExcelApp, precision, D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode)
+        mainprogram.计算主程序(ExcelApp, precision, D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TS)
         '关闭窗口
         Me.Close()
     End Sub

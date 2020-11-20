@@ -48,7 +48,7 @@ Public Class Com内燃机分布式能源负荷分析计算程序
         Call 锁定工作表(ExcelApp)
     End Sub
 
-    Sub 计算主程序(ExcelApp As Object, precision As Double, GDDJ_GF1 As Double, GDDJ_GF2 As Double, GDDJ_F1 As Double, GDDJ_F2 As Double, GDDJ_P1 As Double, GDDJ_P2 As Double, GDDJ_G1 As Double, GDDJ_G2 As Double, GDDJ_QT1 As Double, GDDJ_QT2 As Double, TRQDJ As Double, JSMS As Integer)
+    Sub 计算主程序(ExcelApp As Object, precision As Double, GDDJ_GF1 As Double, GDDJ_GF2 As Double, GDDJ_F1 As Double, GDDJ_F2 As Double, GDDJ_P1 As Double, GDDJ_P2 As Double, GDDJ_G1 As Double, GDDJ_G2 As Double, GDDJ_QT1 As Double, GDDJ_QT2 As Double, TRQDJ As Double, JSMS As Integer, TS_XZ As Boolean)
         '本SUB为主程序
         On Error Resume Next
         '————————————————————————————————————————————————————————————————————————————————————————        
@@ -264,17 +264,28 @@ Public Class Com内燃机分布式能源负荷分析计算程序
             Next
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
+            '对于全局寻优计算模式中，如果制冷设备或者制热设备会被全部利用，则根据记录下的工况序号，直接进行常规模式计算，不报错
+            Dim QJXY_CGMS_BH As String = Nothing '用于在Msgbox中显示
+            '新的列表，用来储存筛选后的，没有重复的工况序号
+            Dim XH_QJXY_CGMS As New List(Of Integer)
+            If QJXY_CGMS.Count > 0 And calculation_mode = 2 Then
+                For i = 0 To QJXY_CGMS.Count - 1
+                    If QJXY_CGMS(i) > QJXY_CGMS(i - 1) Then
+                        Dim XH As String = "(" & QJXY_CGMS(i) & ")" & "  "
+                        QJXY_CGMS_BH = QJXY_CGMS_BH & XH
+                        '加入新的列表
+                        XH_QJXY_CGMS.Add(QJXY_CGMS(i))
+                    End If
+                Next
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
             '全局寻优计算出现错误的工况序号列表长度
             '针对计算出错的工况，采用常规模式重新进行计算
-            Dim len_qjxy As Integer = QJXYJS_ERROR.Count
-            Dim QJXY_ERROR_BH As String = Nothing
+            Dim QJXY_ERROR_BH As String = Nothing '用于在Msgbox中显示
             '新的列表，用来储存筛选后的，没有重复的全局寻优计算模式出现错误的工况序号
             Dim XH_QJXY_ERROR As New List(Of Integer)
-            If len_qjxy > 0 And calculation_mode = 2 Then
-                '采用模式1进行计算
-                'Dim calculation_mode_a As Integer = 1
-                calculation_mode = 1
-                For i = 0 To len_qjxy - 1
+            If QJXYJS_ERROR.Count > 0 And calculation_mode = 2 Then
+                For i = 0 To QJXYJS_ERROR.Count - 1
                     If QJXYJS_ERROR(i) > QJXYJS_ERROR(i - 1) Then
                         Dim XH As String = "(" & QJXYJS_ERROR(i) & ")" & "  "
                         QJXY_ERROR_BH = QJXY_ERROR_BH & XH
@@ -282,11 +293,42 @@ Public Class Com内燃机分布式能源负荷分析计算程序
                         XH_QJXY_ERROR.Add(QJXYJS_ERROR(i))
                     End If
                 Next
-                MsgBox("全局寻优计算存在计算错误的工况，程序会自动采用常规模型重算错误工况！" & "工况序号为： " & QJXY_ERROR_BH)
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '将两个列表合并（全局寻优模式转为常规模式的工况）
+            Dim QJXY_TO_CGMS As New List(Of Integer)
+            QJXY_TO_CGMS.AddRange(XH_QJXY_CGMS)
+            QJXY_TO_CGMS.AddRange(XH_QJXY_ERROR)
+            Dim QJXY_TO_CGMS_BH As String = Nothing '用于在Msgbox中显示
+            '新的列表，用来储存筛选后的，没有重复的工况序号
+            Dim XH_QJXY_TO_CGMS As New List(Of Integer)
+            If QJXY_TO_CGMS.Count > 0 And calculation_mode = 2 Then
+                For i = 0 To QJXY_TO_CGMS.Count - 1
+                    If QJXY_TO_CGMS(i) > QJXY_TO_CGMS(i - 1) Then
+                        Dim XH As String = "(" & QJXY_TO_CGMS(i) & ")" & "  "
+                        QJXY_TO_CGMS_BH = QJXY_TO_CGMS_BH & XH
+                        '加入新的列表
+                        XH_QJXY_TO_CGMS.Add(QJXY_TO_CGMS(i))
+                    End If
+                Next
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            If XH_QJXY_TO_CGMS.Count > 0 And calculation_mode = 2 Then
+                '提醒
+                If TS_XZ = True Then
+                    If XH_QJXY_CGMS.Count > 0 Then
+                        MsgBox("全局寻优计算中部分工况制冷制热设备会被全部使用，程序会自动采用常规模型重算错误工况！" & "工况序号为： " & QJXY_CGMS_BH)
+                    End If
+                    If XH_QJXY_ERROR.Count > 0 Then
+                        MsgBox("全局寻优计算存在计算错误的工况，程序会自动采用常规模型重算错误工况！" & "工况序号为： " & QJXY_ERROR_BH)
+                    End If
+                End If
+                '采用模式1进行计算
+                calculation_mode = 1
                 '重新开始计算
-                For i = 0 To XH_QJXY_ERROR.Count - 1
+                For i = 0 To XH_QJXY_TO_CGMS.Count - 1
                     '错误的工况序号
-                    Dim a As Integer = XH_QJXY_ERROR(i)
+                    Dim a As Integer = XH_QJXY_TO_CGMS(i)
                     '调用程序进行计算
                     Call 清空指定工况输入输出数据(ExcelApp, a)
                     '进行正常的负荷分析（主要技术指标）计算
@@ -308,12 +350,11 @@ cgjsms_again:
             'FHTJJD参数最低是0.1
             If calculation_mode = 1 And FHTJJD > 0.1 And CGJSMS_ERROR.Count > 0 Then
                 '针对寻找出来的计算错误的工况序号，减小FHTJJD参数，重新进行计算
-                Dim len_cgjs As Integer = CGJSMS_ERROR.Count
-                Dim CGJS_ERROR_BH As String = Nothing
+                Dim CGJS_ERROR_BH As String = Nothing '用于在Msgbox中显示
                 '新的列表，用来储存筛选后的，没有重复的常规计算模式出现错误的工况序号
                 Dim XH_CGJS_ERROR As New List(Of Integer)
-                If len_cgjs > 0 Then
-                    For i = 0 To len_cgjs - 1
+                If CGJSMS_ERROR.Count > 0 Then
+                    For i = 0 To CGJSMS_ERROR.Count - 1
                         If CGJSMS_ERROR(i) > CGJSMS_ERROR(i - 1) Then
                             Dim XH As String = "(" & CGJSMS_ERROR(i) & ")" & "  "
                             CGJS_ERROR_BH = CGJS_ERROR_BH & XH
@@ -321,7 +362,9 @@ cgjsms_again:
                             XH_CGJS_ERROR.Add(CGJSMS_ERROR(i))
                         End If
                     Next
-                    MsgBox("常规计算模式存在计算错误的工况，程序会自动修改<负荷调节精度>参数重新计算！" & "工况序号为： " & CGJS_ERROR_BH)
+                    If TS_XZ = True Then
+                        MsgBox("常规计算模式存在计算错误的工况，程序会自动修改<负荷调节精度>参数重新计算！" & "工况序号为： " & CGJS_ERROR_BH)
+                    End If
                     '修改FHTJJD和JSBC参数
                     If FHTJJD > 0.5 Then
                         FHTJJD = 0.5
@@ -3255,7 +3298,8 @@ aaaaa:
             '装机总功率（总和）
             Dim ZJZGL_ZRXXHL As Double = 0
             If ZJJC_ZRXXHL = 1 Then
-                ZJZGL_ZRXXHL = ZJLGL1_ZRXXHL + ZJLGL2_ZRXXHL
+                '直燃型溴化锂制冷允许超发到120%
+                ZJZGL_ZRXXHL = (ZJLGL1_ZRXXHL + ZJLGL2_ZRXXHL) * 1.2
             Else
                 ZJZGL_ZRXXHL = 0
             End If
@@ -3280,6 +3324,34 @@ aaaaa:
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————        
+            '如果此时制冷装机总功率=供冷功率+蓄冷功率，装机功率会被全部用掉，则需要增加此时的计算容错性
+            '溴化锂装机数量
+            Dim NUM1_XHL As Double = ans_ZJFA_L(0)
+            Dim NUM2_XHL As Double = ans_ZJFA_L(1)
+            '内燃机余热功率
+            Dim YRGL1_ED_NRJ As Double = ans_ZJFA_L(4)
+            Dim YRGL2_ED_NRJ As Double = ans_ZJFA_L(5)
+            '溴化锂制冷COP
+            Dim XHL_COP_L As Double = ans_XZXS_L(10)
+            '计算溴化锂制热功率
+            Dim ZJZGL_XHL As Double = (NUM1_XHL * YRGL1_ED_NRJ + NUM2_XHL * YRGL2_ED_NRJ) * XHL_COP_L
+            '制冷装机功率求和
+            Dim ZJLGL_ALL As Double = 0
+            '如果处于不启动内燃机的时间段
+            If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(24, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(25, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(26, 9).Value) Then
+                ZJLGL_ALL = ZJZGL_LXSLSJ + ZJZGL_SLLGJ + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL
+            Else
+                ZJLGL_ALL = ZJZGL_LXSLSJ + ZJZGL_SLLGJ + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJZGL_XHL
+            End If
+            '如果此时的冷装机会被全部用掉，将工况序号记录下来，直接采用常规计算模式进行计算，不报错
+            If Math.Abs(LFHZXQL(b) - XNGLGL(b) + XNXLGL(b) - ZJLGL_ALL) <= RCXS Then
+                '将当前工况的序号加入列表
+                QJXY_CGMS.Add(b)
+                '直接结束本SUB
+                Exit Sub
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————   
             '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
             Dim FHFPCS_start As Integer = 20 '初始值
@@ -7323,6 +7395,34 @@ zzzz:
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————   
+            '如果此时制热装机总功率=供热功率+蓄热功率，装机功率会被全部用掉，则需要增加此时的计算容错性
+            '溴化锂装机数量
+            Dim NUM1_XHL As Double = ans_ZJFA_R(0)
+            Dim NUM2_XHL As Double = ans_ZJFA_R(1)
+            '内燃机余热功率
+            Dim YRGL1_ED_NRJ As Double = ans_ZJFA_R(4)
+            Dim YRGL2_ED_NRJ As Double = ans_ZJFA_R(5)
+            '溴化锂制热COP
+            Dim XHL_COP_R As Double = ans_XZXS_R(9)
+            '计算溴化锂制热功率
+            Dim ZJZGL_XHL As Double = (NUM1_XHL * YRGL1_ED_NRJ + NUM2_XHL * YRGL2_ED_NRJ) * XHL_COP_R
+            '制热装机功率求和
+            Dim ZJRGL_ALL As Double = 0
+            '如果处于不启动内燃机的时间段
+            If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(24, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(25, 9).Value Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 79).Value = ExcelApp.ThisWorkbook.Worksheets("说明&常量设置&数据汇总").Cells(26, 9).Value) Then
+                ZJRGL_ALL = ZJZGL_TRQGL + ZJZGL_DGL + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL
+            Else
+                ZJRGL_ALL = ZJZGL_TRQGL + ZJZGL_DGL + ZJZGL_SDYRB + ZJZGL_LXSRB + ZJZGL_FLLGJ + ZJZGL_KQYRB + ZJZGL_ZRXXHL + ZJRGL_HS_ALL + ZJZGL_XHL
+            End If
+            '如果此时的热装机会被全部用掉，将工况序号记录下来，直接采用常规计算模式进行计算，不报错
+            If Math.Abs(RFHZXQL(b) - XNGRGL(b) + XNXRGL(b) - ZJRGL_ALL) <= RCXS Then
+                '将当前工况的序号加入列表
+                QJXY_CGMS.Add(b)
+                '直接结束本SUB
+                Exit Sub
+            End If
+            '————————————————————————————————————————————————————————————————————————————————————————
+            '————————————————————————————————————————————————————————————————————————————————————————   
             '将总热负荷（供热+蓄热）分配给6个设备
             '负荷分配的次数，次数越多计算的越精细，但计算速度越慢
             Dim FHFPCS_start As Integer = 20 '初始值
@@ -7428,6 +7528,7 @@ zzzzz：
                     JS_end_TRQGL = JS_end_TRQGL + 1
                 End If
                 '混水供热设备（目的是可以正常进行内部循环进行计算）
+                '用天然气锅炉的功率计算混水设备功率
                 If ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
                     ZJRGL_HS_a_1 = ZJRGL_HS_ALL
                 Else
@@ -7453,12 +7554,13 @@ zzzzz：
                         JS_end_DGL = JS_end_DGL + 1
                     End If
                     '混水供热设备（目的是可以正常进行内部循环进行计算）
-                    '如果电锅炉存在
+                    '如果电锅炉不存在，此时仍然用天然气锅炉的功率计算混水设备功率
                     If ZJJC_DGL = 0 Or ZJZGL_DGL = 0 Then
-                        '如果天然气锅炉不存在
+                        '如果天然气锅炉也不存在，则混水设备会是直燃性溴化锂，直接等于全部的混水设备功率，进入下一个循环
                         If ZJJC_TRQGL = 0 Or ZJZGL_TRQGL = 0 Then
                             ZJRGL_HS_a_2 = ZJRGL_HS_ALL
                         Else
+                            '天然气锅炉存在，此时用天然气锅炉功率计算混水设备功率
                             If ZJRGL_HS_ALL > 0 Then
                                 ZJRGL_HS_a_2 = a_1 * HSGRGLBL / (1 - HSGRGLBL)
                             Else
@@ -7466,6 +7568,7 @@ zzzzz：
                             End If
                         End If
                     Else
+                        '如果电锅炉存在，则用电锅炉计算混水设备的功率
                         If ZJRGL_HS_ALL > 0 Then
                             ZJRGL_HS_a_2 = a_2 * HSGRGLBL / (1 - HSGRGLBL)
                         Else
@@ -23812,6 +23915,8 @@ rrr:
     '定义和申明各种全局变量和数组
     '全局寻优计算出现错误的工况序号，加入列表
     Public QJXYJS_ERROR As New List(Of Integer)
+    '全局寻优计算模式时，设备会被全部用掉的工况，记录工况序号，加入列表，直接采用常规计算模式进行计算，不在报错
+    Public QJXY_CGMS As New List(Of Integer)
     '定义数组，用于储存输入的各个工况冷热负荷需求量(kW)
     Public LFHZXQL(10000) As Double '冷负荷总需求量
     Public RFHZXQL(10000) As Double '热负荷总需求量
