@@ -14,10 +14,10 @@ Public Class 典型日输入参数赋值
         '第49到200
         ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B56:EK207").ClearContents
         '判断是否需要清空25到48
-        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value <> Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 12).Value <> Nothing Then
+        If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value <> Nothing) And (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 12).Value <> Nothing) Then
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B32:EK55").ClearContents
         End If
-        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value <> Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 21).Value <> Nothing Then
+        If (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value <> Nothing) And (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 1, 21).Value <> Nothing) Then
             ExcelApp.ThisWorkbook.Worksheets("计算输入").Range("B32:EK55").ClearContents
         End If
         '——————————————————————————————————————————————————————————————————————————————————————
@@ -47,12 +47,12 @@ Public Class 典型日输入参数赋值
         '读入数据1到24
         For i = 1 To 24
             '冷负荷
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                 Dim LFH_1_24_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value
                 LFH_1_24.Add(LFH_1_24_temp)
             End If
             '热负荷
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                 Dim RFH_1_24_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value
                 RFH_1_24.Add(RFH_1_24_temp)
             End If
@@ -60,12 +60,12 @@ Public Class 典型日输入参数赋值
         '读入数据25到48
         For i = 25 To 48
             '冷负荷
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                 Dim LFH_25_48_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value
                 LFH_25_48.Add(LFH_25_48_temp)
             End If
             '热负荷
-            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
+            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                 Dim RFH_25_48_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value
                 RFH_25_48.Add(RFH_25_48_temp)
             End If
@@ -127,17 +127,17 @@ Public Class 典型日输入参数赋值
         '——————————————————————————————————————————————————————————————————————————————————————
         '——————————————————————————————————————————————————————————————————————————————————————
         '如果第25行没有输入冷负荷和热负荷，都是空的
-        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value = Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value = Nothing Then
+        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 6).Value = Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value = Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 15).Value = Nothing And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value = Nothing Then
             '则说明本次计算只有冷负荷或者只有热负荷
             '第1到24行
             For i = 1 To 24
                 '冷负荷100%典型日
                 '热负荷100%典型日
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                 End If
@@ -161,10 +161,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 24, 25).Value / 0.75
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                 End If
@@ -204,10 +204,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 24 - 24, 25).Value / 0.5
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                 End If
@@ -247,10 +247,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 24 - 24 - 24, 25).Value / 0.25
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                 End If
@@ -273,10 +273,10 @@ Public Class 典型日输入参数赋值
             Next
             '所有结果保留3位小数，增加美观
             For i = 1 To 96
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value, 3)
                 End If
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value, 3)
                 End If
             Next
@@ -294,17 +294,17 @@ Public Class 典型日输入参数赋值
             '——————————————————————————————————————————————————————————————————————————————————————
             '——————————————————————————————————————————————————————————————————————————————————————
             '如果第25行输入了冷负荷或者热负荷，只有其中一个是空的
-        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value <> Nothing Then
+        ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 12).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + 25, 21).Value <> Nothing Then
             '则说明本次计算冷负荷和热负荷都有
             '第1到24行
             For i = 1 To 24
                 '冷负荷100%典型日
                 '热负荷100%典型日
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                 End If
@@ -314,10 +314,10 @@ Public Class 典型日输入参数赋值
                 '冷负荷100%典型日
                 '热负荷100%典型日
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                 End If
@@ -341,10 +341,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48, 25).Value / 0.75
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                 End If
@@ -374,10 +374,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48, 25).Value / 0.75
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                 End If
@@ -407,10 +407,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48 - 48, 25).Value / 0.5
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                 End If
@@ -440,10 +440,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48 - 48, 25).Value / 0.5
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                 End If
@@ -473,10 +473,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48 - 48 - 48, 25).Value / 0.25
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                 End If
@@ -506,10 +506,10 @@ Public Class 典型日输入参数赋值
                 '负荷段每天小时数
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i - 48 - 48 - 48, 25).Value / 0.25
                 '负荷段时间频数
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
-                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                 End If
@@ -522,10 +522,10 @@ Public Class 典型日输入参数赋值
             Next
             '所有结果保留3位小数，增加美观
             For i = 1 To 192
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value, 3)
                 End If
-                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value > 0 Then
+                If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value, 3)
                 End If
             Next

@@ -948,7 +948,8 @@ cgjsms_again:
                         For i = GKXHmin To GKXHmax
                             LFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value)
                         Next
-                        ZDXLGL = LFH.Max + 100 '最大值加100，放大一点，防止出错
+                        '等于制冷装机功率与冷负荷的大值
+                        ZDXLGL = Math.Max(LFH.Max, ZLZJGL - XHLZLa) + 10 '最大值加10，放大一点，防止出错
                     End If
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -974,7 +975,7 @@ cgjsms_again:
                             '先寻找蓄冷功率+制冷功率大于设备总制冷功率的情况（谷1、谷2、其它1、其它2时内燃机关闭，需要减去溴化锂制冷量）
                             If LFHZXQL(i) + PJXLGL > ZLZJGL - XHLZLa And SYXLGL > 0 Then
                                 '（谷1、谷2、其它1、其它2）时内燃机关闭，需要减去溴化锂制冷量，同时再缩小一点，以免出错
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = ExcelApp.Application.WorksheetFunction.RoundDown((ZLZJGL - XHLZLa - LFHZXQL(i)), 2)
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = Math.Round((ZLZJGL - XHLZLa - LFHZXQL(i)), 2)
                                 '统计蓄冷量
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > 0 Then
                                     XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
@@ -986,17 +987,6 @@ cgjsms_again:
                                     XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
                                     SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
-                            End If
-                            '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > ZDXLGL Then
-                                '将这一条工况已经蓄冷的量从总蓄冷量中减去（减去已经写入的所有负荷）
-                                XLZL = XLZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i)
-                                '蓄冷功率设置成最大蓄冷功率
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = ZDXLGL
-                                '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
-                                XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
-                                '重新计算剩余蓄冷总量
-                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                             End If
                         End If
                     Next
@@ -1013,8 +1003,8 @@ cgjsms_again:
                     Dim GD1_GD2_QT1_QT2_XLGL_L_2 As Double = SYXLGL / GD1_GD2_QT1_QT2_XSS_L_2 '平均蓄冷功率2
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
                         '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄冷功率设置为输入的GD1_GD2_QT1_QT2_XLGL_L_2，同时也要满足装机需求（蓄冷功率+制冷功率不可以大于设备总制冷功率）
-                        Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
                             If SYXLGL > 0 And LFHZXQL(i) + XLGL_now < ZLZJGL - XHLZLa And XLGL_now = PJXLGL Then '如果剩余蓄冷功率大于0，且装机功率没有被完全利用
                                 If ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) >= GD1_GD2_QT1_QT2_XLGL_L_2 Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_now + GD1_GD2_QT1_QT2_XLGL_L_2
@@ -1025,17 +1015,6 @@ cgjsms_again:
                                     XLZL = XLZL + ((ZLZJGL - XHLZLa) - (LFHZXQL(i) + XLGL_now)) * GKXSS(i) '统计全部蓄冷量
                                     SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
-                            End If
-                            '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > ZDXLGL Then
-                                '将这一条工况已经蓄冷的量从总蓄冷量中减去（减去已经写入的所有负荷）
-                                XLZL = XLZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i)
-                                '蓄冷功率设置成最大蓄冷功率
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = ZDXLGL
-                                '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
-                                XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
-                                '重新计算剩余蓄冷总量
-                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                             End If
                         End If
                     Next
@@ -1054,16 +1033,17 @@ cgjsms_again:
                                     SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
                                 End If
                             End If
-                            '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
+                        End If
+                    Next
+                    '判断计算出的蓄冷功率是否大于输入的最大蓄冷功率
+                    For i = GKXHmin To GKXHmax '第一步，先计算蓄冷和蓄热
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XLGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value '目前已经有的蓄冷功率
                             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > ZDXLGL Then
-                                '将这一条工况已经蓄冷的量从总蓄冷量中减去（减去已经写入的所有负荷）
-                                XLZL = XLZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i)
                                 '蓄冷功率设置成最大蓄冷功率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = ZDXLGL
-                                '将新的蓄冷功率加到蓄冷总量中（加上已经写入的所有负荷）
-                                XLZL = XLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i) '统计全部蓄冷量
-                                '重新计算剩余蓄冷总量
-                                SYXLGL = GD1_GD2_QT1_QT2_XLZL - XLZL '剩下还需要满足的蓄冷量
+                                '重新计算蓄冷总量
+                                XLZL = XLZL + (ZDXLGL - XLGL_now) * GKXSS(i) '统计全部蓄冷量
                             End If
                         End If
                     Next
@@ -1080,16 +1060,6 @@ cgjsms_again:
                             MsgBox("蓄冷装置供冷功率大于输入的最大蓄冷功率，装机方案选择不合理，程序不会自动修改计算出的数值，但请检查并重新选择装机方案！！" & "装机方案不合理的工况序号为： " & i)
                         End If
                     Next
-                    'For i = GKXHmin To GKXHmax '第二步，计算进行削峰需要的供冷功率                     
-                    '    '高峰时间段不进行削峰，高峰段默认全部负荷都优先进行蓄冷供冷
-                    '    '即使是（谷1、谷2、其它1、其它2），如果冷负荷大于了装机，也要进行削峰
-                    '    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰1" And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰2" Then
-                    '        If LFHZXQL(i) > ZLZJGL Then '冷负荷总需求量大于制冷装机量
-                    '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = (LFHZXQL(i) - ZLZJGL)
-                    '            GLZL = GLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value * GKXSS(i) '统计全部供冷量
-                    '        End If
-                    '    End If
-                    'Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计高峰段有多少个小时
                     Dim ZLSL_GF As Double = 0
@@ -1154,20 +1124,6 @@ cgjsms_again:
                             End If
                         End If
                     Next
-                    'For i = GKXHmin To GKXHmax '第三步，计算高峰段的供冷功率，高峰段优先供冷
-                    '    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
-                    '        If LFHZXQL(i) > 0 Then '冷负荷大于0才进行计算
-                    '            If (XLZL - GLZL) > LFHZXQL(i) Then
-                    '                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = LFHZXQL(i)
-                    '            ElseIf (XLZL - GLZL) > 0 And (XLZL - GLZL) <= LFHZXQL(i) Then
-                    '                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = XLZL - GLZL
-                    '            Else
-                    '                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value = 0
-                    '            End If
-                    '            GLZL = GLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value * GKXSS(i) '统计全部供冷量
-                    '        End If
-                    '    End If
-                    'Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计峰段有多少个小时
                     Dim ZLSL_F As Double = 0
@@ -1296,7 +1252,31 @@ cgjsms_again:
                             End If
                         End If
                     Next
-                    If Math.Abs((XLZL - GLZL) / XLZL) > 0.05 Then '如果蓄冷总量和供冷总量误差超过5%，报错
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '第三步，根据蓄能装置供冷总能量，反向修正蓄能装置蓄冷功率
+                    '如果蓄冷和供冷能量存在较大偏差（大于4%）
+                    If Math.Abs((XLZL - GLZL) / XLZL) > 0.04 Then
+                        '只会出现蓄冷比供冷大的情况，所以修改蓄冷的值
+                        '根据供冷总量，求蓄冷平均功率
+                        Dim XLGL_PJ_a As Double = GLZL / GD1_GD2_QT1_QT2_XSS_L
+                        For i = GKXHmin To GKXHmax
+                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value > XLGL_PJ_a Then
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value = XLGL_PJ_a
+                            End If
+                        Next
+                    End If
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '第四步，验算
+                    '重新计算蓄能装置的蓄冷和供冷总能量
+                    Dim XNGLZL As Double = 0 '蓄能装置供冷总量
+                    Dim XNXLZL As Double = 0 '蓄能装置蓄冷总量
+                    For i = GKXHmin To GKXHmax
+                        XNGLZL = XNGLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 13).Value * GKXSS(i)
+                        XNXLZL = XNXLZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 14).Value * GKXSS(i)
+                    Next
+                    If Math.Abs((XNXLZL - XNGLZL) / XNXLZL) > 0.05 Then '如果蓄冷总量和供冷总量误差超过5%，报错
                         MsgBox("蓄冷装置蓄冷总量与蓄冷装置供冷总量之间的误差超过了5%，请检查！！")
                     End If
                 End If
@@ -1318,7 +1298,8 @@ cgjsms_again:
                         For i = GKXHmin To GKXHmax
                             RFH.Add(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value)
                         Next
-                        ZDXRGL = RFH.Max + 100 '最大值加100，放大一点，防止出错
+                        '等于制热装机功率和热负荷最大值中的大值
+                        ZDXRGL = Math.Max(ZRZJGL - XHLZRa, RFH.Max) + 10 '最大值加10，放大一点，防止出错
                     End If
                     '——————————————————————————————————————————————————————————————————————————————————————————————
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -1327,9 +1308,11 @@ cgjsms_again:
                     Dim GRZL As Double = 0 '供热总量
                     '先计算所有的（谷1、谷2、其它1、其它2）时间段最多可以蓄热多少kWh
                     Dim GD1_GD2_QT1_QT2_XRZL As Double = 0 '（谷1、谷2、其它1、其它2）蓄热总量
+                    Dim GD1_GD2_QT1_QT2_XSS_R As Double = 0 '热工况（谷1、谷2、其它1、其它2）小时数
                     For i = GKXHmin To GKXHmax '遍历所有的热负荷段
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
                             GD1_GD2_QT1_QT2_XRZL = GD1_GD2_QT1_QT2_XRZL + GKXSS(i) * PJXRGL '所有为（谷1、谷2、其它1、其它2）时间段的小时数乘以输入的最大蓄热功率
+                            GD1_GD2_QT1_QT2_XSS_R = GD1_GD2_QT1_QT2_XSS_R + GKXSS(i) '热负荷段的（谷电、时间段1、时间段2）总小时数
                         End If
                     Next
                     SYXRGL = SYXRGL + GD1_GD2_QT1_QT2_XRZL '剩余蓄热功率
@@ -1339,7 +1322,7 @@ cgjsms_again:
                         '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄热功率设置为输入的PJXRGL
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
                             If RFHZXQL(i) + PJXRGL > ZRZJGL - XHLZRa And SYXRGL > 0 Then '寻找蓄热功率+制热功率大于设备总制热功率的情况（谷1、谷2、其它1、其它2时内燃机关闭，需要减去溴化锂制热量）
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ExcelApp.Application.WorksheetFunction.RoundDown((ZRZJGL - XHLZRa - RFHZXQL(i)), 2) '（谷1、谷2、其它1、其它2）时内燃机关闭，需要减去溴化锂制热量，同时再缩小一点，以免出错
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = Math.Round((ZRZJGL - XHLZRa - RFHZXQL(i)), 2) '（谷1、谷2、其它1、其它2）时内燃机关闭，需要减去溴化锂制热量，同时再缩小一点，以免出错
                                 If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > 0 Then
                                     XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
                                     SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
@@ -1350,17 +1333,6 @@ cgjsms_again:
                                     XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
                                     SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
-                            End If
-                            '判断计算出的蓄热功率是否大于输入的最大蓄热功率
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > ZDXRGL Then
-                                '将这一条工况已经蓄热的量从总蓄热量中减去（减去已经写入的所有负荷）
-                                XRZL = XRZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i)
-                                '蓄热功率设置成最大蓄热功率
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ZDXRGL
-                                '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
-                                XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
-                                '重新计算剩余蓄热总量
-                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                             End If
                         End If
                     Next
@@ -1377,8 +1349,8 @@ cgjsms_again:
                     Dim GD1_GD2_QT1_QT2_XRGL_R_2 As Double = SYXRGL / GD1_GD2_QT1_QT2_XSS_R_2 '平均蓄热功率2
                     For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
                         '将用电负荷段为（谷1、谷2、其它1、其它2）的工况，蓄热功率设置为输入的GD1_GD2_QT1_QT2_XRGL_R_2，同时也要满足装机需求（蓄热功率+制热功率不可以大于设备总制热功率）
-                        Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
                         If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
                             If SYXRGL > 0 And RFHZXQL(i) + XRGL_now < ZRZJGL - XHLZRa And XRGL_now = PJXRGL Then '如果剩余蓄热功率大于0，且装机功率没有被完全利用
                                 If ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) >= GD1_GD2_QT1_QT2_XRGL_R_2 Then
                                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_now + GD1_GD2_QT1_QT2_XRGL_R_2
@@ -1389,17 +1361,6 @@ cgjsms_again:
                                     XRZL = XRZL + ((ZRZJGL - XHLZRa) - (RFHZXQL(i) + XRGL_now)) * GKXSS(i) '统计全部蓄热量
                                     SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
-                            End If
-                            '判断计算出的蓄热功率是否大于输入的最大蓄热功率
-                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > ZDXRGL Then
-                                '将这一条工况已经蓄热的量从总蓄热量中减去（减去已经写入的所有负荷）
-                                XRZL = XRZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i)
-                                '蓄热功率设置成最大蓄热功率
-                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ZDXRGL
-                                '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
-                                XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
-                                '重新计算剩余蓄热总量
-                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                             End If
                         End If
                     Next
@@ -1418,16 +1379,17 @@ cgjsms_again:
                                     SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
                                 End If
                             End If
-                            '判断计算出的蓄热功率是否大于输入的最大蓄热功率
+                        End If
+                    Next
+                    '判断计算出的蓄热功率是否大于输入的最大蓄热功率
+                    For i = GKXHmin To GKXHmax '第一步，先计算蓄热和蓄热
+                        If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "谷2" Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它1" And QT1_SJD = True) Or (ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "其它2" And QT2_SJD = True) Then
+                            Dim XRGL_now As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value '目前已经有的蓄热功率
                             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > ZDXRGL Then
-                                '将这一条工况已经蓄热的量从总蓄热量中减去（减去已经写入的所有负荷）
-                                XRZL = XRZL - ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i)
                                 '蓄热功率设置成最大蓄热功率
                                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = ZDXRGL
-                                '将新的蓄热功率加到蓄热总量中（加上已经写入的所有负荷）
-                                XRZL = XRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i) '统计全部蓄热量
-                                '重新计算剩余蓄热总量
-                                SYXRGL = GD1_GD2_QT1_QT2_XRZL - XRZL '剩下还需要满足的蓄热量
+                                '重新计算蓄热总量
+                                XRZL = XRZL + (ZDXRGL - XRGL_now) * GKXSS(i) '统计全部蓄热量
                             End If
                         End If
                     Next
@@ -1444,16 +1406,6 @@ cgjsms_again:
                             MsgBox("蓄热装置供热功率大于输入的最大蓄热功率，装机方案选择不合理，程序不会自动修改计算出的数值，但请检查并重新选择装机方案！！" & "装机方案不合理的工况序号为： " & i)
                         End If
                     Next
-                    'For i = GKXHmin To GKXHmax '第二步，计算进行削峰需要的供热功率
-                    '    '即使是谷段，如果冷负荷大于了装机，也要进行削峰
-                    '    '高峰时间段不进行削峰，高峰段默认全部负荷都优先进行蓄热供热
-                    '    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰1" And ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value <> "高峰2" Then
-                    '        If RFHZXQL(i) > ZRZJGL Then '热负荷总需求量大于制热装机量
-                    '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i) - ZRZJGL
-                    '            GRZL = GRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i) '统计全部供热量
-                    '        End If
-                    '    End If
-                    'Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计有多少个高峰段
                     Dim ZRSL_GF As Double = 0 '制热时间段高峰段小时数
@@ -1518,18 +1470,6 @@ cgjsms_again:
                             End If
                         End If
                     Next
-                    'For i = GKXHmin To GKXHmax '第三步，计算高峰段的供热功率，高峰段优先供热
-                    '    If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰1" Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 79).Value = "高峰2" Then
-                    '        If (XRZL - GRZL) > RFHZXQL(i) Then
-                    '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = RFHZXQL(i)
-                    '        ElseIf (XRZL - GRZL) > 0 And (XRZL - GRZL) <= RFHZXQL(i) Then
-                    '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = XRZL - GRZL
-                    '        Else
-                    '            ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value = 0
-                    '        End If
-                    '        GRZL = GRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i) '统计全部供热量
-                    '    End If
-                    'Next
                     '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
                     '统计有多少个峰段
                     Dim ZRSL_F As Double = 0 '制热时间段峰段小时数
@@ -1658,7 +1598,31 @@ cgjsms_again:
                             End If
                         End If
                     Next
-                    If Math.Abs((XRZL - GRZL) / XRZL) > 0.05 Then '如果蓄冷总量和供冷总量误差超过5%，报错
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '第三步，根据蓄能装置供热总能量，反向修正蓄能装置蓄热功率
+                    '如果蓄热和供热能量存在较大偏差（大于4%）
+                    If Math.Abs((XRZL - GRZL) / XRZL) > 0.04 Then
+                        '只会出现蓄热比供热大的情况，所以修改蓄热的值
+                        '根据供热总量，求蓄热平均功率
+                        Dim XRGL_PJ_a As Double = GRZL / GD1_GD2_QT1_QT2_XSS_R
+                        For i = GKXHmin To GKXHmax
+                            If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value > XRGL_PJ_a Then
+                                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value = XRGL_PJ_a
+                            End If
+                        Next
+                    End If
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+                    '第四步，验算
+                    '重新计算蓄能装置的蓄热和供热总能量
+                    Dim XNGRZL As Double = 0 '蓄能装置供热总量
+                    Dim XNXRZL As Double = 0 '蓄能装置蓄热总量
+                    For i = GKXHmin To GKXHmax
+                        XNGRZL = XNGRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 22).Value * GKXSS(i)
+                        XNXRZL = XNXRZL + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 23).Value * GKXSS(i)
+                    Next
+                    If Math.Abs((XNXRZL - XNGRZL) / XNXRZL) > 0.05 Then '如果蓄热总量和供热总量误差超过5%，报错
                         MsgBox("蓄热装置蓄热总量与蓄热装置供热总量之间的误差超过了5%，请检查！！")
                     End If
                 End If
