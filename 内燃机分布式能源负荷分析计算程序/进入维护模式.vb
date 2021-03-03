@@ -8,7 +8,7 @@
         Dim 内燃机分布式能源负荷分析计算程序 As New Com内燃机分布式能源负荷分析计算程序
         Dim mima As String '输入的密码
         mima = CType(Me.TextBox1.Text, String)
-        If mima = "cjc19920105" Then
+        If mima = "ZHny@1115" Then
             '解锁工作表
             Call 内燃机分布式能源负荷分析计算程序.解锁工作表(ExcelApp)
             '取消彻底隐藏工作表
