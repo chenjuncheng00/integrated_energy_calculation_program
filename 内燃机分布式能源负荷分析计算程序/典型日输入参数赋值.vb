@@ -206,14 +206,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_1_24 = LFH_Q_1_24 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_1_24 = RFH_Q_1_24 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -255,14 +255,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_25_48 = LFH_Q_25_48 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_25_48 = RFH_Q_25_48 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -320,14 +320,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_49_72 = LFH_Q_49_72 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_49_72 = RFH_Q_49_72 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -385,14 +385,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_73_96 = LFH_Q_73_96 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_73_96 = RFH_Q_73_96 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -436,8 +436,8 @@ Public Class 典型日输入参数赋值
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value, 3)
                 End If
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value, 3)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value, 3)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value, 3)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value, 4)
             Next
             '清空冷热负荷结果为0的单元格
             For i = 25 To 96
@@ -466,14 +466,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_1_24 = LFH_Q_1_24 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_1_24 = RFH_Q_1_24 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -501,14 +501,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_100_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_25_48 = LFH_Q_25_48 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_100_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_25_48 = RFH_Q_25_48 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -550,14 +550,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_49_72 = LFH_Q_49_72 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_49_72 = RFH_Q_49_72 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -605,14 +605,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_75_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_73_96 = LFH_Q_73_96 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_75_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_73_96 = RFH_Q_73_96 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -660,14 +660,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_97_120 = LFH_Q_97_120 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_97_120 = RFH_Q_97_120 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -715,14 +715,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_50_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_121_144 = LFH_Q_121_144 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_50_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_121_144 = RFH_Q_121_144 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -770,14 +770,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_145_168 = LFH_Q_145_168 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_145_168 = RFH_Q_145_168 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -825,14 +825,14 @@ Public Class 典型日输入参数赋值
                     '冷负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = LFH_25_num
                     '修改冷负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * LFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     LFH_Q_169_192 = LFH_Q_169_192 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 ElseIf ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
                     '热负荷占比
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = RFH_25_num
                     '修改热负荷的计算时间
-                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS
+                    ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value * RFH_XSS / 24
                     '计算如果每天小时数系数(25列)为1时的供能总量
                     RFH_Q_169_192 = RFH_Q_169_192 + ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
                 End If
@@ -864,8 +864,8 @@ Public Class 典型日输入参数赋值
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value, 3)
                 End If
                 ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value, 3)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value, 3)
-                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value, 3)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value, 4)
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = Math.Round(ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value, 4)
             Next
             '清空冷热负荷结果为0的单元格
             For i = 49 To 192
