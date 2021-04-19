@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class 典型日输入参数赋值
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class 典型日输入参数赋值
     '注意: 以下过程是 Windows 窗体设计器所必需的
     '可以使用 Windows 窗体设计器修改它。  
     '不要使用代码编辑器修改它。
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -50,12 +50,6 @@ Partial Class 典型日输入参数赋值
         Me.Label18 = New System.Windows.Forms.Label()
         Me.清空数据 = New System.Windows.Forms.Button()
         Me.确定参数 = New System.Windows.Forms.Button()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.LFHTS = New System.Windows.Forms.TextBox()
-        Me.Label20 = New System.Windows.Forms.Label()
-        Me.Label21 = New System.Windows.Forms.Label()
-        Me.RFHTS = New System.Windows.Forms.TextBox()
-        Me.Label22 = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
         Me.LFH_25_Q = New System.Windows.Forms.TextBox()
         Me.Label24 = New System.Windows.Forms.Label()
@@ -82,12 +76,6 @@ Partial Class 典型日输入参数赋值
         Me.RFH_100_Q = New System.Windows.Forms.TextBox()
         Me.Label39 = New System.Windows.Forms.Label()
         Me.Label40 = New System.Windows.Forms.Label()
-        Me.Label41 = New System.Windows.Forms.Label()
-        Me.LFHZNL = New System.Windows.Forms.TextBox()
-        Me.Label42 = New System.Windows.Forms.Label()
-        Me.RFHZNL = New System.Windows.Forms.TextBox()
-        Me.Label44 = New System.Windows.Forms.Label()
-        Me.Label43 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -216,7 +204,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label10.AutoSize = True
         Me.Label10.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label10.Location = New System.Drawing.Point(113, 381)
+        Me.Label10.Location = New System.Drawing.Point(113, 329)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(389, 28)
         Me.Label10.TabIndex = 23
@@ -226,7 +214,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label11.AutoSize = True
         Me.Label11.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(544, 594)
+        Me.Label11.Location = New System.Drawing.Point(544, 542)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(41, 32)
         Me.Label11.TabIndex = 35
@@ -234,7 +222,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_25_num
         '
-        Me.RFH_25_num.Location = New System.Drawing.Point(357, 594)
+        Me.RFH_25_num.Location = New System.Drawing.Point(357, 542)
         Me.RFH_25_num.Name = "RFH_25_num"
         Me.RFH_25_num.Size = New System.Drawing.Size(170, 35)
         Me.RFH_25_num.TabIndex = 34
@@ -244,7 +232,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label12.Location = New System.Drawing.Point(36, 597)
+        Me.Label12.Location = New System.Drawing.Point(36, 545)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(304, 28)
         Me.Label12.TabIndex = 33
@@ -254,7 +242,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label13.AutoSize = True
         Me.Label13.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(544, 544)
+        Me.Label13.Location = New System.Drawing.Point(544, 492)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(41, 32)
         Me.Label13.TabIndex = 32
@@ -262,7 +250,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_50_num
         '
-        Me.RFH_50_num.Location = New System.Drawing.Point(357, 544)
+        Me.RFH_50_num.Location = New System.Drawing.Point(357, 492)
         Me.RFH_50_num.Name = "RFH_50_num"
         Me.RFH_50_num.Size = New System.Drawing.Size(170, 35)
         Me.RFH_50_num.TabIndex = 31
@@ -272,7 +260,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label14.AutoSize = True
         Me.Label14.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label14.Location = New System.Drawing.Point(36, 547)
+        Me.Label14.Location = New System.Drawing.Point(36, 495)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(304, 28)
         Me.Label14.TabIndex = 30
@@ -282,7 +270,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label15.AutoSize = True
         Me.Label15.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(544, 490)
+        Me.Label15.Location = New System.Drawing.Point(544, 438)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(41, 32)
         Me.Label15.TabIndex = 29
@@ -290,7 +278,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_75_num
         '
-        Me.RFH_75_num.Location = New System.Drawing.Point(357, 490)
+        Me.RFH_75_num.Location = New System.Drawing.Point(357, 438)
         Me.RFH_75_num.Name = "RFH_75_num"
         Me.RFH_75_num.Size = New System.Drawing.Size(170, 35)
         Me.RFH_75_num.TabIndex = 28
@@ -300,7 +288,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label16.AutoSize = True
         Me.Label16.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label16.Location = New System.Drawing.Point(36, 493)
+        Me.Label16.Location = New System.Drawing.Point(36, 441)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(304, 28)
         Me.Label16.TabIndex = 27
@@ -310,7 +298,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label17.Location = New System.Drawing.Point(544, 438)
+        Me.Label17.Location = New System.Drawing.Point(544, 386)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(41, 32)
         Me.Label17.TabIndex = 26
@@ -318,7 +306,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_100_num
         '
-        Me.RFH_100_num.Location = New System.Drawing.Point(357, 438)
+        Me.RFH_100_num.Location = New System.Drawing.Point(357, 386)
         Me.RFH_100_num.Name = "RFH_100_num"
         Me.RFH_100_num.Size = New System.Drawing.Size(170, 35)
         Me.RFH_100_num.TabIndex = 25
@@ -328,7 +316,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label18.AutoSize = True
         Me.Label18.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label18.Location = New System.Drawing.Point(32, 441)
+        Me.Label18.Location = New System.Drawing.Point(32, 389)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(319, 28)
         Me.Label18.TabIndex = 24
@@ -337,7 +325,7 @@ Partial Class 典型日输入参数赋值
         '清空数据
         '
         Me.清空数据.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.清空数据.Location = New System.Drawing.Point(752, 708)
+        Me.清空数据.Location = New System.Drawing.Point(781, 611)
         Me.清空数据.Name = "清空数据"
         Me.清空数据.Size = New System.Drawing.Size(190, 84)
         Me.清空数据.TabIndex = 37
@@ -347,68 +335,12 @@ Partial Class 典型日输入参数赋值
         '确定参数
         '
         Me.确定参数.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.确定参数.Location = New System.Drawing.Point(312, 708)
+        Me.确定参数.Location = New System.Drawing.Point(223, 611)
         Me.确定参数.Name = "确定参数"
         Me.确定参数.Size = New System.Drawing.Size(190, 84)
         Me.确定参数.TabIndex = 36
         Me.确定参数.Text = "确定参数"
         Me.确定参数.UseVisualStyleBackColor = True
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label19.Location = New System.Drawing.Point(552, 311)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(31, 32)
-        Me.Label19.TabIndex = 40
-        Me.Label19.Text = "d"
-        '
-        'LFHTS
-        '
-        Me.LFHTS.Location = New System.Drawing.Point(357, 311)
-        Me.LFHTS.Name = "LFHTS"
-        Me.LFHTS.Size = New System.Drawing.Size(170, 35)
-        Me.LFHTS.TabIndex = 39
-        Me.LFHTS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label20.Location = New System.Drawing.Point(36, 314)
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(288, 28)
-        Me.Label20.TabIndex = 38
-        Me.Label20.Text = "冷负荷全年供能天数:"
-        '
-        'Label21
-        '
-        Me.Label21.AutoSize = True
-        Me.Label21.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label21.Location = New System.Drawing.Point(552, 645)
-        Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(31, 32)
-        Me.Label21.TabIndex = 43
-        Me.Label21.Text = "d"
-        '
-        'RFHTS
-        '
-        Me.RFHTS.Location = New System.Drawing.Point(357, 645)
-        Me.RFHTS.Name = "RFHTS"
-        Me.RFHTS.Size = New System.Drawing.Size(170, 35)
-        Me.RFHTS.TabIndex = 42
-        Me.RFHTS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label22
-        '
-        Me.Label22.AutoSize = True
-        Me.Label22.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label22.Location = New System.Drawing.Point(36, 648)
-        Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(288, 28)
-        Me.Label22.TabIndex = 41
-        Me.Label22.Text = "热负荷全年供能天数:"
         '
         'Label23
         '
@@ -536,7 +468,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label32.AutoSize = True
         Me.Label32.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label32.Location = New System.Drawing.Point(1135, 594)
+        Me.Label32.Location = New System.Drawing.Point(1135, 542)
         Me.Label32.Name = "Label32"
         Me.Label32.Size = New System.Drawing.Size(41, 32)
         Me.Label32.TabIndex = 69
@@ -544,7 +476,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_25_Q
         '
-        Me.RFH_25_Q.Location = New System.Drawing.Point(948, 594)
+        Me.RFH_25_Q.Location = New System.Drawing.Point(948, 542)
         Me.RFH_25_Q.Name = "RFH_25_Q"
         Me.RFH_25_Q.Size = New System.Drawing.Size(170, 35)
         Me.RFH_25_Q.TabIndex = 68
@@ -554,7 +486,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label33.AutoSize = True
         Me.Label33.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label33.Location = New System.Drawing.Point(627, 597)
+        Me.Label33.Location = New System.Drawing.Point(627, 545)
         Me.Label33.Name = "Label33"
         Me.Label33.Size = New System.Drawing.Size(304, 28)
         Me.Label33.TabIndex = 67
@@ -564,7 +496,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label34.AutoSize = True
         Me.Label34.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label34.Location = New System.Drawing.Point(1135, 544)
+        Me.Label34.Location = New System.Drawing.Point(1135, 492)
         Me.Label34.Name = "Label34"
         Me.Label34.Size = New System.Drawing.Size(41, 32)
         Me.Label34.TabIndex = 66
@@ -572,7 +504,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_50_Q
         '
-        Me.RFH_50_Q.Location = New System.Drawing.Point(948, 544)
+        Me.RFH_50_Q.Location = New System.Drawing.Point(948, 492)
         Me.RFH_50_Q.Name = "RFH_50_Q"
         Me.RFH_50_Q.Size = New System.Drawing.Size(170, 35)
         Me.RFH_50_Q.TabIndex = 65
@@ -582,7 +514,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label35.AutoSize = True
         Me.Label35.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label35.Location = New System.Drawing.Point(627, 547)
+        Me.Label35.Location = New System.Drawing.Point(627, 495)
         Me.Label35.Name = "Label35"
         Me.Label35.Size = New System.Drawing.Size(304, 28)
         Me.Label35.TabIndex = 64
@@ -592,7 +524,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label36.AutoSize = True
         Me.Label36.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label36.Location = New System.Drawing.Point(1135, 490)
+        Me.Label36.Location = New System.Drawing.Point(1135, 438)
         Me.Label36.Name = "Label36"
         Me.Label36.Size = New System.Drawing.Size(41, 32)
         Me.Label36.TabIndex = 63
@@ -600,7 +532,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_75_Q
         '
-        Me.RFH_75_Q.Location = New System.Drawing.Point(948, 490)
+        Me.RFH_75_Q.Location = New System.Drawing.Point(948, 438)
         Me.RFH_75_Q.Name = "RFH_75_Q"
         Me.RFH_75_Q.Size = New System.Drawing.Size(170, 35)
         Me.RFH_75_Q.TabIndex = 62
@@ -610,7 +542,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label37.AutoSize = True
         Me.Label37.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label37.Location = New System.Drawing.Point(627, 493)
+        Me.Label37.Location = New System.Drawing.Point(627, 441)
         Me.Label37.Name = "Label37"
         Me.Label37.Size = New System.Drawing.Size(304, 28)
         Me.Label37.TabIndex = 61
@@ -620,7 +552,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label38.AutoSize = True
         Me.Label38.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label38.Location = New System.Drawing.Point(1135, 438)
+        Me.Label38.Location = New System.Drawing.Point(1135, 386)
         Me.Label38.Name = "Label38"
         Me.Label38.Size = New System.Drawing.Size(41, 32)
         Me.Label38.TabIndex = 60
@@ -628,7 +560,7 @@ Partial Class 典型日输入参数赋值
         '
         'RFH_100_Q
         '
-        Me.RFH_100_Q.Location = New System.Drawing.Point(948, 438)
+        Me.RFH_100_Q.Location = New System.Drawing.Point(948, 386)
         Me.RFH_100_Q.Name = "RFH_100_Q"
         Me.RFH_100_Q.Size = New System.Drawing.Size(170, 35)
         Me.RFH_100_Q.TabIndex = 59
@@ -638,7 +570,7 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label39.AutoSize = True
         Me.Label39.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label39.Location = New System.Drawing.Point(623, 441)
+        Me.Label39.Location = New System.Drawing.Point(623, 389)
         Me.Label39.Name = "Label39"
         Me.Label39.Size = New System.Drawing.Size(319, 28)
         Me.Label39.TabIndex = 58
@@ -648,79 +580,17 @@ Partial Class 典型日输入参数赋值
         '
         Me.Label40.AutoSize = True
         Me.Label40.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label40.Location = New System.Drawing.Point(704, 381)
+        Me.Label40.Location = New System.Drawing.Point(704, 329)
         Me.Label40.Name = "Label40"
         Me.Label40.Size = New System.Drawing.Size(389, 28)
         Me.Label40.TabIndex = 57
         Me.Label40.Text = "热负荷典型日供能量占比输入"
         '
-        'Label41
-        '
-        Me.Label41.AutoSize = True
-        Me.Label41.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label41.Location = New System.Drawing.Point(1124, 311)
-        Me.Label41.Name = "Label41"
-        Me.Label41.Size = New System.Drawing.Size(74, 32)
-        Me.Label41.TabIndex = 72
-        Me.Label41.Text = "kWh"
-        '
-        'LFHZNL
-        '
-        Me.LFHZNL.Location = New System.Drawing.Point(948, 311)
-        Me.LFHZNL.Name = "LFHZNL"
-        Me.LFHZNL.Size = New System.Drawing.Size(170, 35)
-        Me.LFHZNL.TabIndex = 71
-        Me.LFHZNL.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label42
-        '
-        Me.Label42.AutoSize = True
-        Me.Label42.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label42.Location = New System.Drawing.Point(627, 314)
-        Me.Label42.Name = "Label42"
-        Me.Label42.Size = New System.Drawing.Size(288, 28)
-        Me.Label42.TabIndex = 70
-        Me.Label42.Text = "冷负荷全年供能总量:"
-        '
-        'RFHZNL
-        '
-        Me.RFHZNL.Location = New System.Drawing.Point(948, 644)
-        Me.RFHZNL.Name = "RFHZNL"
-        Me.RFHZNL.Size = New System.Drawing.Size(170, 35)
-        Me.RFHZNL.TabIndex = 74
-        Me.RFHZNL.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label44
-        '
-        Me.Label44.AutoSize = True
-        Me.Label44.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label44.Location = New System.Drawing.Point(627, 647)
-        Me.Label44.Name = "Label44"
-        Me.Label44.Size = New System.Drawing.Size(288, 28)
-        Me.Label44.TabIndex = 73
-        Me.Label44.Text = "热负荷全年供能总量:"
-        '
-        'Label43
-        '
-        Me.Label43.AutoSize = True
-        Me.Label43.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label43.Location = New System.Drawing.Point(1124, 648)
-        Me.Label43.Name = "Label43"
-        Me.Label43.Size = New System.Drawing.Size(74, 32)
-        Me.Label43.TabIndex = 75
-        Me.Label43.Text = "kWh"
-        '
         '典型日输入参数赋值
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1208, 828)
-        Me.Controls.Add(Me.Label43)
-        Me.Controls.Add(Me.RFHZNL)
-        Me.Controls.Add(Me.Label44)
-        Me.Controls.Add(Me.Label41)
-        Me.Controls.Add(Me.LFHZNL)
-        Me.Controls.Add(Me.Label42)
+        Me.ClientSize = New System.Drawing.Size(1208, 730)
         Me.Controls.Add(Me.Label32)
         Me.Controls.Add(Me.RFH_25_Q)
         Me.Controls.Add(Me.Label33)
@@ -747,12 +617,6 @@ Partial Class 典型日输入参数赋值
         Me.Controls.Add(Me.LFH_100_Q)
         Me.Controls.Add(Me.Label30)
         Me.Controls.Add(Me.Label31)
-        Me.Controls.Add(Me.Label21)
-        Me.Controls.Add(Me.RFHTS)
-        Me.Controls.Add(Me.Label22)
-        Me.Controls.Add(Me.Label19)
-        Me.Controls.Add(Me.LFHTS)
-        Me.Controls.Add(Me.Label20)
         Me.Controls.Add(Me.清空数据)
         Me.Controls.Add(Me.确定参数)
         Me.Controls.Add(Me.Label11)
@@ -817,12 +681,6 @@ Partial Class 典型日输入参数赋值
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents 清空数据 As System.Windows.Forms.Button
     Friend WithEvents 确定参数 As System.Windows.Forms.Button
-    Friend WithEvents Label19 As System.Windows.Forms.Label
-    Friend WithEvents LFHTS As System.Windows.Forms.TextBox
-    Friend WithEvents Label20 As System.Windows.Forms.Label
-    Friend WithEvents Label21 As System.Windows.Forms.Label
-    Friend WithEvents RFHTS As System.Windows.Forms.TextBox
-    Friend WithEvents Label22 As System.Windows.Forms.Label
     Friend WithEvents Label23 As System.Windows.Forms.Label
     Friend WithEvents LFH_25_Q As System.Windows.Forms.TextBox
     Friend WithEvents Label24 As System.Windows.Forms.Label
@@ -849,10 +707,4 @@ Partial Class 典型日输入参数赋值
     Friend WithEvents RFH_100_Q As System.Windows.Forms.TextBox
     Friend WithEvents Label39 As System.Windows.Forms.Label
     Friend WithEvents Label40 As System.Windows.Forms.Label
-    Friend WithEvents Label41 As System.Windows.Forms.Label
-    Friend WithEvents LFHZNL As System.Windows.Forms.TextBox
-    Friend WithEvents Label42 As System.Windows.Forms.Label
-    Friend WithEvents RFHZNL As System.Windows.Forms.TextBox
-    Friend WithEvents Label44 As System.Windows.Forms.Label
-    Friend WithEvents Label43 As System.Windows.Forms.Label
 End Class
