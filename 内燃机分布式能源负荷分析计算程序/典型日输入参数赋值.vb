@@ -89,6 +89,10 @@ Public Class 典型日输入参数赋值
         For i = 25 To 48
             '冷负荷
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 6).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value <> Nothing Then
+                '第25、26列的系数重置回1（防止计算出的全年总能量不准确）
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = 1
+                '计算全年制冷量
                 Dim LFH_25_48_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value
                 LFH_25_48.Add(LFH_25_48_temp)
                 Dim LFH_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 12).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
@@ -96,6 +100,10 @@ Public Class 典型日输入参数赋值
             End If
             '热负荷
             If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 15).Value <> Nothing Or ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value <> Nothing Then
+                '第25、26列的系数重置回1（防止计算出的全年总能量不准确）
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value = 1
+                ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value = 1
+                '计算全年制热量
                 Dim RFH_25_48_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value
                 RFH_25_48.Add(RFH_25_48_temp)
                 Dim RFH_temp As Double = ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 21).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 24).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 25).Value * ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + i, 26).Value
