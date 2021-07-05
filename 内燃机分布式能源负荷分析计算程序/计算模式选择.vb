@@ -34,7 +34,7 @@ Public Class 计算模式选择
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(ExcelApp, precision, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, calculation_mode, TS)
+        计算主程序(ExcelApp, precision, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, calculation_mode, TS)
         '关闭窗口
         Me.Close()
     End Sub
@@ -181,9 +181,12 @@ Public Class 计算模式选择
         '隐藏窗体
         Me.Hide()
         '调用主程序进行计算
-        mainprogram.计算主程序(ExcelApp, precision, D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TS)
+        计算主程序(ExcelApp, precision, D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TS)
         '关闭窗口
         Me.Close()
     End Sub
 
+    Private Sub 计算模式选择_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class

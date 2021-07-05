@@ -61,9 +61,9 @@ Public Class 指定工况计算
             End If
         Next
         '判断选择的制冷制热设备是否正确，有错误则报错并终止计算
-        Dim ZTJC_EQ As Integer = mainprogram.判断制冷制热设备选择是否正确(ExcelApp, n)
+        Dim ZTJC_EQ As Integer = 判断制冷制热设备选择是否正确(ExcelApp, n)
         If ZTJC_EQ = 1 Then
-            Call mainprogram.锁定工作表(ExcelApp)
+            Call 锁定工作表(ExcelApp)
             ZTJC_EQ = 0
             Exit Sub
         End If
@@ -72,24 +72,24 @@ Public Class 指定工况计算
             '让用户输入负荷调节精度
             FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
-            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
+            Dim ZTJC_SHUJU As Integer = 读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
             If ZTJC_SHUJU = 1 Then
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 ZTJC_SHUJU = 0
                 Exit Sub
             End If
             '针对输入的负荷调节精度，添加报错功能
             If FHTJJD = Nothing Then '输入的调节精度为空的情况
                 MsgBox("输入的负荷调节精度不能为空，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             ElseIf FHTJJD = 0 Then '输入的调节精度为0的情况
                 MsgBox("输入的负荷调节精度不能为0，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             ElseIf (FHTJJD <> 0 And (25 - FHTJJD * CInt(25 / FHTJJD)) <> 0) Then '输入的调节精度不能被25整除的情况
                 MsgBox("输入的负荷调节精度必需能够被25整除，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             End If
             '根据用户输入的负荷调节精度，计算出最大计算步长
@@ -104,19 +104,19 @@ Public Class 指定工况计算
             For i = 1 To 5 '读取输入的工况序号，并添加报错功能
                 If GKXH(i) > n Then
                     MsgBox("输入的工况序号不可以大于最大工况数量，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
                 If GKXH(i) < 0 Then
                     MsgBox("输入的工况序号不可以为负数，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
             Next
             For i = 1 To 4
                 If GKXH(i + 1) > 0 And GKXH(i) = 0 Then
                     MsgBox("输入的工况序号必需从上向下依次输入，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
             Next
@@ -150,7 +150,7 @@ Public Class 指定工况计算
                 HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
                 '读取采暖季装机方案及参数
-                Dim ans_ZJFA_R = mainprogram.读取采暖季装机方案参数(ExcelApp)
+                Dim ans_ZJFA_R = 读取采暖季装机方案参数(ExcelApp)
                 '天然气锅炉装机功率（总和）
                 Dim TRQGL1ZRGL As Double = ans_ZJFA_R(12)
                 Dim TRQGL2ZRGL As Double = ans_ZJFA_R(13)
@@ -202,26 +202,26 @@ Public Class 指定工况计算
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
-                    Call mainprogram.清空指定工况输入输出数据(ExcelApp, b)
+                    Call 清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， 0, 0， 0, 0， 0, 0， 0, 0， 0, 0， 0, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， 0, 0， 0, 0， 0, 0， 0, 0， 0, 0， 0, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
-                    Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
+                    Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
+                    Call 制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     '只有全局寻优计算模式才修正
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
                 End If
             Next
             '计算循环体
-            Call mainprogram.计算循环体(ExcelApp, n)
+            Call 计算循环体(ExcelApp, n)
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
             '梯级供热或者混水供热自动计算
             'Call 梯级或者混水供热计算()
         End If
         '判断各种计算结果是否正确，不正确则报错
-        Call mainprogram.判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
+        Call 判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         '—————————————————————————————————————————————————————————————————————————————————————————
         '在窗体中显示计算已完成
         '实例化一个计算过程显示窗体
@@ -317,9 +317,9 @@ Public Class 指定工况计算
             End If
         Next
         '判断选择的制冷制热设备是否正确，有错误则报错并终止计算
-        Dim ZTJC_EQ As Integer = mainprogram.判断制冷制热设备选择是否正确(ExcelApp, n)
+        Dim ZTJC_EQ As Integer = 判断制冷制热设备选择是否正确(ExcelApp, n)
         If ZTJC_EQ = 1 Then
-            Call mainprogram.锁定工作表(ExcelApp)
+            Call 锁定工作表(ExcelApp)
             ZTJC_EQ = 0
             Exit Sub
         End If
@@ -328,24 +328,24 @@ Public Class 指定工况计算
             '让用户输入负荷调节精度
             FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
             '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
-            Dim ZTJC_SHUJU As Integer = mainprogram.读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
+            Dim ZTJC_SHUJU As Integer = 读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
             If ZTJC_SHUJU = 1 Then
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 ZTJC_SHUJU = 0
                 Exit Sub
             End If
             '针对输入的负荷调节精度，添加报错功能
             If FHTJJD = Nothing Then '输入的调节精度为空的情况
                 MsgBox("输入的负荷调节精度不能为空，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             ElseIf FHTJJD = 0 Then '输入的调节精度为0的情况
                 MsgBox("输入的负荷调节精度不能为0，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             ElseIf (FHTJJD <> 0 And (25 - FHTJJD * CInt(25 / FHTJJD)) <> 0) Then '输入的调节精度不能被25整除的情况
                 MsgBox("输入的负荷调节精度必需能够被25整除，请重新输入！")
-                Call mainprogram.锁定工作表(ExcelApp)
+                Call 锁定工作表(ExcelApp)
                 Exit Sub
             End If
             '根据用户输入的负荷调节精度，计算出最大计算步长
@@ -360,19 +360,19 @@ Public Class 指定工况计算
             For i = 1 To 5 '读取输入的工况序号，并添加报错功能
                 If GKXH(i) > n Then
                     MsgBox("输入的工况序号不可以大于最大工况数量，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
                 If GKXH(i) < 0 Then
                     MsgBox("输入的工况序号不可以为负数，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
             Next
             For i = 1 To 4
                 If GKXH(i + 1) > 0 And GKXH(i) = 0 Then
                     MsgBox("输入的工况序号必需从上向下依次输入，请重新输入")
-                    Call mainprogram.锁定工作表(ExcelApp)
+                    Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
             Next
@@ -406,7 +406,7 @@ Public Class 指定工况计算
                 HSGRGLBL = InputBox("请输入混水供热功率比例系数（选择的混水供热设备的供热功率，占两种设备总供热功率的比例，例如(风冷热泵的制热功率/（天然气锅炉的制热功率+风冷热泵的制热功率）)）", "请输入混水供热功率比例系数", 0.5)
                 '读取天然气锅炉、直燃型溴化锂机组、电采暖锅炉制热总功率（装机量，制热出力最大值）
                 '读取采暖季装机方案及参数
-                Dim ans_ZJFA_R = mainprogram.读取采暖季装机方案参数(ExcelApp)
+                Dim ans_ZJFA_R = 读取采暖季装机方案参数(ExcelApp)
                 '天然气锅炉装机功率（总和）
                 Dim TRQGL1ZRGL As Double = ans_ZJFA_R(12)
                 Dim TRQGL2ZRGL As Double = ans_ZJFA_R(13)
@@ -458,26 +458,26 @@ Public Class 指定工况计算
             For i = 1 To 5
                 b = GKXH(i)
                 If b > 0 Then '忽略为0的工况
-                    Call mainprogram.清空指定工况输入输出数据(ExcelApp, b)
+                    Call 清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call mainprogram.负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
-                    Call mainprogram.制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
-                    Call mainprogram.制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
+                    Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
+                    Call 制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     '只有全局寻优计算模式才修正
-                    Call mainprogram.制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
-                    Call mainprogram.制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call 制冷季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
+                    Call 制热季天然气消耗修正系数和设备本体耗电综合修正系数计算(ExcelApp, b, FHTJJD, calculation_mode)
                 End If
             Next
             '计算循环体
-            Call mainprogram.计算循环体(ExcelApp, n)
+            Call 计算循环体(ExcelApp, n)
             '————————————————————————————————————————————————————————————————————————————————————————
             '————————————————————————————————————————————————————————————————————————————————————————
             '梯级供热或者混水供热自动计算
             'Call 梯级或者混水供热计算()
         End If
         '判断各种计算结果是否正确，不正确则报错
-        Call mainprogram.判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
+        Call 判断各种计算结果是否正确(ExcelApp, FHTJJD, n)
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '在窗体中显示计算已完成

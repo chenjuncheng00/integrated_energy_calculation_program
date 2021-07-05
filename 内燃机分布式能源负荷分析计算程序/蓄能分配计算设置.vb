@@ -91,7 +91,7 @@ Public Class 蓄能分配计算设置
         '隐藏窗体
         Me.Hide()
         '进入计算
-        Call mainprogram.蓄能分配计算主程序(ExcelApp, XLGL_PJ, XLGL_MAX, XLJS_MS, XRGL_PJ, XRGL_MAX, XRJS_MS, QT1_SJD, QT2_SJD)
+        Call 蓄能分配计算主程序(ExcelApp, XLGL_PJ, XLGL_MAX, XLJS_MS, XRGL_PJ, XRGL_MAX, XRJS_MS, QT1_SJD, QT2_SJD)
         Me.Close()
     End Sub
 
@@ -104,4 +104,7 @@ Public Class 蓄能分配计算设置
         Me.XR_MAX_CHECK.Checked = False
     End Sub
 
+    Private Sub 蓄能分配计算设置_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class

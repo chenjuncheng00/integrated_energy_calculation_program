@@ -851,4 +851,8 @@ Public Class 典型日输入参数赋值
         Me.RFH_50_Q.Text = Nothing
         Me.RFH_25_Q.Text = Nothing
     End Sub
+
+    Private Sub 典型日输入参数赋值_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class
