@@ -2,6 +2,7 @@
 Imports Microsoft.Office.Interop
 
 Public Class 指定工况计算
+    Public GKXH_List As New List(Of Integer)
 
     Private Sub 常规计算模式_Click(sender As Object, e As EventArgs) Handles 常规计算模式.Click
         On Error Resume Next
@@ -17,40 +18,14 @@ Public Class 指定工况计算
         '定义计算步长和负荷调节精度
         Dim JSBC As Integer
         Dim FHTJJD As Double
-        '工况序号
-        Dim GKXH(6) As Integer
         '计算模式设置为1
         Dim calculation_mode As Integer = 1
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '隐藏窗体
         Me.Hide()
-        '————————————————————————————————————————————————————————————————————————————————————————
-        If Me.TextBox1.Text <> Nothing Then
-            GKXH(1) = CType(Me.TextBox1.Text, Integer)
-        Else
-            GKXH(1) = 0
-        End If
-        If Me.TextBox2.Text <> Nothing Then
-            GKXH(2) = CType(Me.TextBox2.Text, Integer)
-        Else
-            GKXH(2) = 0
-        End If
-        If Me.TextBox3.Text <> Nothing Then
-            GKXH(3) = CType(Me.TextBox3.Text, Integer)
-        Else
-            GKXH(3) = 0
-        End If
-        If Me.TextBox4.Text <> Nothing Then
-            GKXH(4) = CType(Me.TextBox4.Text, Integer)
-        Else
-            GKXH(4) = 0
-        End If
-        If Me.TextBox5.Text <> Nothing Then
-            GKXH(5) = CType(Me.TextBox5.Text, Integer)
-        Else
-            GKXH(5) = 0
-        End If
+        '输入的工况序号数量
+        Dim n_GKXH As Integer = GKXH_List.LongCount
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '计数，统计一共有多少种不同工况
@@ -71,6 +46,8 @@ Public Class 指定工况计算
         If n > 0 Then
             '让用户输入负荷调节精度
             FHTJJD = CType(Me.FHTJJD_shuru.Text, Double)
+            '根据用户输入的负荷调节精度，计算出最大计算步长
+            JSBC = CInt(25 / FHTJJD)
             '判断输入的各种负荷率是否有错误，有错误则报错并终止计算
             Dim ZTJC_SHUJU As Integer = 读取输入的各种数据并添加报错功能(ExcelApp, FHTJJD, n)
             If ZTJC_SHUJU = 1 Then
@@ -92,30 +69,15 @@ Public Class 指定工况计算
                 Call 锁定工作表(ExcelApp)
                 Exit Sub
             End If
-            '根据用户输入的负荷调节精度，计算出最大计算步长
-            JSBC = CInt(25 / FHTJJD)
             '指定工况进行计算
-            '读取窗体文本框中的工况序号在“指定工况计算.确定”
-            For i = 1 To 5
-                If GKXH(i) > 0 Then
-                    GKXH(i) = GKXH(i)
-                End If
-            Next
-            For i = 1 To 5 '读取输入的工况序号，并添加报错功能
-                If GKXH(i) > n Then
+            For i = 0 To n_GKXH - 1 '读取输入的工况序号，并添加报错功能
+                If GKXH_List(i) > n Then
                     MsgBox("输入的工况序号不可以大于最大工况数量，请重新输入")
                     Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
-                If GKXH(i) < 0 Then
+                If GKXH_List(i) < 0 Then
                     MsgBox("输入的工况序号不可以为负数，请重新输入")
-                    Call 锁定工作表(ExcelApp)
-                    Exit Sub
-                End If
-            Next
-            For i = 1 To 4
-                If GKXH(i + 1) > 0 And GKXH(i) = 0 Then
-                    MsgBox("输入的工况序号必需从上向下依次输入，请重新输入")
                     Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
@@ -125,8 +87,8 @@ Public Class 指定工况计算
             '判断是否需要混水供热或者梯级供热，并输入相关计算比例
             Dim TJGRZTJC = 0 '梯级供热状态监测
             Dim HSGRZTJC = 0 '混水供热状态监测
-            For i = 1 To 5
-                b = GKXH(i)
+            For i = 0 To n_GKXH - 1
+                b = GKXH_List(i)
                 '忽略为0的工况
                 If b > 0 Then
                     If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
@@ -171,8 +133,8 @@ Public Class 指定工况计算
                 Dim ZRXHL2ZRGL As Double = ans_ZJFA_R(61)
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
-                For i = 1 To n
-                    b = GKXH(i)
+                For i = 0 To n_GKXH - 1
+                    b = GKXH_List(i)
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
                     Dim HSSBGL As Double = 0
                     '忽略为0的工况
@@ -199,8 +161,8 @@ Public Class 指定工况计算
                 End If
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            For i = 1 To 5
-                b = GKXH(i)
+            For i = 0 To n_GKXH - 1
+                b = GKXH_List(i)
                 If b > 0 Then '忽略为0的工况
                     Call 清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
@@ -230,15 +192,6 @@ Public Class 指定工况计算
         Calculate_Progress.Label1.Text = "计算已经完成，请查看计算结果！"
         Calculate_Progress.TopMost = True
         Application.DoEvents()
-        '清空输入的指定工况序号
-        Me.TextBox1.Clear()
-        Me.TextBox2.Clear()
-        Me.TextBox3.Clear()
-        Me.TextBox4.Clear()
-        Me.TextBox5.Clear()
-        For i = 1 To 5 '清空已有的GKXH数组，防止出错
-            GKXH(i) = 0
-        Next
         '——————————————————————————————————————————————————————————————————————————————————————————————
         '——————————————————————————————————————————————————————————————————————————————————————————————
         Me.Close()
@@ -257,22 +210,25 @@ Public Class 指定工况计算
         '定义计算步长和负荷调节精度
         Dim JSBC As Integer
         Dim FHTJJD As Double
-        '工况序号
-        Dim GKXH(6) As Integer
         '输入的购电单价和天然气单价参数
-        Dim D_price As Double = CType(Me.GDDJ.Text, Double)
         Dim TRQ_price As Double = CType(TRQDJ.Text, Double)
+        Dim D_price_GF1 As Double = CType(Me.GDDJ_GF1.Text, Double)
+        Dim D_price_GF2 As Double = CType(Me.GDDJ_GF2.Text, Double)
+        Dim D_price_F1 As Double = CType(Me.GDDJ_F1.Text, Double)
+        Dim D_price_F2 As Double = CType(Me.GDDJ_F2.Text, Double)
+        Dim D_price_P1 As Double = CType(Me.GDDJ_P1.Text, Double)
+        Dim D_price_P2 As Double = CType(Me.GDDJ_P2.Text, Double)
+        Dim D_price_G1 As Double = CType(Me.GDDJ_G1.Text, Double)
+        Dim D_price_G2 As Double = CType(Me.GDDJ_G2.Text, Double)
+        Dim D_price_QT1 As Double = CType(Me.GDDJ_QT1.Text, Double)
+        Dim D_price_QT2 As Double = CType(Me.GDDJ_QT2.Text, Double)
         '如果没有输入价格，则报错
-        If D_price < 0 Then
+        If D_price_GF1 + D_price_GF2 + D_price_F1 + D_price_F2 + D_price_P1 + D_price_P2 + D_price_G1 + D_price_G2 + D_price_QT1 + D_price_QT2 <= 0 Then
             MsgBox("必须输入正确的购电单价，否则无法进行全局寻优计算！")
             Exit Sub
         End If
-        If TRQ_price < 0 Then
+        If TRQ_price <= 0 Then
             MsgBox("必须输入正确的天然气单价，否则无法进行全局寻优计算！")
-            Exit Sub
-        End If
-        If D_price = 0 And TRQ_price = 0 Then
-            MsgBox("购电单价和天然气单价必须根据实际情况正确输入，否则无法进行全局寻优计算！")
             Exit Sub
         End If
         '计算模式设置为2
@@ -281,32 +237,8 @@ Public Class 指定工况计算
         '————————————————————————————————————————————————————————————————————————————————————————
         '隐藏窗体
         Me.Hide()
-        '————————————————————————————————————————————————————————————————————————————————————————
-        If Me.TextBox1.Text <> Nothing Then
-            GKXH(1) = CType(Me.TextBox1.Text, Integer)
-        Else
-            GKXH(1) = 0
-        End If
-        If Me.TextBox2.Text <> Nothing Then
-            GKXH(2) = CType(Me.TextBox2.Text, Integer)
-        Else
-            GKXH(2) = 0
-        End If
-        If Me.TextBox3.Text <> Nothing Then
-            GKXH(3) = CType(Me.TextBox3.Text, Integer)
-        Else
-            GKXH(3) = 0
-        End If
-        If Me.TextBox4.Text <> Nothing Then
-            GKXH(4) = CType(Me.TextBox4.Text, Integer)
-        Else
-            GKXH(4) = 0
-        End If
-        If Me.TextBox5.Text <> Nothing Then
-            GKXH(5) = CType(Me.TextBox5.Text, Integer)
-        Else
-            GKXH(5) = 0
-        End If
+        '输入的工况序号数量
+        Dim n_GKXH As Integer = GKXH_List.LongCount
         '————————————————————————————————————————————————————————————————————————————————————————
         '————————————————————————————————————————————————————————————————————————————————————————
         '计数，统计一共有多少种不同工况
@@ -351,27 +283,14 @@ Public Class 指定工况计算
             '根据用户输入的负荷调节精度，计算出最大计算步长
             JSBC = CInt(25 / FHTJJD)
             '指定工况进行计算
-            '读取窗体文本框中的工况序号在“指定工况计算.确定”
-            For i = 1 To 5
-                If GKXH(i) > 0 Then
-                    GKXH(i) = GKXH(i)
-                End If
-            Next
-            For i = 1 To 5 '读取输入的工况序号，并添加报错功能
-                If GKXH(i) > n Then
+            For i = 0 To n_GKXH - 1 '读取输入的工况序号，并添加报错功能
+                If GKXH_List(i) > n Then
                     MsgBox("输入的工况序号不可以大于最大工况数量，请重新输入")
                     Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
-                If GKXH(i) < 0 Then
+                If GKXH_List(i) < 0 Then
                     MsgBox("输入的工况序号不可以为负数，请重新输入")
-                    Call 锁定工作表(ExcelApp)
-                    Exit Sub
-                End If
-            Next
-            For i = 1 To 4
-                If GKXH(i + 1) > 0 And GKXH(i) = 0 Then
-                    MsgBox("输入的工况序号必需从上向下依次输入，请重新输入")
                     Call 锁定工作表(ExcelApp)
                     Exit Sub
                 End If
@@ -381,8 +300,8 @@ Public Class 指定工况计算
             '判断是否需要混水供热或者梯级供热，并输入相关计算比例
             Dim TJGRZTJC = 0 '梯级供热状态监测
             Dim HSGRZTJC = 0 '混水供热状态监测
-            For i = 1 To 5
-                b = GKXH(i)
+            For i = 0 To n_GKXH - 1
+                b = GKXH_List(i)
                 '忽略为0的工况
                 If b > 0 Then
                     If ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(7 + b, 80).Value <> Nothing Then '如果有仅计算耗电量，不计算供热量的设备
@@ -427,8 +346,8 @@ Public Class 指定工况计算
                 Dim ZRXHL2ZRGL As Double = ans_ZJFA_R(61)
                 '将不合理的工况序号显示出了
                 Dim XianShi As String = Nothing
-                For i = 1 To n
-                    b = GKXH(i)
+                For i = 0 To n_GKXH - 1
+                    b = GKXH_List(i)
                     '参与混水的风冷热泵+空气源热泵+水(地)源热泵制热总功率（装机量，制热出力最大值）
                     Dim HSSBGL As Double = 0
                     '忽略为0的工况
@@ -455,12 +374,12 @@ Public Class 指定工况计算
                 End If
             End If
             '————————————————————————————————————————————————————————————————————————————————————————
-            For i = 1 To 5
-                b = GKXH(i)
+            For i = 0 To n_GKXH - 1
+                b = GKXH_List(i)
                 If b > 0 Then '忽略为0的工况
                     Call 清空指定工况输入输出数据(ExcelApp, b)
                     '进行正常的负荷分析（主要技术指标）计算
-                    Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price， D_price, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
+                    Call 负荷分析计算程序(ExcelApp, b, FHTJJD, JSBC， D_price_GF1, D_price_GF2, D_price_F1, D_price_F2, D_price_P1, D_price_P2, D_price_G1, D_price_G2, D_price_QT1, D_price_QT2, TRQ_price, calculation_mode, TJGRFHBL, HSGRGLBL)
                     '对计算出的制冷和制热设备负荷率进行修正，限制设备可以计算出的最低负荷率和最高负荷率
                     Call 制冷和蓄冷空调设备负荷率修正(ExcelApp, b, calculation_mode)
                     Call 制热和蓄热空调设备负荷率修正(ExcelApp, b, calculation_mode)
@@ -487,15 +406,6 @@ Public Class 指定工况计算
         Calculate_Progress.Label1.Text = "计算已经完成，请查看计算结果！"
         Calculate_Progress.TopMost = True
         Application.DoEvents()
-        '清空输入的指定工况序号
-        Me.TextBox1.Clear()
-        Me.TextBox2.Clear()
-        Me.TextBox3.Clear()
-        Me.TextBox4.Clear()
-        Me.TextBox5.Clear()
-        For i = 1 To 5 '清空已有的GKXH数组，防止出错
-            GKXH(i) = 0
-        Next
         '—————————————————————————————————————————————————————————————————————————————————————————
         Me.Close()
     End Sub
@@ -511,5 +421,41 @@ Public Class 指定工况计算
     End Sub
     Private Sub 指定工况计算_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         MyBase.KeyPreview = True
+    End Sub
+
+    Private Sub 添加输入_Click(sender As Object, e As EventArgs) Handles 添加输入.Click
+        On Error Resume Next
+        '判断1
+        If 工况序号tmp.Text = Nothing Then
+            MsgBox("输入的工况序号必须不能为空！，请重新输入")
+            Exit Sub
+        End If
+        '工况序号
+        Dim gkxh_text As String = 工况序号tmp.Text
+        Dim gkxh As Integer = CType(gkxh_text, Integer)
+        '添加数据
+        工况序号列表.Items.Add(gkxh_text)
+        GKXH_List.Add(gkxh)
+        工况序号tmp.Clear()
+    End Sub
+
+    Private Sub 清空输入_Click(sender As Object, e As EventArgs) Handles 清空输入.Click
+        On Error Resume Next
+        '清空窗体
+        Me.工况序号列表.Items.Clear()
+        Me.工况序号tmp.Clear()
+        GKXH_List.Clear()
+        GDDJ_GF1.Clear()
+        GDDJ_GF2.Clear()
+        GDDJ_F1.Clear()
+        GDDJ_F2.Clear()
+        GDDJ_P1.Clear()
+        GDDJ_P2.Clear()
+        GDDJ_G1.Clear()
+        GDDJ_G2.Clear()
+        GDDJ_QT1.Clear()
+        GDDJ_QT2.Clear()
+        TRQDJ.Clear()
+        FHTJJD_shuru.Clear()
     End Sub
 End Class

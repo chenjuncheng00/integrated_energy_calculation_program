@@ -111,7 +111,7 @@ Partial Class 计算模式选择
         '常规计算模式
         '
         Me.常规计算模式.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.常规计算模式.Location = New System.Drawing.Point(36, 1146)
+        Me.常规计算模式.Location = New System.Drawing.Point(35, 536)
         Me.常规计算模式.Name = "常规计算模式"
         Me.常规计算模式.Size = New System.Drawing.Size(284, 100)
         Me.常规计算模式.TabIndex = 4
@@ -121,7 +121,7 @@ Partial Class 计算模式选择
         '全局寻优计算
         '
         Me.全局寻优计算.Font = New System.Drawing.Font("宋体", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.全局寻优计算.Location = New System.Drawing.Point(430, 1146)
+        Me.全局寻优计算.Location = New System.Drawing.Point(429, 536)
         Me.全局寻优计算.Name = "全局寻优计算"
         Me.全局寻优计算.Size = New System.Drawing.Size(284, 100)
         Me.全局寻优计算.TabIndex = 5
@@ -179,7 +179,7 @@ Partial Class 计算模式选择
         '
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label9.Location = New System.Drawing.Point(89, 517)
+        Me.Label9.Location = New System.Drawing.Point(803, 93)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(260, 28)
         Me.Label9.TabIndex = 11
@@ -187,7 +187,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_GF1
         '
-        Me.GDDJ_GF1.Location = New System.Drawing.Point(364, 514)
+        Me.GDDJ_GF1.Location = New System.Drawing.Point(1078, 90)
         Me.GDDJ_GF1.Name = "GDDJ_GF1"
         Me.GDDJ_GF1.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_GF1.TabIndex = 12
@@ -197,7 +197,7 @@ Partial Class 计算模式选择
         '
         Me.Label10.AutoSize = True
         Me.Label10.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.Location = New System.Drawing.Point(552, 516)
+        Me.Label10.Location = New System.Drawing.Point(1266, 92)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(111, 32)
         Me.Label10.TabIndex = 13
@@ -207,7 +207,7 @@ Partial Class 计算模式选择
         '
         Me.Label11.AutoSize = True
         Me.Label11.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label11.Location = New System.Drawing.Point(109, 1028)
+        Me.Label11.Location = New System.Drawing.Point(823, 604)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(186, 28)
         Me.Label11.TabIndex = 14
@@ -215,7 +215,7 @@ Partial Class 计算模式选择
         '
         'TRQDJ
         '
-        Me.TRQDJ.Location = New System.Drawing.Point(364, 1025)
+        Me.TRQDJ.Location = New System.Drawing.Point(1078, 601)
         Me.TRQDJ.Name = "TRQDJ"
         Me.TRQDJ.Size = New System.Drawing.Size(170, 35)
         Me.TRQDJ.TabIndex = 15
@@ -225,7 +225,7 @@ Partial Class 计算模式选择
         '
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(555, 1026)
+        Me.Label12.Location = New System.Drawing.Point(1269, 602)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(108, 32)
         Me.Label12.TabIndex = 16
@@ -235,7 +235,7 @@ Partial Class 计算模式选择
         '
         Me.Label13.AutoSize = True
         Me.Label13.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label13.Location = New System.Drawing.Point(50, 455)
+        Me.Label13.Location = New System.Drawing.Point(764, 31)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(650, 28)
         Me.Label13.TabIndex = 17
@@ -245,7 +245,7 @@ Partial Class 计算模式选择
         '
         Me.Label14.AutoSize = True
         Me.Label14.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label14.Location = New System.Drawing.Point(89, 567)
+        Me.Label14.Location = New System.Drawing.Point(803, 143)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(260, 28)
         Me.Label14.TabIndex = 18
@@ -255,7 +255,7 @@ Partial Class 计算模式选择
         '
         Me.Label15.AutoSize = True
         Me.Label15.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label15.Location = New System.Drawing.Point(89, 616)
+        Me.Label15.Location = New System.Drawing.Point(803, 192)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(231, 28)
         Me.Label15.TabIndex = 19
@@ -265,7 +265,7 @@ Partial Class 计算模式选择
         '
         Me.Label16.AutoSize = True
         Me.Label16.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label16.Location = New System.Drawing.Point(89, 668)
+        Me.Label16.Location = New System.Drawing.Point(803, 244)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(231, 28)
         Me.Label16.TabIndex = 20
@@ -275,7 +275,7 @@ Partial Class 计算模式选择
         '
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label17.Location = New System.Drawing.Point(89, 768)
+        Me.Label17.Location = New System.Drawing.Point(803, 344)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(231, 28)
         Me.Label17.TabIndex = 22
@@ -285,7 +285,7 @@ Partial Class 计算模式选择
         '
         Me.Label18.AutoSize = True
         Me.Label18.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label18.Location = New System.Drawing.Point(89, 718)
+        Me.Label18.Location = New System.Drawing.Point(803, 294)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(231, 28)
         Me.Label18.TabIndex = 21
@@ -295,7 +295,7 @@ Partial Class 计算模式选择
         '
         Me.Label19.AutoSize = True
         Me.Label19.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label19.Location = New System.Drawing.Point(89, 924)
+        Me.Label19.Location = New System.Drawing.Point(803, 500)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(260, 28)
         Me.Label19.TabIndex = 23
@@ -305,7 +305,7 @@ Partial Class 计算模式选择
         '
         Me.Label20.AutoSize = True
         Me.Label20.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label20.Location = New System.Drawing.Point(89, 974)
+        Me.Label20.Location = New System.Drawing.Point(803, 550)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(260, 28)
         Me.Label20.TabIndex = 24
@@ -315,7 +315,7 @@ Partial Class 计算模式选择
         '
         Me.Label21.AutoSize = True
         Me.Label21.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label21.Location = New System.Drawing.Point(552, 563)
+        Me.Label21.Location = New System.Drawing.Point(1266, 139)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(111, 32)
         Me.Label21.TabIndex = 25
@@ -325,7 +325,7 @@ Partial Class 计算模式选择
         '
         Me.Label22.AutoSize = True
         Me.Label22.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label22.Location = New System.Drawing.Point(552, 614)
+        Me.Label22.Location = New System.Drawing.Point(1266, 190)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(111, 32)
         Me.Label22.TabIndex = 26
@@ -335,7 +335,7 @@ Partial Class 计算模式选择
         '
         Me.Label23.AutoSize = True
         Me.Label23.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label23.Location = New System.Drawing.Point(552, 664)
+        Me.Label23.Location = New System.Drawing.Point(1266, 240)
         Me.Label23.Name = "Label23"
         Me.Label23.Size = New System.Drawing.Size(111, 32)
         Me.Label23.TabIndex = 27
@@ -345,7 +345,7 @@ Partial Class 计算模式选择
         '
         Me.Label24.AutoSize = True
         Me.Label24.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label24.Location = New System.Drawing.Point(552, 716)
+        Me.Label24.Location = New System.Drawing.Point(1266, 292)
         Me.Label24.Name = "Label24"
         Me.Label24.Size = New System.Drawing.Size(111, 32)
         Me.Label24.TabIndex = 28
@@ -355,7 +355,7 @@ Partial Class 计算模式选择
         '
         Me.Label25.AutoSize = True
         Me.Label25.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label25.Location = New System.Drawing.Point(552, 764)
+        Me.Label25.Location = New System.Drawing.Point(1266, 340)
         Me.Label25.Name = "Label25"
         Me.Label25.Size = New System.Drawing.Size(111, 32)
         Me.Label25.TabIndex = 29
@@ -365,7 +365,7 @@ Partial Class 计算模式选择
         '
         Me.Label26.AutoSize = True
         Me.Label26.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label26.Location = New System.Drawing.Point(552, 919)
+        Me.Label26.Location = New System.Drawing.Point(1266, 495)
         Me.Label26.Name = "Label26"
         Me.Label26.Size = New System.Drawing.Size(111, 32)
         Me.Label26.TabIndex = 30
@@ -375,7 +375,7 @@ Partial Class 计算模式选择
         '
         Me.Label27.AutoSize = True
         Me.Label27.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label27.Location = New System.Drawing.Point(552, 971)
+        Me.Label27.Location = New System.Drawing.Point(1266, 547)
         Me.Label27.Name = "Label27"
         Me.Label27.Size = New System.Drawing.Size(111, 32)
         Me.Label27.TabIndex = 31
@@ -383,7 +383,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_GF2
         '
-        Me.GDDJ_GF2.Location = New System.Drawing.Point(364, 563)
+        Me.GDDJ_GF2.Location = New System.Drawing.Point(1078, 139)
         Me.GDDJ_GF2.Name = "GDDJ_GF2"
         Me.GDDJ_GF2.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_GF2.TabIndex = 32
@@ -391,7 +391,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_F1
         '
-        Me.GDDJ_F1.Location = New System.Drawing.Point(364, 613)
+        Me.GDDJ_F1.Location = New System.Drawing.Point(1078, 189)
         Me.GDDJ_F1.Name = "GDDJ_F1"
         Me.GDDJ_F1.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_F1.TabIndex = 33
@@ -399,7 +399,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_F2
         '
-        Me.GDDJ_F2.Location = New System.Drawing.Point(364, 664)
+        Me.GDDJ_F2.Location = New System.Drawing.Point(1078, 240)
         Me.GDDJ_F2.Name = "GDDJ_F2"
         Me.GDDJ_F2.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_F2.TabIndex = 34
@@ -407,7 +407,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_P1
         '
-        Me.GDDJ_P1.Location = New System.Drawing.Point(364, 713)
+        Me.GDDJ_P1.Location = New System.Drawing.Point(1078, 289)
         Me.GDDJ_P1.Name = "GDDJ_P1"
         Me.GDDJ_P1.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_P1.TabIndex = 35
@@ -415,7 +415,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_P2
         '
-        Me.GDDJ_P2.Location = New System.Drawing.Point(364, 764)
+        Me.GDDJ_P2.Location = New System.Drawing.Point(1078, 340)
         Me.GDDJ_P2.Name = "GDDJ_P2"
         Me.GDDJ_P2.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_P2.TabIndex = 36
@@ -423,7 +423,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_QT1
         '
-        Me.GDDJ_QT1.Location = New System.Drawing.Point(364, 920)
+        Me.GDDJ_QT1.Location = New System.Drawing.Point(1078, 496)
         Me.GDDJ_QT1.Name = "GDDJ_QT1"
         Me.GDDJ_QT1.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_QT1.TabIndex = 37
@@ -431,7 +431,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_QT2
         '
-        Me.GDDJ_QT2.Location = New System.Drawing.Point(364, 971)
+        Me.GDDJ_QT2.Location = New System.Drawing.Point(1078, 547)
         Me.GDDJ_QT2.Name = "GDDJ_QT2"
         Me.GDDJ_QT2.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_QT2.TabIndex = 38
@@ -441,7 +441,7 @@ Partial Class 计算模式选择
         '
         Me.Label28.AutoSize = True
         Me.Label28.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label28.Location = New System.Drawing.Point(89, 820)
+        Me.Label28.Location = New System.Drawing.Point(803, 396)
         Me.Label28.Name = "Label28"
         Me.Label28.Size = New System.Drawing.Size(231, 28)
         Me.Label28.TabIndex = 39
@@ -451,7 +451,7 @@ Partial Class 计算模式选择
         '
         Me.Label29.AutoSize = True
         Me.Label29.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.Label29.Location = New System.Drawing.Point(89, 870)
+        Me.Label29.Location = New System.Drawing.Point(803, 446)
         Me.Label29.Name = "Label29"
         Me.Label29.Size = New System.Drawing.Size(231, 28)
         Me.Label29.TabIndex = 40
@@ -459,7 +459,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_G1
         '
-        Me.GDDJ_G1.Location = New System.Drawing.Point(364, 817)
+        Me.GDDJ_G1.Location = New System.Drawing.Point(1078, 393)
         Me.GDDJ_G1.Name = "GDDJ_G1"
         Me.GDDJ_G1.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_G1.TabIndex = 41
@@ -467,7 +467,7 @@ Partial Class 计算模式选择
         '
         'GDDJ_G2
         '
-        Me.GDDJ_G2.Location = New System.Drawing.Point(364, 866)
+        Me.GDDJ_G2.Location = New System.Drawing.Point(1078, 442)
         Me.GDDJ_G2.Name = "GDDJ_G2"
         Me.GDDJ_G2.Size = New System.Drawing.Size(170, 35)
         Me.GDDJ_G2.TabIndex = 42
@@ -477,7 +477,7 @@ Partial Class 计算模式选择
         '
         Me.Label30.AutoSize = True
         Me.Label30.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label30.Location = New System.Drawing.Point(552, 815)
+        Me.Label30.Location = New System.Drawing.Point(1266, 391)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(111, 32)
         Me.Label30.TabIndex = 43
@@ -487,7 +487,7 @@ Partial Class 计算模式选择
         '
         Me.Label31.AutoSize = True
         Me.Label31.Font = New System.Drawing.Font("Times New Roman", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label31.Location = New System.Drawing.Point(555, 866)
+        Me.Label31.Location = New System.Drawing.Point(1269, 442)
         Me.Label31.Name = "Label31"
         Me.Label31.Size = New System.Drawing.Size(111, 32)
         Me.Label31.TabIndex = 44
@@ -497,7 +497,7 @@ Partial Class 计算模式选择
         '
         Me.TS_XZ.AutoSize = True
         Me.TS_XZ.Font = New System.Drawing.Font("宋体", 10.5!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(134, Byte))
-        Me.TS_XZ.Location = New System.Drawing.Point(77, 1087)
+        Me.TS_XZ.Location = New System.Drawing.Point(94, 462)
         Me.TS_XZ.Name = "TS_XZ"
         Me.TS_XZ.Size = New System.Drawing.Size(595, 32)
         Me.TS_XZ.TabIndex = 45
@@ -508,7 +508,7 @@ Partial Class 计算模式选择
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(12.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(748, 1274)
+        Me.ClientSize = New System.Drawing.Size(1438, 666)
         Me.Controls.Add(Me.TS_XZ)
         Me.Controls.Add(Me.Label31)
         Me.Controls.Add(Me.Label30)
