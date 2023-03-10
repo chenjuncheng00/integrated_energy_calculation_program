@@ -1518,8 +1518,9 @@
                     ElseIf calculation_mode = 2 Then
                         '本模块，当存在两种内燃机，且计算模式=2时，采用全局寻优计算内燃机的负荷率
                         '计算内燃机负荷率
-                        Dim FHL1_result As Double = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)(0)
-                        Dim FHL2_result As Double = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)(1)
+                        Dim FHL_result = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)
+                        Dim FHL1_result As Double = FHL_result(0)
+                        Dim FHL2_result As Double = FHL_result(1)
                         '如果某个内燃机不存在，负荷率改为0
                         If ExcelApp.ThisWorkbook.Worksheets("设备选型&负荷分析计算").Cells(3, 2).Value = "J000GS" Then
                             FHL1_result = 0
@@ -1633,8 +1634,9 @@
                 ElseIf calculation_mode = 2 Then
                     '本模块，当存在两种内燃机，且计算模式=2时，采用全局寻优计算内燃机的负荷率
                     '计算内燃机负荷率
-                    Dim FHL1_result As Double = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)(0)
-                    Dim FHL2_result As Double = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)(1)
+                    Dim FHL_result = 内燃机可以向外供电且余热不可以被浪费是制冷季寻优计算(ExcelApp, b, FHTJJD)
+                    Dim FHL1_result As Double = FHL_result(0)
+                    Dim FHL2_result As Double = FHL_result(1)
                     '将负荷率结果写入Excel
                     '内燃机（1）
                     ExcelApp.ThisWorkbook.Worksheets("计算输入").Cells(3, 2).Value = FHL1_result
